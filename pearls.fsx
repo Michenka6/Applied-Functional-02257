@@ -71,19 +71,7 @@ let rec design' (Node (label, subTrees)) =
     resultTree, resultExtent
 
 let design tree = fst (design' tree)
-let rec design1' (Node (label, subTrees)) =
-    let (trees, extents) = subTrees |> List.map design1' |> List.unzip
-    let positions = fitList extents
-    let pTrees = (trees, positions) ||> List.zip |> List.map moveTree
-    let pExtents = (extents, positions) ||> List.zip |> List.map moveExtent
-    let resultExtent = (0.0, 0.0) :: mergeList pExtents
-    let resultTree = Node((label, 0.0), pTrees)
-
-    resultTree, resultExtent
-
-let design1 tree = snd (design1' tree)
-
-
+let design1 tree = snd (design' tree)
 
 // Michael R. Hansen    30-05-2023
 #r "nuget: Plotly.NET, 4.0.0"
