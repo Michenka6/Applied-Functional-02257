@@ -5,18 +5,12 @@ type PTree<'a> = Tree<'a * float>
 
 type Extent = (float * float) list
 
-// type T =
-//     | Lf of int
-//     | Br of int * (T list)
-
-let c = Node("C", [])
-let b = Node("B", [ c ])
-let a = Node("A", [ b; b ])
+let d = Node("D", [])
+let c = Node("C", [d; d])
+//let c = Node("C", [])
+let b = Node("B", [ c ; c; c])
+let a = Node("A", [ b; b; b; b])
 let t = Node("T", [ a ])
-(*T
-  A
-B    B
-CC CC*)
 
 let moveTree (Node ((label, x), subTrees): PTree<'a>, x': float) = Node((label, x + x'), subTrees)
 
@@ -27,9 +21,9 @@ let rec merge ps qs =
     match ps, qs with
     | [], _ -> qs
     | _, [] -> ps
-    | (x, _) :: xs, (y, _) :: ys -> (x, y) :: merge xs ys
+    | (x, _) :: xs, (_, y) :: ys -> (x, y) :: merge xs ys
 
-let mergeList es = List.fold merge [] es
+let mergeList (es: ('a * 'b) list list) = List.fold merge [] es
 
 let rMax p q = max p q
 
@@ -118,7 +112,16 @@ let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
         ShowLegend = true
     )
     :: List.collect treeToPoints subTrees
-
+let rec treeToPoints1 t =  
+    let rec treeToPoints1_ (prevX: float)(Node ((label, (x, y)), subTrees)) =
+        Chart.Point(
+            [ (x+prevX, y) ],
+            MultiText = [ label ],
+            MultiTextPosition = [ StyleParam.TextPosition.TopCenter ],
+            ShowLegend = true
+        )
+        :: List.collect (treeToPoints1_ (prevX + x)) subTrees
+    in treeToPoints1_ 0 t
 let test t =
     t
     |> design
@@ -128,3 +131,25 @@ let test t =
     |> Chart.withXAxis mirroredXAxis
     |> Chart.withYAxis mirroredYAxis
     |> Chart.show
+
+let test1 t =     
+    t
+    |> design
+    |> addVerticals 0
+    //|> treeToPoints 
+    |> printfn "%A" 
+
+let test2 t = 
+    t
+    |> design
+    |> addVerticals 0
+    |> treeToPoints1
+    |> Chart.combine
+    |> Chart.withXAxis mirroredXAxis
+    |> Chart.withYAxis mirroredYAxis
+    |> Chart.show 
+    
+   
+
+test1 t;;
+test2 t;;
