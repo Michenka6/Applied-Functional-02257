@@ -11,6 +11,7 @@ let c = Node("C", [d; d])
 let b = Node("B", [ c ; c; c])
 let a = Node("A", [ b; b; b; b])
 let t = Node("T", [ a ])
+//let t = Node("T", [c;c;d])
 
 let moveTree (Node ((label, x), subTrees): PTree<'a>, x': float) = Node((label, x + x'), subTrees)
 
@@ -70,6 +71,18 @@ let rec design' (Node (label, subTrees)) =
     resultTree, resultExtent
 
 let design tree = fst (design' tree)
+let rec design1' (Node (label, subTrees)) =
+    let (trees, extents) = subTrees |> List.map design1' |> List.unzip
+    let positions = fitList extents
+    let pTrees = (trees, positions) ||> List.zip |> List.map moveTree
+    let pExtents = (extents, positions) ||> List.zip |> List.map moveExtent
+    let resultExtent = (0.0, 0.0) :: mergeList pExtents
+    let resultTree = Node((label, 0.0), pTrees)
+
+    resultTree, resultExtent
+
+let design1 tree = snd (design1' tree)
+
 
 
 // Michael R. Hansen    30-05-2023
@@ -101,7 +114,7 @@ let mirroredYAxis =
     )
 
 let rec addVerticals acc (Node ((label, x), subTrees)) =
-    Node((label, (x, acc)), List.map (addVerticals (acc - 1)) subTrees)
+    Node((label, (x, acc)), List.map (addVerticals (acc - 1.0)) subTrees)
 
 
 let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
@@ -112,8 +125,9 @@ let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
         ShowLegend = true
     )
     :: List.collect treeToPoints subTrees
+
 let rec treeToPoints1 t =  
-    let rec treeToPoints1_ (prevX: float)(Node ((label, (x, y)), subTrees)) =
+    let rec treeToPoints1_ (prevX: float) (Node ((label, (x, y)), subTrees)) =
         Chart.Point(
             [ (x+prevX, y) ],
             MultiText = [ label ],
@@ -122,10 +136,16 @@ let rec treeToPoints1 t =
         )
         :: List.collect (treeToPoints1_ (prevX + x)) subTrees
     in treeToPoints1_ 0 t
+
+let absTree (t: Tree<'a * (float * float)>) = 
+    let rec absTree_ (prevX: float) (Node ((label, (x, y)), subTrees)) = 
+        Node ((label, ((prevX + x), y)), (List.map (absTree_ (prevX + x)) subTrees))
+    in absTree_ 0.0 t
+
 let test t =
     t
     |> design
-    |> addVerticals 0
+    |> addVerticals 0.0
     |> treeToPoints
     |> Chart.combine
     |> Chart.withXAxis mirroredXAxis
@@ -143,13 +163,15 @@ let test2 t =
     t
     |> design
     |> addVerticals 0
-    |> treeToPoints1
+    |> absTree
+    |> treeToPoints
     |> Chart.combine
     |> Chart.withXAxis mirroredXAxis
     |> Chart.withYAxis mirroredYAxis
     |> Chart.show 
     
    
-
 test1 t;;
+//test t ;;
+//design1 t |> printfn "%A"
 test2 t;;
