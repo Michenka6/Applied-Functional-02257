@@ -104,7 +104,10 @@ let mirroredYAxis =
 let rec addVerticals acc (Node ((label, x), subTrees)) =
     Node((label, (x, acc)), List.map (addVerticals (acc - 1.0)) subTrees)
 
-
+let absTree (Node ((label, x), subTrees)) = 
+    let rec absTree_ (prevX: float) (y: float) (Node ((label, x), subTrees)) = 
+        Node((label, ((prevX + x), (y))), List.map (absTree_ (prevX + x) (y - 1.0)) subTrees)
+    in absTree_ 0 0 (Node ((label, x), subTrees)) 
 let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
     Chart.Point(
         [ (x, y) ],
@@ -113,22 +116,29 @@ let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
         ShowLegend = true
     )
     :: List.collect treeToPoints subTrees
+let rec verticalLines (Node((label, (x, y)), subTrees)) = 
+    Chart.Line([ x; x ], [ y; y-1.0 ], 
+    LineColor = Color.fromString "black", 
+    ShowLegend = false) :: List.collect verticalLines subTrees
 
-let rec treeToPoints1 t =  
-    let rec treeToPoints1_ (prevX: float) (Node ((label, (x, y)), subTrees)) =
-        Chart.Point(
-            [ (x+prevX, y) ],
-            MultiText = [ label ],
-            MultiTextPosition = [ StyleParam.TextPosition.TopCenter ],
-            ShowLegend = true
-        )
-        :: List.collect (treeToPoints1_ (prevX + x)) subTrees
-    in treeToPoints1_ 0 t
+let horizontalLines subTrees = 
+    let rec getCoords subTrees = 
+        match subTrees with 
+        | [] -> []
+        | Node((label, (x, y)), _)::rest -> [(x,y)]::getCoords rest
+    
+    subTrees |> getCoords |> mergeList
+     
 
-let absTree (t: Tree<'a * (float * float)>) = 
-    let rec absTree_ (prevX: float) (Node ((label, (x, y)), subTrees)) = 
-        Node ((label, ((prevX + x), y)), (List.map (absTree_ (prevX + x)) subTrees))
-    in absTree_ 0.0 t
+//let pointsAndLines (t, e) = 
+//    let at = t |> addVerticals 0 |> absTree in 
+//    (at |> treeToPoints) //@  (at |> verticalLines) //extentsToLines e @ 
+
+let pointsAndLines (t, e) = t |> absTree |> treeToPoints 
+    //let at = t |> absTree1
+    //(at |> treeToPoints) //@  (at |> verticalLines) //extentsToLines e @ 
+
+
 
 let test t =
     t
@@ -149,17 +159,26 @@ let test1 t =
 
 let test2 t = 
     t
-    |> design
-    |> addVerticals 0
-    |> absTree
+    |> design 
+    |> absTree 
     |> treeToPoints
     |> Chart.combine
     |> Chart.withXAxis mirroredXAxis
     |> Chart.withYAxis mirroredYAxis
     |> Chart.show 
     
-   
+let test3 t = 
+    t
+    |> design'
+    |> pointsAndLines  
+    |> Chart.combine
+    |> Chart.withXAxis mirroredXAxis
+    |> Chart.withYAxis mirroredYAxis
+    |> Chart.show 
+ 
+
 test1 t;;
 //test t ;;
 //design1 t |> printfn "%A"
-test2 t;;
+//test2 t;;
+test3 t ;;
