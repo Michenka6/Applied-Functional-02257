@@ -36,3 +36,13 @@ let symmetryTest (t: Tree<char>) =
                 false
 
     t |> design |> absTree |> getNodes |> List.forall p
+
+let mirrorTest (t: Tree<char>) = 
+    
+    let rec reflectPos (Node((v, (x: float)), subTrees)) = 
+        Node((v, -x), subTrees |> List.map reflectPos)
+
+    let rec reflect (Node(v, subTrees)) = 
+        Node(v, (subTrees |> List.rev |> List.map reflect))
+
+    design (reflect t) = reflect (reflectPos (design t))

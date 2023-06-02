@@ -35,7 +35,7 @@
           }
         }
       },
-      "FSharp.Core/7.0.0": {
+      "FSharp.Core/7.0.300": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/FSharp.Core.dll": {
@@ -155,15 +155,15 @@
         "lib/netstandard2.0/FsCheck.xml"
       ]
     },
-    "FSharp.Core/7.0.0": {
-      "sha512": "8hzwUheAViWMAHWQTr6kR/19C4LhjZ4TlftKfNeZO9y7XnRUzLTK6FJS1C+0oObuUe0e4KndYxjWE+Zgea9YXQ==",
+    "FSharp.Core/7.0.300": {
+      "sha512": "8vvItREJ1l5lcp3vBCSJ1mFevVAhR48I34DuF/EoUa7o1KlFpQpagyuZkVYMAsHPIjdp47ZxM9sI4eqeXaeWkA==",
       "type": "package",
-      "path": "fsharp.core/7.0.0",
+      "path": "fsharp.core/7.0.300",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "fsharp.core.7.0.0.nupkg.sha512",
+        "fsharp.core.7.0.300.nupkg.sha512",
         "fsharp.core.nuspec",
         "lib/netstandard2.0/FSharp.Core.dll",
         "lib/netstandard2.0/FSharp.Core.xml",
@@ -242,31 +242,31 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "FSharp.Core >= 7.0.0",
+      "FSharp.Core >= 7.0.300",
       "FsCheck >= 2.16.5",
       "Plotly.NET >= 2.0.0"
     ]
   },
   "packageFolders": {
-    "/Users/amiralimov/.nuget/packages/": {}
+    "/home/luc/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/amiralimov/Programming/Applied-Functional-02257/Applied-Functional-02257.fsproj",
+      "projectUniqueName": "/home/luc/Documents/GitHub/Applied-Functional-02257/Applied-Functional-02257.fsproj",
       "projectName": "Applied-Functional-02257",
-      "projectPath": "/Users/amiralimov/Programming/Applied-Functional-02257/Applied-Functional-02257.fsproj",
-      "packagesPath": "/Users/amiralimov/.nuget/packages/",
-      "outputPath": "/Users/amiralimov/Programming/Applied-Functional-02257/obj/",
+      "projectPath": "/home/luc/Documents/GitHub/Applied-Functional-02257/Applied-Functional-02257.fsproj",
+      "packagesPath": "/home/luc/.nuget/packages/",
+      "outputPath": "/home/luc/Documents/GitHub/Applied-Functional-02257/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/amiralimov/.nuget/NuGet/NuGet.Config"
+        "/home/luc/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/sdk/7.0.102/FSharp/library-packs": {},
+        "/usr/share/dotnet/sdk/7.0.302/FSharp/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -283,7 +283,7 @@
           "FSharp.Core": {
             "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
             "target": "Package",
-            "version": "[7.0.0, )",
+            "version": "[7.0.300, )",
             "generatePathProperty": true
           },
           "FsCheck": {
@@ -313,7 +313,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.102/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
       }
     }
   }

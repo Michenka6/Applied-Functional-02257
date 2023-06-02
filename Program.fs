@@ -27,5 +27,5 @@ let t1 =
 let main args =
     // plot t1
 
-    check symmetryTest
+    check mirrorTest
     0

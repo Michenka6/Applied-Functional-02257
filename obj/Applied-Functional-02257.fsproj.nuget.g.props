@@ -4,17 +4,17 @@
     <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/Users/amiralimov/.nuget/packages/</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/Users/amiralimov/.nuget/packages/</NuGetPackageFolders>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/home/luc/.nuget/packages/</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/home/luc/.nuget/packages/</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.4.0</NuGetToolVersion>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.6.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="/Users/amiralimov/.nuget/packages/" />
+    <SourceRoot Include="/home/luc/.nuget/packages/" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">/Users/amiralimov/.nuget/packages/fsharp.core/7.0.0</PkgFSharp_Core>
-    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">/Users/amiralimov/.nuget/packages/plotly.net/2.0.0</PkgPlotly_NET>
-    <PkgFsCheck Condition=" '$(PkgFsCheck)' == '' ">/Users/amiralimov/.nuget/packages/fscheck/2.16.5</PkgFsCheck>
+    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">/home/luc/.nuget/packages/fsharp.core/7.0.300</PkgFSharp_Core>
+    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">/home/luc/.nuget/packages/plotly.net/2.0.0</PkgPlotly_NET>
+    <PkgFsCheck Condition=" '$(PkgFsCheck)' == '' ">/home/luc/.nuget/packages/fscheck/2.16.5</PkgFsCheck>
   </PropertyGroup>
 </Project>
