@@ -30,3 +30,4 @@
 /Users/amiralimov/Programming/Applied-Functional-02257/bin/Debug/net7.0/DynamicObj.dll
 /Users/amiralimov/Programming/Applied-Functional-02257/bin/Debug/net7.0/Newtonsoft.Json.dll
 /Users/amiralimov/Programming/Applied-Functional-02257/bin/Debug/net7.0/Plotly.NET.dll
+/Users/amiralimov/Programming/Applied-Functional-02257/bin/Debug/net7.0/FsCheck.dll

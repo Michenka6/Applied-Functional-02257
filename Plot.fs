@@ -54,6 +54,8 @@ let rec verticalLines (Node ((label, (x, y)), subTrees)) =
             subTrees
         @ List.collect verticalLines subTrees
 
+let getCoord (Node ((_, (x, y)), _)) = x, y
+
 let rec getCoords subTrees =
     match subTrees with
     | [] -> []

@@ -9,6 +9,7 @@
       "Applied-Functional-02257/1.0.0": {
         "dependencies": {
           "FSharp.Core": "7.0.0",
+          "FsCheck": "2.16.5",
           "Plotly.NET": "2.0.0"
         },
         "runtime": {
@@ -24,6 +25,17 @@
           "lib/netstandard2.0/DynamicObj.dll": {
             "assemblyVersion": "1.0.1.0",
             "fileVersion": "1.0.1.0"
+          }
+        }
+      },
+      "FsCheck/2.16.5": {
+        "dependencies": {
+          "FSharp.Core": "7.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FsCheck.dll": {
+            "assemblyVersion": "2.16.5.0",
+            "fileVersion": "2.16.5.0"
           }
         }
       },
@@ -111,6 +123,13 @@
       "sha512": "sha512-plwaZI7E/C8KLUnEobS/5ZG4l+XaUIA2SYJ1ZrDep4GOQVDPg8Nn/M9nc/wOI3Q2v4c5VOgOXer3fhhw/Dd/Iw==",
       "path": "dynamicobj/1.0.1",
       "hashPath": "dynamicobj.1.0.1.nupkg.sha512"
+    },
+    "FsCheck/2.16.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Tw6Lb/UBqtmUj5porM1rRcAU5xT9NttSlFTaIQ8gn4Fsw2LiZavN/eMAZqSA63laV51t4HRJJAAGeYSWFFxRfA==",
+      "path": "fscheck/2.16.5",
+      "hashPath": "fscheck.2.16.5.nupkg.sha512"
     },
     "FSharp.Core/7.0.0": {
       "type": "package",

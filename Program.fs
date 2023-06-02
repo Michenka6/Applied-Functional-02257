@@ -9,10 +9,23 @@ let a = Node("A", [ b; b; b; b ])
 let t = Node("T", [ a ])
 // let t = Node("T", [ c; c; d ])
 
+let t1 =
+    Node(
+        '#',
+        [ Node('\'', [])
+          Node('V', [])
+          Node('1', [])
+          Node('`', [])
+          Node(';', [ Node(' ', []); Node('O', []); Node('*', [ Node('R', []) ]) ])
+          Node('j', []) ]
+    )
+
+
+
 
 [<EntryPoint>]
 let main args =
-    // plot t
+    // plot t1
 
-    check fitTest
+    check symmetryTest
     0
