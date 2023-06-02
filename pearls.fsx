@@ -9,7 +9,7 @@ let d = Node("D", [])
 let c = Node("C", [d; d])
 //let c = Node("C", [])
 let b = Node("B", [ c ; c; c])
-let a = Node("A", [ d; b; c; d])
+let a = Node("A", [ b; b; b; b])
 let t = Node("T", [ a ])
 //let t = Node("T", [c;c;d])
 
@@ -112,7 +112,7 @@ let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
     Chart.Point(
         [ (x, y) ],
         MultiText = [ label ],
-        MultiTextPosition = [ StyleParam.TextPosition.TopCenter ],
+        MultiTextPosition = [ StyleParam.TextPosition.TopRight ],
         ShowLegend = true
     )
     :: List.collect treeToPoints subTrees
@@ -120,9 +120,14 @@ let rec verticalLines (Node((label, (x, y)), subTrees)) =
     match subTrees with 
     | [] -> [] 
     | _ -> 
-        Chart.Line([ x; x ], [ y; y-1.0 ], 
+        Chart.Line([ x; x ], [ y; y-0.5 ], 
         LineColor = Color.fromString "black", 
-        ShowLegend = false) :: List.collect verticalLines subTrees
+        ShowLegend = false) 
+        ::  List.map (fun (Node((_, (x, y)), _)) -> 
+            Chart.Line([ x; x],  [ y ; y + 0.5],  
+            LineColor = Color.fromString "black", 
+            ShowLegend = false)) subTrees 
+        @ List.collect verticalLines subTrees
 let rec getCoords subTrees =  
     match subTrees with 
     | [] -> []
@@ -132,8 +137,8 @@ let rec horizontalLines (Node((label, (x, y)), subTrees)) =
     match subTrees |> getCoords with 
     | [] -> []
     | (x, y)::[] -> List.collect horizontalLines subTrees  
-    | tup::rest ->  Chart.Line([ fst tup ; fst (rest |> List.last) ], 
-                    [ snd tup; snd tup ], 
+    | tup::rest ->  Chart.Line([ fst tup ; fst (rest |> List.last) ],  
+                    [ snd tup + 0.5 ; snd tup + 0.5],  
                     LineColor = Color.fromString "black", 
                     ShowLegend = false)  :: List.collect horizontalLines subTrees
     
@@ -183,4 +188,4 @@ let test3 t =
 //test t ;;
 //design1 t |> printfn "%A"
 //test2 t;;
-test3 t ;;
+test3 a ;;
