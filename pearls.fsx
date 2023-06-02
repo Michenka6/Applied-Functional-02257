@@ -9,7 +9,7 @@ let d = Node("D", [])
 let c = Node("C", [d; d])
 //let c = Node("C", [])
 let b = Node("B", [ c ; c; c])
-let a = Node("A", [ b; b; b; b])
+let a = Node("A", [ d; b; c; d])
 let t = Node("T", [ a ])
 //let t = Node("T", [c;c;d])
 
@@ -117,28 +117,30 @@ let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
     )
     :: List.collect treeToPoints subTrees
 let rec verticalLines (Node((label, (x, y)), subTrees)) = 
-    Chart.Line([ x; x ], [ y; y-1.0 ], 
-    LineColor = Color.fromString "black", 
-    ShowLegend = false) :: List.collect verticalLines subTrees
+    match subTrees with 
+    | [] -> [] 
+    | _ -> 
+        Chart.Line([ x; x ], [ y; y-1.0 ], 
+        LineColor = Color.fromString "black", 
+        ShowLegend = false) :: List.collect verticalLines subTrees
+let rec getCoords subTrees =  
+    match subTrees with 
+    | [] -> []
+    | Node((label, (x, y)), _)::rest -> (x,y)::getCoords rest 
 
-let horizontalLines subTrees = 
-    let rec getCoords subTrees = 
-        match subTrees with 
-        | [] -> []
-        | Node((label, (x, y)), _)::rest -> [(x,y)]::getCoords rest
+let rec horizontalLines (Node((label, (x, y)), subTrees)) = 
+    match subTrees |> getCoords with 
+    | [] -> []
+    | (x, y)::[] -> List.collect horizontalLines subTrees  
+    | tup::rest ->  Chart.Line([ fst tup ; fst (rest |> List.last) ], 
+                    [ snd tup; snd tup ], 
+                    LineColor = Color.fromString "black", 
+                    ShowLegend = false)  :: List.collect horizontalLines subTrees
     
-    subTrees |> getCoords |> mergeList
-     
-
-//let pointsAndLines (t, e) = 
-//    let at = t |> addVerticals 0 |> absTree in 
-//    (at |> treeToPoints) //@  (at |> verticalLines) //extentsToLines e @ 
-
-let pointsAndLines (t, e) = t |> absTree |> treeToPoints 
-    //let at = t |> absTree1
-    //(at |> treeToPoints) //@  (at |> verticalLines) //extentsToLines e @ 
-
-
+let pointsAndLines (t, e) = 
+    t 
+    |> absTree 
+    |> (fun t -> (treeToPoints t) @ (verticalLines t) @ (horizontalLines t)) 
 
 let test t =
     t
@@ -177,7 +179,7 @@ let test3 t =
     |> Chart.show 
  
 
-test1 t;;
+//test1 t;;
 //test t ;;
 //design1 t |> printfn "%A"
 //test2 t;;
