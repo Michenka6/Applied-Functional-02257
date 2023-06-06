@@ -11,13 +11,23 @@ open BenchmarkDotNet.Running
 [<EntryPoint>]
 let main args =
 
+    let d = Node("D", [])
+    let c = Node("C", [ d; d ])
+    let b = Node("B", [ c; c; c ])
+    let a = Node("A", [ b; b; b; b ])
+    let t = Node("T", [ a ])
+    let c2 = Node("1", [d; Node("5", [Node("9", [])])])
+    let t2 = Node(
+        "0", 
+            [Node("3", [c; Node("8", [])]); c2; Node("3", [Node("8", []); c])]
+    )
 
     // check subTreeConsistencyTest
 
     let ts =
         Node('a', [ Node('a', [ Node('a', []) ]); Node('a', [ Node('a', []); Node('a', []) ]) ])
 
-    // ts |> plot
+    //t2 |> plot
 
     // subTreeConsistencyTest ts
 
@@ -25,6 +35,7 @@ let main args =
     check symmetryTest
     check mirrorTest
     check subTreeConsistencyTest
-
-    //let _ = BenchmarkRunner.Run<Benchmarks>()
+    check subTreeConsistencyTest1
+    
+    //let _ = BenchmarkRunner.Run<Benchmarks>() 
     0

@@ -74,3 +74,33 @@ let subTreeConsistencyTest (t: Tree<char>) =
     |> List.groupBy getTreeShape
     |> List.map snd
     |> List.forall p
+
+let rec encode t =
+    match t with
+    | Node(_, []) -> "()"
+    | Node(_, ts) ->
+        ts
+        |> List.map encode
+        |> List.sort
+        |> String.concat ""
+        |> (fun s -> "(" + s + ")")
+
+let rec subTreeConsistencyTest1 (t: Tree<char>) =  
+    let rec p =
+        function
+        | [] -> true
+        | [ _ ] -> true
+        | (Node (_, [])) :: _ -> true
+        | t1 :: t2 :: tail ->
+            match getX t1, getX t2 with 
+            | [], [] -> p (t2 :: tail)
+            | [ _ ], [ _ ] -> p (t2 :: tail)
+            | x :: xs, y :: ys -> xs = ys && p (t2 :: tail)
+            | _ -> false 
+    
+    t
+    |> design   
+    |> getNodes 
+    |> List.groupBy encode 
+    |> List.map snd
+    |> List.forall p  
