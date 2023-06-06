@@ -25,7 +25,9 @@ let t1 =
 
 [<EntryPoint>]
 let main args =
-    // plot t1
 
-    check mirrorTest
+    // check fitTest
+    // check symmetryTest
+    // check mirrorTest
+    // check subTreeConsistencyTest
     0
