@@ -10,6 +10,7 @@
     <Compile Include="Tree.fs" />
     <Compile Include="Plot.fs" />
     <Compile Include="Test.fs" />
+    <Compile Include="Benchmark.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -17,6 +18,10 @@
     <!-- <PackageReference Include="FSharp.Plotly" Version="1.2.2" /> -->
     <PackageReference Include="Plotly.NET" Version="2.0.0" />
     <PackageReference Include="FsCheck" Version="2.16.5" />
+
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
+
   </ItemGroup>
 
 </Project>

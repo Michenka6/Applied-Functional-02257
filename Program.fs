@@ -1,24 +1,9 @@
 ﻿open Tree
 open Plot
 open Test
-
-let d = Node("D", [])
-let c = Node("C", [ d; d ])
-let b = Node("B", [ c; c; c ])
-let a = Node("A", [ b; b; b; b ])
-let t = Node("T", [ a ])
-// let t = Node("T", [ c; c; d ])
-
-let t1 =
-    Node(
-        '#',
-        [ Node('\'', [])
-          Node('V', [])
-          Node('1', [])
-          Node('`', [])
-          Node(';', [ Node(' ', []); Node('O', []); Node('*', [ Node('R', []) ]) ])
-          Node('j', []) ]
-    )
+open Benchmark
+open BenchmarkDotNet.Attributes
+open BenchmarkDotNet.Running
 
 
 
@@ -26,8 +11,20 @@ let t1 =
 [<EntryPoint>]
 let main args =
 
+
+    // check subTreeConsistencyTest
+
+    let ts =
+        Node('a', [ Node('a', [ Node('a', []) ]); Node('a', [ Node('a', []); Node('a', []) ]) ])
+
+    // ts |> plot
+
+    // subTreeConsistencyTest ts
+
     // check fitTest
     // check symmetryTest
     // check mirrorTest
     // check subTreeConsistencyTest
+
+    let _ = BenchmarkRunner.Run<Benchmarks>()
     0

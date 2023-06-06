@@ -42,13 +42,35 @@ let mirrorTest (t: Tree<char>) =
 
     design (reflect t) = reflect (reflectPos (design t))
 
-let getTree n label =
-    Node(label, List.replicate n (Node(label, [])))
 
-let rec getX (Node ((label, x), ts)) = x :: List.collect getX ts
+let rec getX (Node ((_, x), ts)) = x :: List.map getX' ts
 
-let subTreeConsistencyTest (l1: char) (l2: char) (n: int) =
-    let m = (abs n) % 2
-    let ls1 = (m, l1) ||> getTree |> design |> getX
-    let ls2 = (m, l2) ||> getTree |> design |> getX
-    ls1 = ls2
+and getX' ((Node ((_, x), _))) = x
+
+
+let rec getNodes ((Node (x, subTrees)) as t) =
+    match subTrees with
+    | [] -> []
+    | _ -> t :: List.collect getNodes subTrees
+
+let rec getTreeShape (Node (_, subTrees)) = Node(0, List.map getTreeShape subTrees)
+
+let subTreeConsistencyTest (t: Tree<char>) =
+    let rec p =
+        function
+        | [] -> true
+        | [ _ ] -> true
+        | (Node (_, [])) :: _ -> true
+        | t1 :: t2 :: tail ->
+            match getX t1, getX t2 with
+            | [], [] -> p (t2 :: tail)
+            | [ _ ], [ _ ] -> p (t2 :: tail)
+            | x :: xs, y :: ys -> xs = ys && p (t2 :: tail)
+            | _ -> false
+
+    t
+    |> design
+    |> getNodes
+    |> List.groupBy getTreeShape
+    |> List.map snd
+    |> List.forall p
