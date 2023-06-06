@@ -21,10 +21,10 @@ let main args =
 
     // subTreeConsistencyTest ts
 
-    // check fitTest
-    // check symmetryTest
-    // check mirrorTest
-    // check subTreeConsistencyTest
+    check fitTest
+    check symmetryTest
+    check mirrorTest
+    check subTreeConsistencyTest
 
-    let _ = BenchmarkRunner.Run<Benchmarks>()
+    //let _ = BenchmarkRunner.Run<Benchmarks>()
     0
