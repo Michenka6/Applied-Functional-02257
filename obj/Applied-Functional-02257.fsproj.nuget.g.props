@@ -4,23 +4,23 @@
     <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/Users/amiralimov/.nuget/packages/</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/Users/amiralimov/.nuget/packages/</NuGetPackageFolders>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/home/luc/.nuget/packages/</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/home/luc/.nuget/packages/</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.4.0</NuGetToolVersion>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.6.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="/Users/amiralimov/.nuget/packages/" />
+    <SourceRoot Include="/home/luc/.nuget/packages/" />
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)microsoft.diagnostics.tracing.traceevent/2.0.61/build/Microsoft.Diagnostics.Tracing.TraceEvent.props" Condition="Exists('$(NuGetPackageRoot)microsoft.diagnostics.tracing.traceevent/2.0.61/build/Microsoft.Diagnostics.Tracing.TraceEvent.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">/Users/amiralimov/.nuget/packages/fsharp.core/7.0.0</PkgFSharp_Core>
-    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">/Users/amiralimov/.nuget/packages/plotly.net/2.0.0</PkgPlotly_NET>
-    <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">/Users/amiralimov/.nuget/packages/microsoft.codeanalysis.analyzers/2.6.1</PkgMicrosoft_CodeAnalysis_Analyzers>
-    <PkgFsCheck Condition=" '$(PkgFsCheck)' == '' ">/Users/amiralimov/.nuget/packages/fscheck/2.16.5</PkgFsCheck>
-    <PkgBenchmarkDotNet Condition=" '$(PkgBenchmarkDotNet)' == '' ">/Users/amiralimov/.nuget/packages/benchmarkdotnet/0.13.1</PkgBenchmarkDotNet>
-    <PkgBenchmarkDotNet_Diagnostics_Windows Condition=" '$(PkgBenchmarkDotNet_Diagnostics_Windows)' == '' ">/Users/amiralimov/.nuget/packages/benchmarkdotnet.diagnostics.windows/0.13.1</PkgBenchmarkDotNet_Diagnostics_Windows>
+    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">/home/luc/.nuget/packages/fsharp.core/7.0.300</PkgFSharp_Core>
+    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">/home/luc/.nuget/packages/plotly.net/2.0.0</PkgPlotly_NET>
+    <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">/home/luc/.nuget/packages/microsoft.codeanalysis.analyzers/2.6.1</PkgMicrosoft_CodeAnalysis_Analyzers>
+    <PkgFsCheck Condition=" '$(PkgFsCheck)' == '' ">/home/luc/.nuget/packages/fscheck/2.16.5</PkgFsCheck>
+    <PkgBenchmarkDotNet Condition=" '$(PkgBenchmarkDotNet)' == '' ">/home/luc/.nuget/packages/benchmarkdotnet/0.13.1</PkgBenchmarkDotNet>
+    <PkgBenchmarkDotNet_Diagnostics_Windows Condition=" '$(PkgBenchmarkDotNet_Diagnostics_Windows)' == '' ">/home/luc/.nuget/packages/benchmarkdotnet.diagnostics.windows/0.13.1</PkgBenchmarkDotNet_Diagnostics_Windows>
   </PropertyGroup>
 </Project>

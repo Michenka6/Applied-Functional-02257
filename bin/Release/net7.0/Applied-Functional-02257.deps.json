@@ -10,7 +10,7 @@
         "dependencies": {
           "BenchmarkDotNet": "0.13.1",
           "BenchmarkDotNet.Diagnostics.Windows": "0.13.1",
-          "FSharp.Core": "7.0.0",
+          "FSharp.Core": "7.0.300",
           "FsCheck": "2.16.5",
           "Plotly.NET": "2.0.0"
         },
@@ -73,7 +73,7 @@
       },
       "DynamicObj/1.0.1": {
         "dependencies": {
-          "FSharp.Core": "7.0.0",
+          "FSharp.Core": "7.0.300",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -85,7 +85,7 @@
       },
       "FsCheck/2.16.5": {
         "dependencies": {
-          "FSharp.Core": "7.0.0"
+          "FSharp.Core": "7.0.300"
         },
         "runtime": {
           "lib/netstandard2.0/FsCheck.dll": {
@@ -94,11 +94,11 @@
           }
         }
       },
-      "FSharp.Core/7.0.0": {
+      "FSharp.Core/7.0.300": {
         "runtime": {
           "lib/netstandard2.1/FSharp.Core.dll": {
             "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.22.57105"
+            "fileVersion": "7.3.23.20307"
           }
         },
         "resources": {
@@ -386,7 +386,7 @@
       "Plotly.NET/2.0.0": {
         "dependencies": {
           "DynamicObj": "1.0.1",
-          "FSharp.Core": "7.0.0",
+          "FSharp.Core": "7.0.300",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -1119,12 +1119,12 @@
       "path": "fscheck/2.16.5",
       "hashPath": "fscheck.2.16.5.nupkg.sha512"
     },
-    "FSharp.Core/7.0.0": {
+    "FSharp.Core/7.0.300": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-8hzwUheAViWMAHWQTr6kR/19C4LhjZ4TlftKfNeZO9y7XnRUzLTK6FJS1C+0oObuUe0e4KndYxjWE+Zgea9YXQ==",
-      "path": "fsharp.core/7.0.0",
-      "hashPath": "fsharp.core.7.0.0.nupkg.sha512"
+      "sha512": "sha512-8vvItREJ1l5lcp3vBCSJ1mFevVAhR48I34DuF/EoUa7o1KlFpQpagyuZkVYMAsHPIjdp47ZxM9sI4eqeXaeWkA==",
+      "path": "fsharp.core/7.0.300",
+      "hashPath": "fsharp.core.7.0.300.nupkg.sha512"
     },
     "Iced/1.8.0": {
       "type": "package",
