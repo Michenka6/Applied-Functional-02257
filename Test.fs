@@ -23,7 +23,7 @@ type Generators =
                 override x.Shrinker t = subTrees t
         }
 
-//Arb.register<Generators>()
+Arb.register<Generators>()
 
 let check f = Check.Verbose f
 
@@ -104,7 +104,7 @@ let rec encode t =
         |> String.concat ""
         |> (fun s -> "(" + s + ")")
 
-let rec subTreeConsistencyTest1 (t: Tree<char>) =  
+let subTreeConsistencyTest1 (t: Tree<char>) =  
     let rec p =
         function
         | [] -> true
@@ -122,4 +122,7 @@ let rec subTreeConsistencyTest1 (t: Tree<char>) =
     |> getNodes 
     |> List.groupBy encode 
     |> List.map snd
-    |> List.forall p  
+    |> List.forall p
+
+let subTreeConsistencyTest2 = 
+    Prop.forAll Arb.from<Tree<char>> subTreeConsistencyTest1 
