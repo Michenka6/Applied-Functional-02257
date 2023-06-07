@@ -4,9 +4,28 @@ open Tree
 open Plot
 open FsCheck
 
+let leafGen = Gen.map (fun c -> Node(c, [])) Arb.generate<char>
 
-let check f = Check.Quick f
+let safeTreeGen() = 
+    let rec treeGen n = match n with 
+                        | 0 ->  leafGen
+                        | _ ->  let bgen = branchesGen (n / 2) 
+                                Gen.map2 (fun c ts -> Node(c, ts)) Arb.generate<char> bgen 
+    and branchesGen n = Gen.listOf (treeGen n) // random length. some length? and posibly empty. important.
+    Gen.sized treeGen ;;
 
+let rec subTrees (Node(x, ts)) = (seq {yield! Seq.collect subTrees ts}, seq {yield Node(x, ts)} ) ||> Seq.append
+
+type Generators = 
+    static member Tree() = 
+        {new Arbitrary<Tree<char>>() with 
+                override x.Generator = safeTreeGen()
+                override x.Shrinker t = subTrees t
+        }
+
+//Arb.register<Generators>()
+
+let check f = Check.Verbose f
 
 let fitTest (t: Tree<char>) =
     let p (Node (_, subTrees)) =
