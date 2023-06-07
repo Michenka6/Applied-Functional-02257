@@ -27,7 +27,7 @@ type Generators =
             override x.Generator = safeTreeGen ()
             override x.Shrinker t = subTrees t }
 
-//Arb.register<Generators> () |> ignore
+Arb.register<Generators> () |> ignore
 
 let check f = Check.Quick f
 
