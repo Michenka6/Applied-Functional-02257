@@ -11,7 +11,7 @@ let safeTreeGen() =
                         | 0 ->  leafGen
                         | _ ->  let bgen = branchesGen (n / 2) 
                                 Gen.map2 (fun c ts -> Node(c, ts)) Arb.generate<char> bgen 
-    and branchesGen n = Gen.listOf (treeGen n) // random length. some length? and posibly empty. important.
+    and branchesGen n = Gen.listOf (treeGen n) // random length. some length? and posibly empty. important. so leaf generator not that important...
     Gen.sized treeGen ;;
 
 let rec subTrees (Node(x, ts)) = (seq {yield! Seq.collect subTrees ts}, seq {yield Node(x, ts)} ) ||> Seq.append
@@ -23,7 +23,7 @@ type Generators =
                 override x.Shrinker t = subTrees t
         }
 
-Arb.register<Generators>()
+Arb.register<Generators>() |> ignore
 
 let check f = Check.Verbose f
 
@@ -38,6 +38,9 @@ let fitTest (t: Tree<char>) =
 
     t |> design |> absTree |> getNodes |> List.forall p
 
+let fitProperty =
+    Prop.forAll Arb.from<Tree<char>> fitTest 
+
 let symmetryTest (t: Tree<char>) =
     let p (Node ((_, (x, _)), subTrees)) =
         match subTrees with
@@ -51,6 +54,9 @@ let symmetryTest (t: Tree<char>) =
 
     t |> design |> absTree |> getNodes |> List.forall p
 
+let symmetryProperty =
+    Prop.forAll Arb.from<Tree<char>> symmetryTest 
+
 let mirrorTest (t: Tree<char>) =
 
     let rec reflectPos (Node ((v, (x: float)), subTrees)) =
@@ -61,11 +67,12 @@ let mirrorTest (t: Tree<char>) =
 
     design (reflect t) = reflect (reflectPos (design t))
 
+let mirrorProperty = 
+    Prop.forAll Arb.from<Tree<char>> mirrorTest
 
 let rec getX (Node ((_, x), ts)) = x :: List.map getX' ts
 
 and getX' ((Node ((_, x), _))) = x
-
 
 let rec getNodes ((Node (x, subTrees)) as t) =
     match subTrees with
@@ -94,6 +101,9 @@ let subTreeConsistencyTest (t: Tree<char>) =
     |> List.map snd
     |> List.forall p
 
+let subTreeConsistencyProperty = 
+    Prop.forAll Arb.from<Tree<char>> subTreeConsistencyTest    
+
 let rec encode t =
     match t with
     | Node(_, []) -> "()"
@@ -104,7 +114,7 @@ let rec encode t =
         |> String.concat ""
         |> (fun s -> "(" + s + ")")
 
-let subTreeConsistencyTest1 (t: Tree<char>) =  
+let subTreeConsistencyEncode (t: Tree<char>) =  
     let rec p =
         function
         | [] -> true
@@ -124,5 +134,5 @@ let subTreeConsistencyTest1 (t: Tree<char>) =
     |> List.map snd
     |> List.forall p
 
-let subTreeConsistencyTest2 = 
-    Prop.forAll Arb.from<Tree<char>> subTreeConsistencyTest1 
+let subTreeConsistencyPropertyEncode = 
+    Prop.forAll Arb.from<Tree<char>> subTreeConsistencyEncode 

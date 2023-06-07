@@ -2,11 +2,8 @@
 open Plot
 open Test
 open Benchmark
-open BenchmarkDotNet.Attributes
-open BenchmarkDotNet.Running
-
-
-
+// open BenchmarkDotNet.Attributes
+// open BenchmarkDotNet.Running
 
 [<EntryPoint>]
 let main args =
@@ -26,16 +23,17 @@ let main args =
 
     let ts =
         Node('a', [ Node('a', [ Node('a', []) ]); Node('a', [ Node('a', []); Node('a', []) ]) ])
-
-    //t2 |> plot
-
-    // subTreeConsistencyTest ts
-
-    check fitTest
+ 
+(*     check fitTest
     check symmetryTest
     check mirrorTest
     check subTreeConsistencyTest
-    check subTreeConsistencyTest1
+    check subTreeConsistencyEncode *)
+    check fitProperty
+    check symmetryProperty
+    check mirrorProperty
+    check subTreeConsistencyPropertyEncode 
+     
     
     //let _ = BenchmarkRunner.Run<Benchmarks>() 
     0
