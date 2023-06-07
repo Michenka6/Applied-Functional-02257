@@ -32,7 +32,8 @@ let main args =
     check fitProperty
     check symmetryProperty
     check mirrorProperty
-    check subTreeConsistencyPropertyEncode 
+    check subTreeConsistencyPropertyEncode
+    check treeClassify 
      
     
     //let _ = BenchmarkRunner.Run<Benchmarks>() 
