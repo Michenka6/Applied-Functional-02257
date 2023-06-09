@@ -11,7 +11,6 @@ let absTree (Node ((label, x), subTrees)) =
 
     aux 0 0 (Node((label, x), subTrees))
 
-//let rec treeToPoints (Node ((label : 'a when 'a :> System.IConvertible, ((x: float), (y: float))), subTrees)) =
 let rec treeToPoints (Node ((label : 'a, (x: float, y: float)), subTrees)) =
     Chart.Point(
         [ (x, y) ],
@@ -52,17 +51,13 @@ let rec horizontalLines (Node ((_, (_, _)), subTrees)) =
         )
         :: List.collect horizontalLines subTrees
 
-//let pointsAndLines ((Node ((label : 'a when 'a :> System.IConvertible, ((x: float), (y: float))), subTrees)) as t)   =
 let pointsAndLines (t: Tree<'a * (float * float)>) =
     treeToPoints t @ verticalLines t @ horizontalLines t
 
-//let plot ((Node (label : 'a when 'a :> System.IConvertible, subTrees)) as t)  =
 let plot t = 
     t
     |> design
     |> absTree
     |> pointsAndLines
     |> Chart.combine
-    //|> Chart.withXAxis mirroredXAxis
-    //|> Chart.withYAxis mirroredYAxis
     |> Chart.show
