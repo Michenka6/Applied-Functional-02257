@@ -16,7 +16,6 @@ let safeTreeGen () =
 
     and branchesGen n = Gen.listOf (treeGen n) // random length. some length? and posibly empty. important. so leaf generator not that important...
     Gen.sized treeGen
-    //Gen.sized branchesGen
 
 let rec subTrees (Node(x, ts)) =
     (seq { yield! Seq.collect subTrees ts }, seq { yield Node(x, ts) })

@@ -2,48 +2,26 @@ module Plot
 
 open Tree
 open Plotly.NET
-open System
-
-
 open Plotly.NET.LayoutObjects // this namespace contains all object abstractions for layout styling
 
-// let mirroredXAxis =
-//     LinearAxis.init (
-//         //        Title = Title.init(Text="Mirrored axis"),
-//         ShowLine = true,
-//         Mirror = StyleParam.Mirror.False,
-//         ShowGrid = true
-//     //        Ticks = StyleParam.TickOptions.Inside
-//     )
-
-// let mirroredYAxis =
-//     LinearAxis.init (
-//         //        Title = Title.init(Text="Log axis"),
-//         //        AxisType = StyleParam.AxisType.Log,
-//         ShowLine = true,
-//         Mirror = StyleParam.Mirror.False,
-//         ShowGrid = true
-//     )
-
-let rec addVerticals acc (Node ((label, x), subTrees)) =
-    Node((label, (x, acc)), List.map (addVerticals (acc - 1.0)) subTrees)
-
+type Plot = P
 let absTree (Node ((label, x), subTrees)) =
     let rec aux (prevX: float) (y: float) (Node ((label, x), subTrees)) =
         Node((label, ((prevX + x), (y))), List.map (aux (prevX + x) (y - 1.0)) subTrees) in
 
     aux 0 0 (Node((label, x), subTrees))
 
-let rec treeToPoints (Node ((label, (x, y)), subTrees)) =
+//let rec treeToPoints (Node ((label : 'a when 'a :> System.IConvertible, ((x: float), (y: float))), subTrees)) =
+let rec treeToPoints (Node ((label : 'a, (x: float, y: float)), subTrees)) =
     Chart.Point(
         [ (x, y) ],
-        MultiText = [ label ],
+        MultiText = [ string label ],
         MultiTextPosition = [ StyleParam.TextPosition.TopRight ],
         ShowLegend = true
     )
     :: List.collect treeToPoints subTrees
 
-let rec verticalLines (Node ((label, (x, y)), subTrees)) =
+let rec verticalLines (Node ((_, ((x: float), (y: float))), subTrees)) =
     match subTrees with
     | [] -> []
     | _ ->
@@ -54,17 +32,17 @@ let rec verticalLines (Node ((label, (x, y)), subTrees)) =
             subTrees
         @ List.collect verticalLines subTrees
 
-let getCoord (Node ((_, (x, y)), _)) = x, y
+let getCoord (Node ((_, ((x: float), (y: float))), _)) = x, y
 
-let rec getCoords subTrees =
+let rec getCoords (subTrees: Tree<'a * (float * float)> list) =
     match subTrees with
     | [] -> []
-    | Node ((label, (x, y)), _) :: rest -> (x, y) :: getCoords rest
+    | Node ((_, (x, y)), _) :: rest -> (x, y) :: getCoords rest
 
-let rec horizontalLines (Node ((label, (x, y)), subTrees)) =
+let rec horizontalLines (Node ((_, (_, _)), subTrees)) =
     match subTrees |> getCoords with
     | [] -> []
-    | (x, y) :: [] -> List.collect horizontalLines subTrees
+    | (_, _) :: [] -> List.collect horizontalLines subTrees
     | tup :: rest ->
         Chart.Line(
             [ fst tup; fst (rest |> List.last) ],
@@ -74,15 +52,17 @@ let rec horizontalLines (Node ((label, (x, y)), subTrees)) =
         )
         :: List.collect horizontalLines subTrees
 
+//let pointsAndLines ((Node ((label : 'a when 'a :> System.IConvertible, ((x: float), (y: float))), subTrees)) as t)   =
 let pointsAndLines (t: Tree<'a * (float * float)>) =
     treeToPoints t @ verticalLines t @ horizontalLines t
 
-let plot t =
+//let plot ((Node (label : 'a when 'a :> System.IConvertible, subTrees)) as t)  =
+let plot t = 
     t
     |> design
     |> absTree
     |> pointsAndLines
     |> Chart.combine
-    // |> Chart.withXAxis mirroredXAxis
-    // |> Chart.withYAxis mirroredYAxis
+    //|> Chart.withXAxis mirroredXAxis
+    //|> Chart.withYAxis mirroredYAxis
     |> Chart.show
