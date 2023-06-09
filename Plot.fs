@@ -74,7 +74,7 @@ let rec horizontalLines (Node ((label, (x, y)), subTrees)) =
         )
         :: List.collect horizontalLines subTrees
 
-let pointsAndLines t =
+let pointsAndLines (t: Tree<'a * (float * float)>) =
     treeToPoints t @ verticalLines t @ horizontalLines t
 
 let plot t =

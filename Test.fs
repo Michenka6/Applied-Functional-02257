@@ -16,6 +16,7 @@ let safeTreeGen () =
 
     and branchesGen n = Gen.listOf (treeGen n) // random length. some length? and posibly empty. important. so leaf generator not that important...
     Gen.sized treeGen
+    //Gen.sized branchesGen
 
 let rec subTrees (Node(x, ts)) =
     (seq { yield! Seq.collect subTrees ts }, seq { yield Node(x, ts) })
@@ -126,36 +127,38 @@ let subTreeConsistencyEncode (t: Tree<char>) =
             | x :: xs, y :: ys -> xs = ys && p (t2 :: tail)
             | _ -> false
 
-    t |> design |> getNodes |> List.groupBy encode |> List.map snd |> List.forall p
+    t 
+    |> design 
+    |> getNodes 
+    |> List.groupBy encode 
+    |> List.map snd
+    |> List.forall p
 
 let subTreeConsistencyPropertyEncode =
     Prop.forAll Arb.from<Tree<char>> subTreeConsistencyEncode
 
-// we say a tree of one node (is root and leaf) has a depth of 1
-let rec depth (Node(_, ts)) = 1 + List.fold max 0 (List.map depth ts)
-
-// list of number of "links" to traverse from each leaf to the root
+// list of number of links to traverse from each leaf to the root
 let rec allDepths (Node(_, ts)) =
     match ts with 
     | [] -> [0]
     | ts' -> List.collect (fun t -> allDepths t |> List.map (fun x -> x + 1)) ts'
 
-let mean (xs: int list) =
+let maxDepth t = t |> allDepths |> List.max
+
+let rec breadth = function
+    | Node(_, []) -> 1
+    | Node(_, ts) -> ts |> List.map breadth |> List.sum
+
+let meanList (xs: int list) =
     xs
     |> List.fold (fun (sum, n) v -> sum + v, n + 1) (0, 0)
     |> (fun (sum, n) -> if n = 0 then (0, 1) else (sum, n))
     ||> (fun sum n -> float sum / float n)
 
-let avgWalkLenToLeaf t = t |> allDepths |> mean 
+let avgWalkLenToLeaf t = t |> allDepths |> meanList 
 
 let treeClassify (t: Tree<char>) =
-    depth t >= 1
-    |> Prop.classify (depth t = 1) "max depth 1"
-    |> Prop.classify (depth t = 2) "max depth 2"
-    |> Prop.classify (depth t = 3) "max depth 3"
-    |> Prop.classify (depth t = 4) "max depth 4"
-    |> Prop.classify (depth t > 4) "max depth > 4"
-    |> Prop.classify (avgWalkLenToLeaf t > 1.0 && avgWalkLenToLeaf t <= 2.0) "1 < avg walk <= 2"
-    |> Prop.classify (avgWalkLenToLeaf t > 2.0 && avgWalkLenToLeaf t <= 3.0) "2 < avg walk <= 3"
-    |> Prop.classify (avgWalkLenToLeaf t > 3.0 && avgWalkLenToLeaf t <= 4.0) "3 < avg walk <= 4"
-    |> Prop.classify (avgWalkLenToLeaf t > 4.0) "avg walk > 4" 
+    true 
+    |> Prop.classify (maxDepth t >= 5) "max leaf depth >= 5" 
+    |> Prop.classify (breadth t >= 30) "breadth >= 30"
+    |> Prop.classify (avgWalkLenToLeaf t >= 3.0) "avg leaf depth >= 3"
