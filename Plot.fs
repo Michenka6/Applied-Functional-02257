@@ -15,8 +15,9 @@ let rec treeToPoints (Node ((label : 'a, (x: float, y: float)), subTrees)) =
     Chart.Point(
         [ (x, y) ],
         MultiText = [ string label ],
-        MultiTextPosition = [ StyleParam.TextPosition.TopRight ],
-        ShowLegend = true
+        MultiTextPosition = [ StyleParam.TextPosition.Inside ],
+        ShowLegend = true,
+        MarkerColor = (Color.fromARGB 0 0 0 0)
     )
     :: List.collect treeToPoints subTrees
 
@@ -24,10 +25,10 @@ let rec verticalLines (Node ((_, ((x: float), (y: float))), subTrees)) =
     match subTrees with
     | [] -> []
     | _ ->
-        Chart.Line([ x; x ], [ y; y - 0.5 ], LineColor = Color.fromString "black", ShowLegend = false)
+        Chart.Line([ x; x ], [ y-0.125; y - 0.5 ], LineColor = Color.fromString "black", ShowLegend = false)
         :: List.map
             (fun (Node ((_, (x, y)), _)) ->
-                Chart.Line([ x; x ], [ y; y + 0.5 ], LineColor = Color.fromString "black", ShowLegend = false))
+                Chart.Line([ x; x ], [ y+0.15; y + 0.5 ], LineColor = Color.fromString "black", ShowLegend = false))
             subTrees
         @ List.collect verticalLines subTrees
 

@@ -7,14 +7,14 @@ open Benchmark
 
 [<EntryPoint>]
 let main args =
-    check fitProperty
+(*     check fitProperty
     check symmetryProperty
     check mirrorProperty
     check subTreeConsistencyProperty
-    check treeClassify
+    check treeClassify *)
     //let _ = BenchmarkRunner.Run<Benchmarks>()
 
-(*     let t = Node('Z',
+    let t = Node('Z',
         [Node
             (':',
             [Node
@@ -50,5 +50,5 @@ let main args =
                 Node ('I', [Node ('\028', [Node ('\021', [])])]); Node ('w', [])]);
             Node ('N', []); Node ('}', []); Node ('X', [])])
 
-    plot t  *)
+    plot t 
     0
