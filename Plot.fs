@@ -4,10 +4,6 @@ open Tree
 open Plotly.NET
 open Plotly.NET.LayoutObjects // this namespace contains all object abstractions for layout styling
 
-type Plot = P
-
-let getCoord (Node((_, ((x: float), (y: float))), _)) = x, y
-
 let rec getCoords (Node((_, ((x: float), (y: float))), subTrees)) = (x, y) :: List.collect getCoords subTrees
 
 let rec getCoordsList (subTrees: Tree<'a * (float * float)> list) =
@@ -74,7 +70,9 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
         :: List.collect (horizontalLines factor) subTrees
 
 let rec annotations (Node((label, (x, y)), subTrees)) = 
+    
     let labelText = (string label |> List.ofSeq |> List.head |> string)
+
     Annotation.init(
         X = x, 
         Y = y,
@@ -88,10 +86,10 @@ let layout t =
         Annotations = annotations t,
         Font = Font.init(StyleParam.FontFamily.Arial, 12.0, Color.fromString "black"),
         AutoSize = true,
-        Hoverlabel = Hoverlabel.init()
+        PaperBGColor = Color.fromString "white",
+        PlotBGColor = Color.fromHex "0xE5ECF6"
     )
     
-
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
     treeToPoints1 t :: verticalLines factor t @ horizontalLines factor t
 
@@ -104,11 +102,11 @@ let generateChart factor t =
             Visible = false,
             Mirror = StyleParam.Mirror.True
         )
-    
+        
     chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
     //t |> design |> absTree |> scaleAbsTree factor |> pointsAndLines factor |> Chart.combine
 
-let saveChart (c: GenericChart.GenericChart) (path: string) = 
+let saveChart (path: string) (c: GenericChart.GenericChart) = 
     Chart.saveHtml(path, OpenInBrowser=false)
 
 let showChart (c: GenericChart.GenericChart) = c |> Chart.show

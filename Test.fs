@@ -48,6 +48,8 @@ let fitTest (t: Tree<char>) =
 
 let fitProperty = Prop.forAll Arb.from<Tree<char>> fitTest
 
+let getCoord (Node((_, ((x: float), (y: float))), _)) = x, y
+
 let symmetryTest (t: Tree<char>) =
     let p (Node((_, (x, _)), subTrees)) =
         match subTrees with
