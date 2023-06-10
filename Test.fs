@@ -30,10 +30,14 @@ type Generators =
 Arb.register<Generators> () |> ignore
 
 let check f = Check.Quick f
+let rec getCoordsList (subTrees: Tree<'a * (float * float)> list) =
+    match subTrees with
+    | [] -> []
+    | Node((_, (x, y)), _) :: rest -> (x, y) :: getCoordsList rest
 
 let fitTest (t: Tree<char>) =
     let p (Node(_, subTrees)) =
-        (2, getCoords subTrees)
+        (2, getCoordsList subTrees)
         ||> List.windowed
         |> List.forall (fun ls ->
             let x1 = ls |> List.head |> fst

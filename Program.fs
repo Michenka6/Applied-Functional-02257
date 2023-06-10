@@ -49,6 +49,42 @@ let main args =
                     Node ('\025', [Node ('2', [Node ('\021', [])])])]);
                 Node ('I', [Node ('\028', [Node ('\021', [])])]); Node ('w', [])]);
             Node ('N', []); Node ('}', []); Node ('X', [])])
+(*     let t = Node("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+        [Node
+            ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+            [Node
+                ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])])]);
+            Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+            Node
+            ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+            [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                Node
+                ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])])]);
+                Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                Node
+                ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+                [Node
+                    ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+                    [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                        Node
+                        ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]);
+                        Node
+                        ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+                        [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]);
+                        Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])])])]);
+                Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                Node
+                ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+                [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                    Node
+                    ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+                    [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]);
+                    Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []);
+                    Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])])]);
+                Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]);
+            Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])
 
-    plot t 
+   *)
+    t |> generateChart |> showChart
     0
