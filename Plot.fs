@@ -8,20 +8,14 @@ type Plot = P
 
 let getCoord (Node((_, ((x: float), (y: float))), _)) = x, y
 
-let rec getCoords (Node((_, ((x: float), (y: float))), subTrees)) =
-    match subTrees with
-    | [] -> []
-    | subTrees -> (x, y) :: List.collect getCoords subTrees
+let rec getCoords (Node((_, ((x: float), (y: float))), subTrees)) = (x, y) :: List.collect getCoords subTrees
 
 let rec getCoordsList (subTrees: Tree<'a * (float * float)> list) =
     match subTrees with
     | [] -> []
     | Node((_, (x, y)), _) :: rest -> (x, y) :: getCoordsList rest
 
-let rec getLabels (Node((label, _), subTrees)) =
-    match subTrees with
-    | [] -> [label]
-    | subTrees -> label :: List.collect getLabels subTrees
+let rec getLabels (Node((label, _), subTrees)) = label :: List.collect getLabels subTrees
 
 let absTree (Node((label, x), subTrees)) =
     let rec aux (prevX: float) (y: float) (Node((label, x), subTrees)) =
@@ -33,12 +27,6 @@ let rec scalePTree (factor: float) (Node((l, x:float), ts)) = Node((l, x*factor)
 
 let rec scaleAbsTree (factor: float) (Node((l, (x:float, y:float)), ts)) = Node((l, (x*factor, y*factor)), List.map (scaleAbsTree factor) ts) ;;
 
-let splitString n s =
-    s
-    |> List.ofSeq
-    |> List.splitInto (String.length s / n)
-    |> List.map ((fun l -> l |> List.fold (fun a b -> string a + string b)) "")
-
 let rec treeToPoints (Node((label: 'a, (x: float, y: float)), subTrees)) =
     Chart.Point(
         [ (x, y) ],
@@ -48,6 +36,16 @@ let rec treeToPoints (Node((label: 'a, (x: float, y: float)), subTrees)) =
         MarkerColor = (Color.fromARGB 0 0 0 0)
     )
     :: List.collect treeToPoints subTrees
+
+let rec treeToPoints1 t =
+    Chart.Point(
+        getCoords t,
+        MultiText = (getLabels t |> List.map string),
+        MultiTextPosition = List.replicate (List.length (getLabels t)) StyleParam.TextPosition.Inside,
+        ShowLegend = false,
+        MarkerColor = (Color.fromARGB 0 0 0 0)
+    )
+
 
 let rec verticalLines (factor: float) (Node((_, ((x: float), (y: float))), subTrees)) =    
     match subTrees with
@@ -74,7 +72,7 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
         :: List.collect (horizontalLines factor) subTrees
 
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
-    treeToPoints t @ verticalLines factor t @ horizontalLines factor t
+    treeToPoints1 t :: verticalLines factor t @ horizontalLines factor t
 
 let generateChart factor t =
     t |> design |> absTree |> scaleAbsTree factor |> pointsAndLines factor |> Chart.combine

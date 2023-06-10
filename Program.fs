@@ -214,8 +214,9 @@ let main args =
                 Node ('U', [Node ('w', [])]); Node ('\004', []); Node ('_', []);
                 Node ('\014', []); Node ('i', []); Node ('\024', []);
                 Node ('s', [Node ('p', [])]); Node ('"', [])])
-    let t = Node('a', [Node('b', []); Node('c', [])])
+    
+    let t = Node('a', [Node('b', [tt]); Node('c', [ttt])])
 
-    ttt |> generateChart 5.0 |> showChart
+    t |> generateChart 5.0 |> showChart
     t |> breadth |> printfn "%A"
     0
