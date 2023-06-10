@@ -74,16 +74,14 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
         :: List.collect (horizontalLines factor) subTrees
 
 let rec annotations (Node((label, (x, y)), subTrees)) = 
+    let labelText = (string label |> List.ofSeq |> List.head |> string)
     Annotation.init(
         X = x, 
         Y = y,
-        Text = (string label |> List.ofSeq |> List.head |> string), //(string label).truncate 1,
+        Text = labelText,
         HoverText = string label,
-        ShowArrow = false,// :: List.collect annotations subTrees
+        ShowArrow = false,
         CaptureEvents = true):: List.collect annotations subTrees
-            //BorderColor = Color.fromString "black") :: List.collect annotations subTrees
-//        XShift=0,
- //       Opacity=0.7,
 
 let layout t =
     Layout.init(

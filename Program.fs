@@ -217,7 +217,8 @@ let main args =
                 Node ('s', [Node ('p', [])]); Node ('"', [])])
     
     //let t = Node('a', [Node('b', [tt]); Node('c', [ttt])])
-    let t2 = Node("laralas", [tttt; tttt])
+    let s = "(string label |> List.ofSeq |> List.head |> string)"
+    let t2 = Node(String.replicate 50 s, [tttt; tttt])
     t2 |> generateChart 5.0 |> showChart
     
     0
