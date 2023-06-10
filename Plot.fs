@@ -29,6 +29,10 @@ let absTree (Node((label, x), subTrees)) =
 
     aux 0 0 (Node((label, x), subTrees))
 
+let rec scalePTree (factor: float) (Node((l, x:float), ts)) = Node((l, x*factor), List.map (scalePTree factor) ts)
+
+let rec scaleAbsTree (factor: float) (Node((l, (x:float, y:float)), ts)) = Node((l, (x*factor, y*factor)), List.map (scaleAbsTree factor) ts) ;;
+
 let splitString n s =
     s
     |> List.ofSeq
@@ -45,35 +49,35 @@ let rec treeToPoints (Node((label: 'a, (x: float, y: float)), subTrees)) =
     )
     :: List.collect treeToPoints subTrees
 
-let rec verticalLines (Node((_, ((x: float), (y: float))), subTrees)) =
+let rec verticalLines (factor: float) (Node((_, ((x: float), (y: float))), subTrees)) =    
     match subTrees with
     | [] -> []
     | _ ->
-        Chart.Line([ x; x ], [ y - 0.125; y - 0.5 ], LineColor = Color.fromString "black", ShowLegend = false)
+        Chart.Line([ x; x ], [ y-(0.125*factor); y - factor / 2.0 ], LineColor = Color.fromString "black", ShowLegend = false)
         :: List.map
             (fun (Node((_, (x, y)), _)) ->
-                Chart.Line([ x; x ], [ y + 0.15; y + 0.5 ], LineColor = Color.fromString "black", ShowLegend = false))
+                Chart.Line([ x; x ], [ y + (0.125*factor); y + (factor/2.0) ], LineColor = Color.fromString "black", ShowLegend = false)) // -(y/2.0) because y will be negative here. extend line from node and up
             subTrees
-        @ List.collect verticalLines subTrees
+        @ List.collect (verticalLines factor) subTrees
 
-let rec horizontalLines (Node((_, (_, _)), subTrees)) =
+let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
     match subTrees |> getCoordsList with
     | [] -> []
-    | (_, _) :: [] -> List.collect horizontalLines subTrees
+    | (_, _) :: [] -> List.collect (horizontalLines factor) subTrees
     | tup :: rest ->
         Chart.Line(
             [ fst tup; fst (rest |> List.last) ],
-            [ snd tup + 0.5; snd tup + 0.5 ],
+            [ snd tup + factor / 2.0; snd tup + factor / 2.0 ], // snd tup is negatve. pre condition ...
             LineColor = Color.fromString "black",
             ShowLegend = false
         )
-        :: List.collect horizontalLines subTrees
+        :: List.collect (horizontalLines factor) subTrees
 
-let pointsAndLines (t: Tree<'a * (float * float)>) =
-    treeToPoints t @ verticalLines t @ horizontalLines t
+let pointsAndLines factor (t: Tree<'a * (float * float)>) =
+    treeToPoints t @ verticalLines factor t @ horizontalLines factor t
 
-let generateChart t =
-    t |> design |> absTree |> pointsAndLines |> Chart.combine
+let generateChart factor t =
+    t |> design |> absTree |> scaleAbsTree factor |> pointsAndLines factor |> Chart.combine
 
 let saveChart (c: GenericChart.GenericChart) (path: string) = 
     Chart.saveHtml(path, OpenInBrowser=false)
