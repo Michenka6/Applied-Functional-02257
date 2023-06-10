@@ -4,14 +4,16 @@ open Tree
 open Plotly.NET
 open Plotly.NET.LayoutObjects // this namespace contains all object abstractions for layout styling
 
-let rec getCoords (Node((_, ((x: float), (y: float))), subTrees)) = (x, y) :: List.collect getCoords subTrees
+let rec getCoords (Node((_, ((x: float), (y: float))), subTrees)) =
+    (x, y) :: List.collect getCoords subTrees
 
 let rec getCoordsList (subTrees: Tree<'a * (float * float)> list) =
     match subTrees with
     | [] -> []
     | Node((_, (x, y)), _) :: rest -> (x, y) :: getCoordsList rest
 
-let rec getLabels (Node((label, _), subTrees)) = label :: List.collect getLabels subTrees
+let rec getLabels (Node((label, _), subTrees)) =
+    label :: List.collect getLabels subTrees
 
 let absTree (Node((label, x), subTrees)) =
     let rec aux (prevX: float) (y: float) (Node((label, x), subTrees)) =
@@ -19,9 +21,11 @@ let absTree (Node((label, x), subTrees)) =
 
     aux 0 0 (Node((label, x), subTrees))
 
-let rec scalePTree (factor: float) (Node((l, x:float), ts)) = Node((l, x*factor), List.map (scalePTree factor) ts)
+let rec scalePTree (factor: float) (Node((l, x: float), ts)) =
+    Node((l, x * factor), List.map (scalePTree factor) ts)
 
-let rec scaleAbsTree (factor: float) (Node((l, (x:float, y:float)), ts)) = Node((l, (x*factor, y*factor)), List.map (scaleAbsTree factor) ts) ;;
+let rec scaleAbsTree (factor: float) (Node((l, (x: float, y: float)), ts)) =
+    Node((l, (x * factor, y * factor)), List.map (scaleAbsTree factor) ts)
 
 let rec treeToPoints (Node((label: 'a, (x: float, y: float)), subTrees)) =
     Chart.Point(
@@ -36,23 +40,28 @@ let rec treeToPoints (Node((label: 'a, (x: float, y: float)), subTrees)) =
 let rec treeToPoints1 t =
     Chart.Point(
         getCoords t,
-        //MultiText = (getLabels t |> List.map string),
-        //MultiTextPosition = List.replicate (List.length (getLabels t)) StyleParam.TextPosition.Inside,
         ShowLegend = false,
-        //MarkerOutline = Line.init(),
-        //MarkerSymbol = StyleParam.MarkerSymbol.Square
         MarkerColor = (Color.fromARGB 0 0 0 0)
     )
 
-
-let rec verticalLines (factor: float) (Node((_, ((x: float), (y: float))), subTrees)) =    
+let rec verticalLines (factor: float) (Node((_, ((x: float), (y: float))), subTrees)) =
     match subTrees with
     | [] -> []
     | _ ->
-        Chart.Line([ x; x ], [ y-(0.150*factor); y - factor / 2.0 ], LineColor = Color.fromString "black", ShowLegend = false)
+        Chart.Line(
+            [ x; x ],
+            [ y - (0.150 * factor); y - factor / 2.0 ],
+            LineColor = Color.fromString "black",
+            ShowLegend = false
+        )
         :: List.map
             (fun (Node((_, (x, y)), _)) ->
-                Chart.Line([ x; x ], [ y + (0.150*factor); y + (factor/2.0) ], LineColor = Color.fromString "black", ShowLegend = false)) // -(y/2.0) because y will be negative here. extend line from node and up
+                Chart.Line(
+                    [ x; x ],
+                    [ y + (0.150 * factor); y + (factor / 2.0) ],
+                    LineColor = Color.fromString "black",
+                    ShowLegend = false
+                )) // -(y/2.0) because y will be negative here. extend line from node and up
             subTrees
         @ List.collect (verticalLines factor) subTrees
 
@@ -69,45 +78,39 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
         )
         :: List.collect (horizontalLines factor) subTrees
 
-let rec annotations (Node((label, (x, y)), subTrees)) = 
-    
+let rec annotations (Node((label, (x, y)), subTrees)) =
+
     let labelText = (string label |> List.ofSeq |> List.head |> string)
 
-    Annotation.init(
-        X = x, 
-        Y = y,
-        Text = labelText,
-        HoverText = string label,
-        ShowArrow = false,
-        CaptureEvents = true):: List.collect annotations subTrees
+    Annotation.init (X = x, Y = y, Text = labelText, HoverText = string label, ShowArrow = false, CaptureEvents = true)
+    :: List.collect annotations subTrees
 
 let layout t =
-    Layout.init(
+    Layout.init (
         Annotations = annotations t,
-        Font = Font.init(StyleParam.FontFamily.Arial, 12.0, Color.fromString "black"),
+        Font = Font.init (StyleParam.FontFamily.Arial, 12.0, Color.fromString "black"),
         AutoSize = true,
         PaperBGColor = Color.fromString "white",
         PlotBGColor = Color.fromHex "0xE5ECF6"
     )
-    
+
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
-    treeToPoints1 t :: verticalLines factor t @ horizontalLines factor t
+    verticalLines factor t @ horizontalLines factor t
 
 let generateChart factor t =
-    let absT = t |> design |> absTree |> scaleAbsTree factor 
-    let chart = absT |> pointsAndLines factor |> Chart.combine |> GenericChart.setLayout (layout absT)
-    
-    let xAxis =
-        LinearAxis.init (
-            Visible = false,
-            Mirror = StyleParam.Mirror.True
-        )
-        
-    chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
-    //t |> design |> absTree |> scaleAbsTree factor |> pointsAndLines factor |> Chart.combine
+    let absT = t |> design |> absTree |> scaleAbsTree factor
 
-let saveChart (path: string) (c: GenericChart.GenericChart) = 
-    Chart.saveHtml(path, OpenInBrowser=false)
+    let chart =
+        absT
+        |> pointsAndLines factor
+        |> Chart.combine
+        |> GenericChart.setLayout (layout absT)
+
+    let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
+
+    chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
+
+let saveChart (path: string) (c: GenericChart.GenericChart) =
+    Chart.saveHtml (path, OpenInBrowser = false)
 
 let showChart (c: GenericChart.GenericChart) = c |> Chart.show
-

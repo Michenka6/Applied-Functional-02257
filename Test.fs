@@ -29,7 +29,7 @@ type Generators =
 
 Arb.register<Generators> () |> ignore
 
-let check f = Check.Verbose f
+let check f = Check.Quick f
 let rec getCoordsList (subTrees: Tree<'a * (float * float)> list) =
     match subTrees with
     | [] -> []
