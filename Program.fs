@@ -49,7 +49,8 @@ let main args =
                     Node ('\025', [Node ('2', [Node ('\021', [])])])]);
                 Node ('I', [Node ('\028', [Node ('\021', [])])]); Node ('w', [])]);
             Node ('N', []); Node ('}', []); Node ('X', [])]) 
-(*     let t = Node("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
+            
+    let tttt = Node("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
         [Node
             ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party",
             [Node
@@ -85,7 +86,7 @@ let main args =
                 Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])]); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])]);
             Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", []); Node ("Hey, yeah, I heard you met my friend the other weekend\n I heard that he was telling croaks at the party", [])])
 
-   *)
+   
     let tt = Node('k',
             [Node ('\025', []); Node ('H', []); Node ('#', []); Node ('R', []);
                 Node
@@ -215,8 +216,8 @@ let main args =
                 Node ('\014', []); Node ('i', []); Node ('\024', []);
                 Node ('s', [Node ('p', [])]); Node ('"', [])])
     
-    let t = Node('a', [Node('b', [tt]); Node('c', [ttt])])
-
-    t |> generateChart 5.0 |> showChart
-    t |> breadth |> printfn "%A"
+    //let t = Node('a', [Node('b', [tt]); Node('c', [ttt])])
+    let t2 = Node("laralas", [tttt; tttt])
+    t2 |> generateChart 5.0 |> showChart
+    
     0

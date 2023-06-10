@@ -40,9 +40,11 @@ let rec treeToPoints (Node((label: 'a, (x: float, y: float)), subTrees)) =
 let rec treeToPoints1 t =
     Chart.Point(
         getCoords t,
-        MultiText = (getLabels t |> List.map string),
-        MultiTextPosition = List.replicate (List.length (getLabels t)) StyleParam.TextPosition.Inside,
+        //MultiText = (getLabels t |> List.map string),
+        //MultiTextPosition = List.replicate (List.length (getLabels t)) StyleParam.TextPosition.Inside,
         ShowLegend = false,
+        //MarkerOutline = Line.init(),
+        //MarkerSymbol = StyleParam.MarkerSymbol.Square
         MarkerColor = (Color.fromARGB 0 0 0 0)
     )
 
@@ -51,10 +53,10 @@ let rec verticalLines (factor: float) (Node((_, ((x: float), (y: float))), subTr
     match subTrees with
     | [] -> []
     | _ ->
-        Chart.Line([ x; x ], [ y-(0.125*factor); y - factor / 2.0 ], LineColor = Color.fromString "black", ShowLegend = false)
+        Chart.Line([ x; x ], [ y-(0.150*factor); y - factor / 2.0 ], LineColor = Color.fromString "black", ShowLegend = false)
         :: List.map
             (fun (Node((_, (x, y)), _)) ->
-                Chart.Line([ x; x ], [ y + (0.125*factor); y + (factor/2.0) ], LineColor = Color.fromString "black", ShowLegend = false)) // -(y/2.0) because y will be negative here. extend line from node and up
+                Chart.Line([ x; x ], [ y + (0.150*factor); y + (factor/2.0) ], LineColor = Color.fromString "black", ShowLegend = false)) // -(y/2.0) because y will be negative here. extend line from node and up
             subTrees
         @ List.collect (verticalLines factor) subTrees
 
@@ -71,11 +73,42 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
         )
         :: List.collect (horizontalLines factor) subTrees
 
+let rec annotations (Node((label, (x, y)), subTrees)) = 
+    Annotation.init(
+        X = x, 
+        Y = y,
+        Text = (string label |> List.ofSeq |> List.head |> string), //(string label).truncate 1,
+        HoverText = string label,
+        ShowArrow = false,// :: List.collect annotations subTrees
+        CaptureEvents = true):: List.collect annotations subTrees
+            //BorderColor = Color.fromString "black") :: List.collect annotations subTrees
+//        XShift=0,
+ //       Opacity=0.7,
+
+let layout t =
+    Layout.init(
+        Annotations = annotations t,
+        Font = Font.init(StyleParam.FontFamily.Arial, 12.0, Color.fromString "black"),
+        AutoSize = true,
+        Hoverlabel = Hoverlabel.init()
+    )
+    
+
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
     treeToPoints1 t :: verticalLines factor t @ horizontalLines factor t
 
 let generateChart factor t =
-    t |> design |> absTree |> scaleAbsTree factor |> pointsAndLines factor |> Chart.combine
+    let absT = t |> design |> absTree |> scaleAbsTree factor 
+    let chart = absT |> pointsAndLines factor |> Chart.combine |> GenericChart.setLayout (layout absT)
+    
+    let xAxis =
+        LinearAxis.init (
+            Visible = false,
+            Mirror = StyleParam.Mirror.True
+        )
+    
+    chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
+    //t |> design |> absTree |> scaleAbsTree factor |> pointsAndLines factor |> Chart.combine
 
 let saveChart (c: GenericChart.GenericChart) (path: string) = 
     Chart.saveHtml(path, OpenInBrowser=false)
