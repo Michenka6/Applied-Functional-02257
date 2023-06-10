@@ -61,7 +61,7 @@ let rec verticalLines (factor: float) (Node((_, ((x: float), (y: float))), subTr
                     [ y + (0.150 * factor); y + (factor / 2.0) ],
                     LineColor = Color.fromString "black",
                     ShowLegend = false
-                )) // -(y/2.0) because y will be negative here. extend line from node and up
+                )) 
             subTrees
         @ List.collect (verticalLines factor) subTrees
 
@@ -77,18 +77,16 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
             ShowLegend = false
         )
         :: List.collect (horizontalLines factor) subTrees
+let rec annotations (firstn: int) (hover: bool) (Node((label, (x, y)), subTrees)) =
+    let labelText = (string label).[0..firstn-1]
 
-let rec annotations (Node((label, (x, y)), subTrees)) =
+    Annotation.init (X = x, Y = y, Text = labelText, HoverText = string label, ShowArrow = false, CaptureEvents = hover)
+    :: List.collect (annotations firstn hover) subTrees
 
-    let labelText = (string label |> List.ofSeq |> List.head |> string)
-
-    Annotation.init (X = x, Y = y, Text = labelText, HoverText = string label, ShowArrow = false, CaptureEvents = true)
-    :: List.collect annotations subTrees
-
-let layout t =
+let layout firstn hover t =
     Layout.init (
-        Annotations = annotations t,
-        Font = Font.init (StyleParam.FontFamily.Arial, 12.0, Color.fromString "black"),
+        Annotations = annotations firstn hover t,
+        Font = Font.init (StyleParam.FontFamily.Arial, 10.0, Color.fromString "black"),
         AutoSize = true,
         PaperBGColor = Color.fromString "white",
         PlotBGColor = Color.fromHex "0xE5ECF6"
@@ -97,14 +95,14 @@ let layout t =
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
     verticalLines factor t @ horizontalLines factor t
 
-let generateChart factor t =
+let generateChart factor firstn hover t =
     let absT = t |> design |> absTree |> scaleAbsTree factor
 
     let chart =
         absT
         |> pointsAndLines factor
         |> Chart.combine
-        |> GenericChart.setLayout (layout absT)
+        |> GenericChart.setLayout (layout firstn hover absT)
 
     let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
 

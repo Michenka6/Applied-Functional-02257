@@ -13,454 +13,563 @@ let main args =
     check subTreeConsistencyProperty
     check treeClassify
 
-    let t = Node('\023',
-        [Node ('k', [Node ('e', []); Node ('\031', [])]);
+    let t = Node("A",
+        [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\030", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("\127", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\001", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\007", []);
+            Node ("meaningful connections", []); Node ("\017", []);
             Node
-            ('-',
-            [Node ('B', []); Node ('q', []); Node ('L', []); Node ('\020', []);
-                Node ('q', []); Node ('n', []); Node ('2', []); Node ('$', []);
-                Node ('a', []); Node ('S', []); Node ('X', []); Node ('n', []);
-                Node ('"', []); Node (',', []); Node ('L', []); Node ('4', []);
-                Node ('N', []); Node ('v', []); Node ('+', []); Node ('a', []);
-                Node (' ', []); Node ('A', []); Node ('\\', []);
-                Node ('H', [Node ('t', [])]); Node ('=', []);
-                Node
-                ('l',
-                [Node ('F', []); Node ('u', [Node ('\021', []); Node ('p', [])]);
-                    Node ('P', [])]); Node ('G', []); Node ('v', []); Node ('Q', []);
-                Node ('\000', []); Node ('[', []); Node ('\010', []); Node ('e', []);
-                Node ('\020', []); Node ('o', []); Node ('\030', []); Node ('y', []);
-                Node ('(', []); Node ('\003', []);
-                Node
-                ('2',
-                [Node ('8', []);
-                    Node
-                    ('g',
-                    [Node ('\015', [Node ('u', [Node ('p', [])]); Node ('P', [])])]);
-                    Node
-                    ('B',
-                    [Node
-                        ('O',
-                        [Node ('g', [Node ('W', [])]);
-                            Node ('\022', [Node ('\016', [])])])]);
-                    Node
-                    ('q',
-                    [Node ('9', []);
-                        Node
-                        ('\020', [Node ('\011', [Node ('\022', [Node ('\029', [])])])])]);
-                    Node
-                    ('L',
-                    [Node ('O', []);
-                        Node
-                        ('~',
-                        [Node
-                            ('-', [Node ('r', [Node ('G', []); Node ('\019', [])])]);
-                            Node ('M', [])])]); Node ('{', []); Node ('V', []);
-                    Node ('\005', [Node ('\022', [])]); Node ('`', []);
-                    Node
-                    ('\015',
-                    [Node
-                        ('s',
-                        [Node
-                            ('\018', [Node ('{', []); Node ('2', [Node ('c', [])])])])]);
-                    Node ('E', []); Node ('\016', []); Node ('\018', [Node ('O', [])]);
-                    Node ('~', [Node ('w', [Node ('E', [])])]);
-                    Node ('u', [Node ('\023', [Node ('K', []); Node ('&', [])])]);
-                    Node
-                    ('&',
-                    [Node ('(', [Node ('\013', [Node ('0', [Node ('a', [])])])]);
-                        Node ('-', [])]); Node ('$', []);
-                    Node ('\009', [Node ('Y', []); Node ('\020', [])]);
-                    Node ('_', [Node ('\000', [])]);
-                    Node
-                    ('\021',
-                    [Node ('G', []); Node ('\003', [Node ('\029', [Node ('T', [])])])]);
-                    Node ('\026', []); Node ('/', []);
-                    Node ('<', [Node ('5', []); Node ('\007', [])]);
-                    Node (')', [Node ('s', [])]);
-                    Node
-                    ('z',
-                    [Node ('p', [Node ('\002', [])]);
-                        Node
-                        ('s',
-                        [Node
-                            ('r',
-                            [Node ('\012', []); Node ('\022', []);
-                                Node ('_', [Node ('<', []); Node ('\b', [])])]);
-                            Node ('\009', []); Node ('~', []);
-                            Node ('-', [Node ('\005', [])])]); Node ('C', []);
-                        Node ('\026', [])]);
-                    Node
-                    ('V',
-                    [Node ('_', []);
-                        Node ('T', [Node ('+', [Node ('\000', [Node ('p', [])])])])])]);
-                Node ('\013', []); Node ('<', []); Node ('\023', []); Node ('F', []);
-                Node ('!', []); Node ('P', []); Node ('+', []); Node ('Z', []);
-                Node ('5', []); Node ('d', []); Node ('?', []); Node ('n', []);
-                Node ('q', []); Node ('f', []); Node ('\021', []); Node ('p', []);
-                Node ('\031', []); Node ('z', []); Node (')', []); Node ('\004', [])]);
-            Node (',', [Node ('}', [])]); Node ('<', []);
+            ("meaningful connections",
+            [Node
+                ("meaningful connections",
+                [Node ("meaningful connections", [Node ("\027", []); Node ("meaningful connections", [])]); Node ("\005", [])])]);
+            Node ("\027", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("dasdas", [Node ("\127", [Node ("meaningful connections", [Node ("\030", [])])])]);
+            Node ("meaningful connections", []);
             Node
-            ('&',
-            [Node ('g', [Node ('Q', [Node ('\010', [])]); Node (',', [])]);
+            ("\010",
+            [Node ("\127", [Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]);
+                Node ("meaningful connections", []); Node ("\009", []); Node ("\014", []);
+                Node ("meaningful connections", [Node ("\005", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]);
+                Node ("\024", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\003", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [Node ("\\", [Node ("meaningful connections", [])])])])]);
+                Node ("\013", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\023", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("\017", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", [Node ("\021", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("\000", []); Node ("meaningful connections", []); Node ("\010", []); Node ("meaningful connections", []);
+                Node ("\020", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", [Node ("\012", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("\127", []); Node ("meaningful connections", []);
+                Node ("\009", [Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("\019", []);
+                Node ("meaningful connections", []); Node ("\029", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []);
                 Node
-                ('B',
-                [Node ('g', []); Node ('\022', []); Node ('#', []); Node ('i', []);
-                    Node ('\000', []); Node ('\014', []); Node ('3', []); Node ('(', []);
-                    Node ('W', []); Node ('2', []);
+                ("\007",
+                [Node ("meaningful connections", [Node ("\030", [])]); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("\030", [])]); Node ("meaningful connections", []);
+                    Node ("\127", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                    Node ("\009", [Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]);
                     Node
-                    ('a',
+                    ("meaningful connections",
                     [Node
-                        ('\002',
-                        [Node ('q', []);
-                            Node ('L', [Node ('r', []); Node ('M', [Node ('1', [])])]);
-                            Node ('{', [Node ('\b', [])]); Node ('V', []);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", [Node ("meaningful connections", [Node ("\127", [])])]);
+                            Node ("meaningful connections", []);
+                            Node ("\000", [Node ("\027", [Node ("\127", [])])]);
+                            Node ("meaningful connections", []);
                             Node
-                            ('\005',
-                            [Node ('\b', [Node ('\015', []); Node ('1', [])])])])]);
-                    Node ('<', []);
+                            ("\010",
+                            [Node ("\027", [Node ("meaningful connections", [])]);
+                                Node ("meaningful connections", [Node ("meaningful connections", [])]);
+                                Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", [])])]);
+                            Node ("meaningful connections", []);
+                            Node ("\020", [Node ("meaningful connections", [Node ("meaningful connections", [])])]);
+                            Node ("meaningful connections", []); Node ("\030", [Node ("\020", [])]);
+                            Node ("meaningful connections", []); Node ("meaningful connections", [Node ("\020", [])]);
+                            Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]);
+                            Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("\020", [Node ("meaningful connections", [])])])])]);
+                    Node ("\019", []); Node ("meaningful connections", []);
+                    Node ("\029", [Node ("\023", [Node ("meaningful connections", [])])]); Node ("meaningful connections", []);
+                    Node ("meaningful connections", []); Node ("\002", [])]); Node ("meaningful connections", []);
+                Node ("\017", []); Node ("meaningful connections", []);
+                Node
+                ("\027",
+                [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("meaningful connections", []);
                     Node
-                    ('k',
+                    ("meaningful connections",
                     [Node
-                        ('{',
-                        [Node ('0', []); Node ('\011', []); Node (':', []);
-                            Node ('\021', []);
+                        ("meaningful connections",
+                        [Node
+                            ("\014",
+                            [Node
+                                ("\005",
+                                [Node ("meaningful connections", []); Node ("\004", []); Node ("meaningful connections", []);
+                                Node ("\021", [])])]); Node ("meaningful connections", [])])]);
+                    Node
+                    ("meaningful connections",
+                    [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\026", []);
+                        Node ("meaningful connections", [Node ("\000", [])]); Node ("meaningful connections", []);
+                        Node ("\127", []); Node ("meaningful connections", [])]); Node ("\007", []);
+                    Node ("meaningful connections", []); Node ("\017", []); Node ("meaningful connections", []); Node ("\027", []);
+                    Node ("meaningful connections", [])])]); Node ("meaningful connections", []);
+        Node
+        ("\020",
+        [Node
+            ("meaningful connections",
+            [Node ("meaningful connections", []);
+                Node
+                ("meaningful connections",
+                [Node ("meaningful connections", [Node ("\013", []); Node ("meaningful connections", [])]);
+                    Node ("\016", [])]); Node ("meaningful connections", [])])]); Node ("meaningful connections", []);
+        Node ("\030", [Node ("meaningful connections", [])]); Node ("\028", []); Node ("meaningful connections", []);
+        Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+        Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+        Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\007", []);
+        Node ("meaningful connections", []); Node ("\017", []); Node ("meaningful connections", []); Node ("\027", []);
+        Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\000", []); Node ("meaningful connections", []);
+        Node ("\010", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [])])
+
+
+    let t1 = Node("A",
+        [Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\031", [])]);
+            Node
+            ("meaningful connections",
+            [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\020", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\\", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                Node
+                ("meaningful connections",
+                [Node ("meaningful connections", []); Node ("meaningful connections", [Node ("\021", []); Node ("meaningful connections", [])]);
+                    Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("\000", []); Node ("meaningful connections", []); Node ("\010", []); Node ("meaningful connections", []);
+                Node ("\020", []); Node ("meaningful connections", []); Node ("\030", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("\003", []);
+                Node
+                ("meaningful connections",
+                [Node ("meaningful connections", []);
+                    Node
+                    ("meaningful connections",
+                    [Node ("\015", [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])])]);
+                    Node
+                    ("meaningful connections",
+                    [Node
+                        ("meaningful connections",
+                        [Node ("meaningful connections", [Node ("meaningful connections", [])]);
+                            Node ("\022", [Node ("\016", [])])])]);
+                    Node
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
+                        Node
+                        ("\020", [Node ("\011", [Node ("\022", [Node ("\029", [])])])])]);
+                    Node
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
+                        Node
+                        ("meaningful connections",
+                        [Node
+                            ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\019", [])])]);
+                            Node ("meaningful connections", [])])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("\005", [Node ("\022", [])]); Node ("meaningful connections", []);
+                    Node
+                    ("\015",
+                    [Node
+                        ("meaningful connections",
+                        [Node
+                            ("\018", [Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])])])])]);
+                    Node ("meaningful connections", []); Node ("\016", []); Node ("\018", [Node ("meaningful connections", [])]);
+                    Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]);
+                    Node ("meaningful connections", [Node ("\023", [Node ("meaningful connections", []); Node ("meaningful connections", [])])]);
+                    Node
+                    ("meaningful connections",
+                    [Node ("meaningful connections", [Node ("\013", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]);
+                        Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                    Node ("\009", [Node ("meaningful connections", []); Node ("\020", [])]);
+                    Node ("meaningful connections", [Node ("\000", [])]);
+                    Node
+                    ("\021",
+                    [Node ("meaningful connections", []); Node ("\003", [Node ("\029", [Node ("meaningful connections", [])])])]);
+                    Node ("\026", []); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\007", [])]);
+                    Node ("meaningful connections", [Node ("meaningful connections", [])]);
+                    Node
+                    ("meaningful connections",
+                    [Node ("meaningful connections", [Node ("\002", [])]);
+                        Node
+                        ("meaningful connections",
+                        [Node
+                            ("meaningful connections",
+                            [Node ("\012", []); Node ("\022", []);
+                                Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\b", [])])]);
+                            Node ("\009", []); Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("\005", [])])]); Node ("meaningful connections", []);
+                        Node ("\026", [])]);
+                    Node
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
+                        Node ("meaningful connections", [Node ("meaningful connections", [Node ("\000", [Node ("meaningful connections", [])])])])])]);
+                Node ("\013", []); Node ("meaningful connections", []); Node ("\023", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\021", []); Node ("meaningful connections", []);
+                Node ("\031", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\004", [])]);
+            Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+            Node
+            ("meaningful connections",
+            [Node ("meaningful connections", [Node ("meaningful connections", [Node ("\010", [])]); Node ("meaningful connections", [])]);
+                Node
+                ("meaningful connections",
+                [Node ("meaningful connections", []); Node ("\022", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("\000", []); Node ("\014", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node
+                    ("meaningful connections",
+                    [Node
+                        ("\002",
+                        [Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])])]);
+                            Node ("meaningful connections", [Node ("\b", [])]); Node ("meaningful connections", []);
                             Node
-                            ('D',
-                            [Node ('L', [Node (')', [])]); Node ('\'', []);
-                                Node ('V', [Node ('3', [])]); Node ('1', []);
-                                Node ('/', [Node ('v', [])]); Node ('^', [])]);
-                            Node ('\031', [])]);
+                            ("\005",
+                            [Node ("\b", [Node ("\015", []); Node ("meaningful connections", [])])])])]);
+                    Node ("meaningful connections", []);
+                    Node
+                    ("meaningful connections",
+                    [Node
+                        ("meaningful connections",
+                        [Node ("meaningful connections", []); Node ("\011", []); Node ("meaningful connections", []);
+                            Node ("\021", []);
+                            Node
+                            ("meaningful connections",
+                            [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])]);
+                            Node ("\031", [])]);
                         Node
-                        ('*',
-                        [Node ('F', [Node ('h', [])]); Node ('K', []);
-                            Node ('z', [Node ('h', [])]); Node ('U', [])]);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])]);
                         Node
-                        ('\005',
-                        [Node ('\006', []); Node ('\004', []);
-                            Node ('3', [Node ('Z', [])]); Node ('\014', []);
-                            Node ('=', [])])]); Node ('F', []); Node ('u', [])]);
-                Node ('q', []); Node ('L', []); Node ('J', [])])])
+                        ("\005",
+                        [Node ("\006", []); Node ("\004", []);
+                            Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\014", []);
+                            Node ("meaningful connections", [])])]); Node ("meaningful connections", []); Node ("meaningful connections", [])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [])])])
     
 
-    let t2 = Node ('\000',
-        [Node ('(', []); Node ('\003', []); Node ('2', []); Node ('\013', []);
+    let t2 = Node ("B",
+        [Node ("meaningful connections", []); Node ("\003", []); Node ("meaningful connections", []); Node ("\013", []);
             Node
-            ('<',
-            [Node ('0', []); Node ('_', []); Node (':', []);
+            ("meaningful connections",
+            [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
                 Node
-                ('i',
-                [Node ('[', [Node ('i', [Node ('F', [])])]); Node ('\010', []);
-                    Node ('e', [Node ('i', [Node ('\005', [])])]); Node ('\020', [])]);
-                Node ('D', [])]); Node ('\023', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]); Node ("\010", []);
+                    Node ("meaningful connections", [Node ("meaningful connections", [Node ("\005", [])])]); Node ("\020", [])]);
+                Node ("meaningful connections", [])]); Node ("\023", []);
             Node
-            ('F',
-            [Node ('0', []);
+            ("meaningful connections",
+            [Node ("meaningful connections", []);
                 Node
-                ('_',
-                [Node ('\026', []); Node ('I', [Node ('Z', [])]);
+                ("meaningful connections",
+                [Node ("\026", []); Node ("meaningful connections", [Node ("meaningful connections", [])]);
                     Node
-                    ('$',
+                    ("meaningful connections",
                     [Node
-                        ('D',
+                        ("meaningful connections",
                         [Node
-                            ('\002', [Node ('^', [Node ('B', []); Node ('\007', [])])])])])])]);
-            Node ('!', []); Node ('P', []); Node ('+', []); Node ('Z', []);
-            Node ('5', []); Node ('d', []); Node ('?', []); Node ('n', []);
-            Node ('I', [Node ('\019', [Node ('k', [Node ('O', [])])])]); Node ('x', []);
-            Node ('}', []); Node ('X', [Node ('"', [])]); Node ('\007', []);
+                            ("\002", [Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\007", [])])])])])])]);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", [Node ("\019", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\007", []);
             Node
-            ('b',
+            ("meaningful connections",
             [Node
-                ('"',
-                [Node ('(', []);
-                    Node ('\003', [Node ('\009', [Node ('N', [])]); Node ('d', [])]);
-                    Node ('2', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", []);
+                    Node ("\003", [Node ("\009", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])]);
+                    Node ("meaningful connections", []);
                     Node
-                    ('\013', [Node ('\009', []); Node ('d', []); Node ('\019', [])]);
-                    Node ('<', [])]); Node ('Q', []); Node (',', []);
-                Node ('[', [Node ('>', [])]); Node ('6', [Node ('(', [])]);
-                Node ('e', []); Node ('@', []); Node ('o', []); Node ('J', []);
-                Node ('y', []); Node ('T', []); Node ('\003', []); Node ('^', [])]);
-            Node ('\017', []); Node ('l', []); Node ('\027', []); Node ('v', []);
-            Node ('%', []); Node ('\000', []); Node ('~', []);
+                    ("\013", [Node ("\009", []); Node ("meaningful connections", []); Node ("\019", [])]);
+                    Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [Node ("meaningful connections", [])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\003", []); Node ("meaningful connections", [])]);
+            Node ("\017", []); Node ("meaningful connections", []); Node ("\027", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("\000", []); Node ("meaningful connections", []);
             Node
-            ('-',
+            ("meaningful connections",
             [Node
-                ('\027',
-                [Node ('\029', []); Node ('x', []); Node ('\'', []);
-                    Node ('\002', []);
+                ("\027",
+                [Node ("\029", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("\002", []);
                     Node
-                    ('1',
-                    [Node ('*', []); Node ('\005', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []); Node ("\005", []);
                         Node
-                        ('4',
-                        [Node ('O', []);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", []);
                             Node
-                            ('~',
-                            [Node ('\027', []); Node ('J', []);
+                            ("meaningful connections",
+                            [Node ("\027", []); Node ("meaningful connections", []);
                                 Node
-                                ('%',
-                                [Node ('\002', []); Node ('N', []); Node ('\019', []);
-                                    Node ('\009', []); Node ('+', []); Node ('!', []);
-                                    Node ('<', []); Node ('2', [])]); Node ('T', []);
-                                Node ('/', [])]); Node ('Y', []); Node ('\b', []);
-                            Node ('\006', [])]); Node ('\015', []); Node ('>', []);
-                        Node ('\025', []); Node ('\023', []); Node ('F', []);
-                        Node ('!', [Node ('r', []); Node ('M', []); Node ('|', [])])])]);
-                Node ('J', []); Node ('%', [Node ('s', [])]); Node ('T', []);
-                Node ('/', []); Node ('^', []); Node ('9', [Node ('\022', [])]);
-                Node ('h', []); Node ('C', []); Node ('r', []); Node ('M', []);
-                Node ('|', []); Node ('W', []); Node ('\006', []);
-                Node ('a', [Node ('\015', [Node ('$', [])])]);
+                                ("meaningful connections",
+                                [Node ("\002", []); Node ("meaningful connections", []); Node ("\019", []);
+                                    Node ("\009", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                                    Node ("meaningful connections", []); Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                                Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("\b", []);
+                            Node ("\006", [])]); Node ("\015", []); Node ("meaningful connections", []);
+                        Node ("\025", []); Node ("\023", []); Node ("meaningful connections", []);
+                        Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [])])])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [Node ("\022", [])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\006", []);
+                Node ("meaningful connections", [Node ("\015", [Node ("meaningful connections", [])])]);
                 Node
-                ('\016',
+                ("\016",
                 [Node
-                    ('%',
-                    [Node ('G', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
                         Node
-                        ('v',
-                        [Node ('0', []);
-                            Node ('\011', [Node ('$', [Node ('\001', [])])])])]);
-                    Node ('T', [])]); Node ('k', []); Node ('\026', [])]);
-            Node ('\b', []);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", []);
+                            Node ("\011", [Node ("meaningful connections", [Node ("\001", [])])])])]);
+                    Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("\026", [])]);
+            Node ("\b", []);
             Node
-            ('7',
+            ("meaningful connections",
             [Node
-                ('\027',
-                [Node ('U', [Node ('\026', [])]); Node ('0', []);
-                    Node ('_', [Node ('D', [Node ('\'', [])])]); Node (':', []);
-                    Node ('i', [Node ('\019', [Node ('_', [Node ('g', [])])])])])]);
-            Node ('\018', []); Node ('A', []); Node ('\028', []); Node ('K', []);
-            Node ('&', []); Node ('U', []); Node ('0', []); Node ('_', []);
-            Node (':', []); Node ('i', []); Node ('D', []); Node ('s', []);
-            Node ('N', []); Node ('}', []); Node ('X', [Node ('w', []); Node ('R', [])]);
-            Node ('\007', [])])
+                ("\027",
+                [Node ("meaningful connections", [Node ("\026", [])]); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("\019", [Node ("meaningful connections", [Node ("meaningful connections", [])])])])])]);
+            Node ("\018", []); Node ("meaningful connections", []); Node ("\028", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", [])]);
+            Node ("\007", [])])
 
-    let t3 = Node ('\000',
-        [Node ('(', []); Node ('\003', []); Node ('2', []); Node ('\013', []);
+    let t3 = Node ("\000",
+        [Node ("meaningful connections", []); Node ("\003", []); Node ("meaningful connections", []); Node ("\013", []);
             Node
-            ('<',
-            [Node ('0', []); Node ('_', []); Node (':', []);
+            ("meaningful connections",
+            [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
                 Node
-                ('i',
-                [Node ('[', [Node ('i', [Node ('F', [])])]); Node ('\010', []);
-                    Node ('e', [Node ('i', [Node ('\005', [])])]); Node ('\020', [])]);
-                Node ('D', [])]); Node ('\023', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]); Node ("\010", []);
+                    Node ("meaningful connections", [Node ("meaningful connections", [Node ("\005", [])])]); Node ("\020", [])]);
+                Node ("meaningful connections", [])]); Node ("\023", []);
             Node
-            ('F',
-            [Node ('0', []);
+            ("meaningful connections",
+            [Node ("meaningful connections", []);
                 Node
-                ('_',
-                [Node ('\026', []); Node ('I', [Node ('Z', [])]);
+                ("meaningful connections",
+                [Node ("\026", []); Node ("meaningful connections", [Node ("meaningful connections", [])]);
                     Node
-                    ('$',
+                    ("meaningful connections",
                     [Node
-                        ('D',
+                        ("meaningful connections",
                         [Node
-                            ('\002', [Node ('^', [Node ('B', []); Node ('\007', [])])])])])])]);
-            Node ('!', []); Node ('P', []); Node ('+', []); Node ('Z', []);
-            Node ('5', []); Node ('d', []); Node ('?', []); Node ('n', []);
-            Node ('I', [Node ('\019', [Node ('k', [Node ('O', [])])])]); Node ('x', []);
-            Node ('}', []); Node ('X', [Node ('"', [])]); Node ('\007', []);
+                            ("\002", [Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\007", [])])])])])])]);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", [Node ("\019", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\007", []);
             Node
-            ('b',
+            ("meaningful connections",
             [Node
-                ('"',
-                [Node ('(', []);
-                    Node ('\003', [Node ('\009', [Node ('N', [])]); Node ('d', [])]);
-                    Node ('2', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", []);
+                    Node ("\003", [Node ("\009", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])]);
+                    Node ("meaningful connections", []);
                     Node
-                    ('\013', [Node ('\009', []); Node ('d', []); Node ('\019', [])]);
-                    Node ('<', [])]); Node ('Q', []); Node (',', []);
-                Node ('[', [Node ('>', [])]); Node ('6', [Node ('(', [])]);
-                Node ('e', []); Node ('@', []); Node ('o', []); Node ('J', []);
-                Node ('y', []); Node ('T', []); Node ('\003', []); Node ('^', [])]);
-            Node ('\017', []); Node ('l', []); Node ('\027', []); Node ('v', []);
-            Node ('%', []); Node ('\000', []); Node ('~', []);
+                    ("\013", [Node ("\009", []); Node ("meaningful connections", []); Node ("\019", [])]);
+                    Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [Node ("meaningful connections", [])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\003", []); Node ("meaningful connections", [])]);
+            Node ("\017", []); Node ("meaningful connections", []); Node ("\027", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("\000", []); Node ("meaningful connections", []);
             Node
-            ('-',
+            ("meaningful connections",
             [Node
-                ('\027',
-                [Node ('\029', []); Node ('x', []); Node ('\'', []);
-                    Node ('\002', []);
+                ("\027",
+                [Node ("\029", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("\002", []);
                     Node
-                    ('1',
-                    [Node ('*', []); Node ('\005', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []); Node ("\005", []);
                         Node
-                        ('4',
-                        [Node ('O', []);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", []);
                             Node
-                            ('~',
-                            [Node ('\027', []); Node ('J', []);
+                            ("meaningful connections",
+                            [Node ("\027", []); Node ("meaningful connections", []);
                                 Node
-                                ('%',
-                                [Node ('\002', []); Node ('N', []); Node ('\019', []);
-                                    Node ('\009', []); Node ('+', []); Node ('!', []);
-                                    Node ('<', []); Node ('2', [])]); Node ('T', []);
-                                Node ('/', [])]); Node ('Y', []); Node ('\b', []);
-                            Node ('\006', [])]); Node ('\015', []); Node ('>', []);
-                        Node ('\025', []); Node ('\023', []); Node ('F', []);
-                        Node ('!', [Node ('r', []); Node ('M', []); Node ('|', [])])])]);
-                Node ('J', []); Node ('%', [Node ('s', [])]); Node ('T', []);
-                Node ('/', []); Node ('^', []); Node ('9', [Node ('\022', [])]);
-                Node ('h', []); Node ('C', []); Node ('r', []); Node ('M', []);
-                Node ('|', []); Node ('W', []); Node ('\006', []);
-                Node ('a', [Node ('\015', [Node ('$', [])])]);
+                                ("meaningful connections",
+                                [Node ("\002", []); Node ("meaningful connections", []); Node ("\019", []);
+                                    Node ("\009", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                                    Node ("meaningful connections", []); Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                                Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("\b", []);
+                            Node ("\006", [])]); Node ("\015", []); Node ("meaningful connections", []);
+                        Node ("\025", []); Node ("\023", []); Node ("meaningful connections", []);
+                        Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [])])])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [Node ("\022", [])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\006", []);
+                Node ("meaningful connections", [Node ("\015", [Node ("meaningful connections", [])])]);
                 Node
-                ('\016',
+                ("\016",
                 [Node
-                    ('%',
-                    [Node ('G', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
                         Node
-                        ('v',
-                        [Node ('0', []);
-                            Node ('\011', [Node ('$', [Node ('\001', [t2])])])])]);
-                    Node ('T', [])]); Node ('k', []); Node ('\026', [])]);
-            Node ('\b', []);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", []);
+                            Node ("\011", [Node ("meaningful connections", [Node ("\001", [t2])])])])]);
+                    Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("\026", [])]);
+            Node ("\b", []);
             Node
-            ('7',
+            ("meaningful connections",
             [Node
-                ('\027',
-                [Node ('U', [Node ('\026', [])]); Node ('0', []);
-                    Node ('_', [Node ('D', [Node ('\'', [])])]); Node (':', []);
-                    Node ('i', [Node ('\019', [Node ('_', [Node ('g', [])])])])])]);
-            Node ('\018', []); Node ('A', []); Node ('\028', []); Node ('K', []);
-            Node ('&', []); Node ('U', []); Node ('0', []); Node ('_', []);
-            Node (':', []); Node ('i', []); Node ('D', []); Node ('s', []);
-            Node ('N', []); Node ('}', []); Node ('X', [Node ('w', []); Node ('R', [])]);
-            Node ('\007', [])])
+                ("\027",
+                [Node ("meaningful connections", [Node ("\026", [])]); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("\019", [Node ("meaningful connections", [Node ("meaningful connections", [])])])])])]);
+            Node ("\018", []); Node ("meaningful connections", []); Node ("\028", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+            Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", [])]);
+            Node ("\007", [])])
 
-    let t4 = Node('\023',
-        [Node ('k', [Node ('e', []); Node ('\031', [])]);
+    let t4 = Node("\023",
+        [Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\031", [])]);
             Node
-            ('-',
-            [Node ('B', []); Node ('q', []); Node ('L', []); Node ('\020', []);
-                Node ('q', []); Node ('n', []); Node ('2', []); Node ('$', []);
-                Node ('a', []); Node ('S', []); Node ('X', []); Node ('n', []);
-                Node ('"', []); Node (',', []); Node ('L', []); Node ('4', []);
-                Node ('N', []); Node ('v', []); Node ('+', []); Node ('a', []);
-                Node (' ', []); Node ('A', []); Node ('\\', []);
-                Node ('H', [Node ('t', [])]); Node ('=', []);
+            ("meaningful connections",
+            [Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\020", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\\", []);
+                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
                 Node
-                ('l',
-                [Node ('F', []); Node ('u', [Node ('\021', []); Node ('p', [])]);
-                    Node ('P', [])]); Node ('G', []); Node ('v', []); Node ('Q', []);
-                Node ('\000', []); Node ('[', []); Node ('\010', []); Node ('e', []);
-                Node ('\020', []); Node ('o', []); Node ('\030', []); Node ('y', []);
-                Node ('(', []); Node ('\003', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", []); Node ("meaningful connections", [Node ("\021", []); Node ("meaningful connections", [])]);
+                    Node ("meaningful connections", [])]); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("\000", []); Node ("meaningful connections", []); Node ("\010", []); Node ("meaningful connections", []);
+                Node ("\020", []); Node ("meaningful connections", []); Node ("\030", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("\003", []);
                 Node
-                ('2',
-                [Node ('8', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", []);
                     Node
-                    ('g',
-                    [Node ('\015', [Node ('u', [Node ('p', [])]); Node ('P', [])])]);
+                    ("meaningful connections",
+                    [Node ("\015", [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])])]);
                     Node
-                    ('B',
+                    ("meaningful connections",
                     [Node
-                        ('O',
-                        [Node ('g', [Node ('W', [])]);
-                            Node ('\022', [Node ('\016', [])])])]);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", [Node ("meaningful connections", [])]);
+                            Node ("\022", [Node ("\016", [])])])]);
                     Node
-                    ('q',
-                    [Node ('9', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
                         Node
-                        ('\020', [Node ('\011', [Node ('\022', [Node ('\029', [])])])])]);
+                        ("\020", [Node ("\011", [Node ("\022", [Node ("\029", [])])])])]);
                     Node
-                    ('L',
-                    [Node ('O', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
                         Node
-                        ('~',
+                        ("meaningful connections",
                         [Node
-                            ('-', [Node ('r', [Node ('G', []); Node ('\019', [])])]);
-                            Node ('M', [])])]); Node ('{', []); Node ('V', []);
-                    Node ('\005', [Node ('\022', [])]); Node ('`', []);
+                            ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\019", [])])]);
+                            Node ("meaningful connections", [])])]); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("\005", [Node ("\022", [])]); Node ("meaningful connections", []);
                     Node
-                    ('\015',
+                    ("\015",
                     [Node
-                        ('s',
+                        ("meaningful connections",
                         [Node
-                            ('\018', [Node ('{', []); Node ('2', [Node ('c', [])])])])]);
-                    Node ('E', []); Node ('\016', []); Node ('\018', [Node ('O', [])]);
-                    Node ('~', [Node ('w', [Node ('E', [])])]);
-                    Node ('u', [Node ('\023', [Node ('K', []); Node ('&', [])])]);
+                            ("\018", [Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])])])])]);
+                    Node ("meaningful connections", []); Node ("\016", []); Node ("\018", [Node ("meaningful connections", [])]);
+                    Node ("meaningful connections", [Node ("meaningful connections", [Node ("meaningful connections", [])])]);
+                    Node ("meaningful connections", [Node ("\023", [Node ("meaningful connections", []); Node ("meaningful connections", [])])]);
                     Node
-                    ('&',
-                    [Node ('(', [Node ('\013', [Node ('0', [Node ('a', [])])])]);
-                        Node ('-', [])]); Node ('$', []);
-                    Node ('\009', [Node ('Y', []); Node ('\020', [])]);
-                    Node ('_', [Node ('\000', [])]);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", [Node ("\013", [Node ("meaningful connections", [Node ("meaningful connections", [])])])]);
+                        Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                    Node ("\009", [Node ("meaningful connections", []); Node ("\020", [])]);
+                    Node ("meaningful connections", [Node ("\000", [])]);
                     Node
-                    ('\021',
-                    [Node ('G', []); Node ('\003', [Node ('\029', [Node ('T', [])])])]);
-                    Node ('\026', []); Node ('/', []);
-                    Node ('<', [Node ('5', []); Node ('\007', [])]);
-                    Node (')', [Node ('s', [])]);
+                    ("\021",
+                    [Node ("meaningful connections", []); Node ("\003", [Node ("\029", [Node ("meaningful connections", [])])])]);
+                    Node ("\026", []); Node ("meaningful connections", []);
+                    Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\007", [])]);
+                    Node ("meaningful connections", [Node ("meaningful connections", [])]);
                     Node
-                    ('z',
-                    [Node ('p', [Node ('\002', [])]);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", [Node ("\002", [])]);
                         Node
-                        ('s',
+                        ("meaningful connections",
                         [Node
-                            ('r',
-                            [Node ('\012', []); Node ('\022', []);
-                                Node ('_', [Node ('<', []); Node ('\b', [t3])])]);
-                            Node ('\009', []); Node ('~', []);
-                            Node ('-', [Node ('\005', [])])]); Node ('C', []);
-                        Node ('\026', [])]);
+                            ("meaningful connections",
+                            [Node ("\012", []); Node ("\022", []);
+                                Node ("meaningful connections", [Node ("meaningful connections", []); Node ("\b", [t3])])]);
+                            Node ("\009", []); Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("\005", [])])]); Node ("meaningful connections", []);
+                        Node ("\026", [])]);
                     Node
-                    ('V',
-                    [Node ('_', []);
-                        Node ('T', [Node ('+', [Node ('\000', [Node ('p', [])])])])])]);
-                Node ('\013', []); Node ('<', []); Node ('\023', []); Node ('F', []);
-                Node ('!', []); Node ('P', []); Node ('+', []); Node ('Z', []);
-                Node ('5', []); Node ('d', []); Node ('?', []); Node ('n', []);
-                Node ('q', []); Node ('f', []); Node ('\021', []); Node ('p', []);
-                Node ('\031', []); Node ('z', []); Node (')', []); Node ('\004', [])]);
-            Node (',', [Node ('}', [])]); Node ('<', []);
+                    ("meaningful connections",
+                    [Node ("meaningful connections", []);
+                        Node ("meaningful connections", [Node ("meaningful connections", [Node ("\000", [Node ("meaningful connections", [])])])])])]);
+                Node ("\013", []); Node ("meaningful connections", []); Node ("\023", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\021", []); Node ("meaningful connections", []);
+                Node ("\031", []); Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("\004", [])]);
+            Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
             Node
-            ('&',
-            [Node ('g', [Node ('Q', [Node ('\010', [])]); Node (',', [])]);
+            ("meaningful connections",
+            [Node ("meaningful connections", [Node ("meaningful connections", [Node ("\010", [])]); Node ("meaningful connections", [])]);
                 Node
-                ('B',
-                [Node ('g', []); Node ('\022', []); Node ('#', []); Node ('i', []);
-                    Node ('\000', []); Node ('\014', []); Node ('3', []); Node ('(', []);
-                    Node ('W', []); Node ('2', []);
+                ("meaningful connections",
+                [Node ("meaningful connections", []); Node ("\022", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("\000", []); Node ("\014", []); Node ("meaningful connections", []); Node ("meaningful connections", []);
+                    Node ("meaningful connections", []); Node ("meaningful connections", []);
                     Node
-                    ('a',
+                    ("meaningful connections",
                     [Node
-                        ('\002',
-                        [Node ('q', []);
-                            Node ('L', [Node ('r', []); Node ('M', [Node ('1', [])])]);
-                            Node ('{', [Node ('\b', [])]); Node ('V', []);
+                        ("\002",
+                        [Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("meaningful connections", []); Node ("meaningful connections", [Node ("meaningful connections", [])])]);
+                            Node ("meaningful connections", [Node ("\b", [])]); Node ("meaningful connections", []);
                             Node
-                            ('\005',
-                            [Node ('\b', [Node ('\015', []); Node ('1', [])])])])]);
-                    Node ('<', []);
+                            ("\005",
+                            [Node ("\b", [Node ("\015", []); Node ("meaningful connections", [])])])])]);
+                    Node ("meaningful connections", []);
                     Node
-                    ('k',
+                    ("meaningful connections",
                     [Node
-                        ('{',
-                        [Node ('0', []); Node ('\011', []); Node (':', []);
-                            Node ('\021', []);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", []); Node ("\011", []); Node ("meaningful connections", []);
+                            Node ("\021", []);
                             Node
-                            ('D',
-                            [Node ('L', [Node (')', [])]); Node ('\'', []);
-                                Node ('V', [Node ('3', [])]); Node ('1', []);
-                                Node ('/', [Node ('v', [])]); Node ('^', [])]);
-                            Node ('\031', [])]);
+                            ("meaningful connections",
+                            [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                                Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])]);
+                            Node ("\031", [])]);
                         Node
-                        ('*',
-                        [Node ('F', [Node ('h', [])]); Node ('K', []);
-                            Node ('z', [Node ('h', [])]); Node ('U', [])]);
+                        ("meaningful connections",
+                        [Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", []);
+                            Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("meaningful connections", [])]);
                         Node
-                        ('\005',
-                        [Node ('\006', []); Node ('\004', []);
-                            Node ('3', [Node ('Z', [])]); Node ('\014', []);
-                            Node ('=', [])])]); Node ('F', []); Node ('u', [])]);
-                Node ('q', []); Node ('L', []); Node ('J', [])])])
+                        ("\005",
+                        [Node ("\006", []); Node ("\004", []);
+                            Node ("meaningful connections", [Node ("meaningful connections", [])]); Node ("\014", []);
+                            Node ("meaningful connections", [])])]); Node ("meaningful connections", []); Node ("meaningful connections", [])]);
+                Node ("meaningful connections", []); Node ("meaningful connections", []); Node ("meaningful connections", [])])])
+ 
+    let t5 = Node("ratoootaattoo", 
+        [Node("asdjlaksj", [Node("asjdla", [Node("lskadja i wish i wan the way iyam", []); Node("dsjal", [Node("das", [])])])]);
+        Node("laras", [Node("lskjadoia", []); Node("i know u can heasd", []); Node("djalk", [Node("djaskl", []); Node("222daassdsad", [])])])])
 
-
-    t |> generateChart 1.0 |> showChart
+    t5 |> generateChart 5.0 10 true |> showChart
 
     0
