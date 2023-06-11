@@ -1,4 +1,4 @@
-module Plot
+module TreeDrawing
 
 open Tree
 open Plotly.NET
@@ -96,8 +96,8 @@ let pointsAndLines factor (t: Tree<'a * (float * float)>) =
     verticalLines factor t @ horizontalLines factor t
 
 [<Sealed>]
-type Plot() = 
-    static member generateChart(t, ?scale: float, ?firstn: int, ?hover: bool) : GenericChart.GenericChart =
+type TreeDrawing() = 
+    static member generateDrawing(t, ?scale: float, ?firstn: int, ?hover: bool) : GenericChart.GenericChart =
         let factor = defaultArg scale 1.0
         let hover = defaultArg hover false
         let absT = t |> design |> absTree |> scaleAbsTree factor
@@ -112,7 +112,7 @@ type Plot() =
 
         chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
 
-let saveChart (path: string) (c: GenericChart.GenericChart) =
+let saveDrawing (path: string) (c: GenericChart.GenericChart) =
     Chart.saveHtml (path, OpenInBrowser = false)
 
-let showChart (c: GenericChart.GenericChart) = c |> Chart.show
+let showDrawing (c: GenericChart.GenericChart) = c |> Chart.show

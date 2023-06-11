@@ -1,7 +1,7 @@
 module Test
 
 open Tree
-open Plot
+open TreeDrawing
 open FsCheck
 
 let leafGen = Gen.map (fun c -> Node(c, [])) Arb.generate<char>

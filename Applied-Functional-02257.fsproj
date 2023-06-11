@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <Compile Include="Tree.fs" />
-    <Compile Include="Plot.fsi" />
-    <Compile Include="Plot.fs" />
+    <Compile Include="TreeDrawing.fsi" />
+    <Compile Include="TreeDrawing.fs" />
     <Compile Include="Test.fs" />
     <Compile Include="Benchmark.fs" />
     <Compile Include="Program.fs" />
