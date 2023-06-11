@@ -63,8 +63,30 @@ let main args =
                     ('D',
                     [Node ('S', [Node ('m', [])]); Node ('\002', []); Node (']', []);
                         Node ('j', []); Node ('g', [])])]); Node ('*', []);
-                Node ('l', [])])])    
+                Node ('l', [])])])
 
-    TreeDrawing.generateDrawing(t, firstn=1, hover=true, fontSize=10.0) |> saveDrawing "mediumSizedTree.html"
+    let genghisKhanTree = Node("Genghis Khan", 
+        [Node("Jochi", 
+            [Node("Orda", []); Node("Batu", [Node("Sartaq", []);]); 
+            Node("Berke", []);]); 
+        Node("Chagatai", [Node("Baidar", []);]); 
+        Node("Ögedei", 
+            [Node("Güyük", []);
+            Node("Kashin", [Node("Kaidu", []);]);]); 
+        Node("Tolui", 
+            [Node("Möngke", []);
+            Node("Kublai", 
+                [Node("Zhenjin", 
+                    [Node("Temür", []);]);]);
+            Node("Hulagu", 
+                [Node("Abaqa Khan", 
+                    [Node("Arghun", []);]);]);
+            Node("Ariq Böke", []);]); 
+        Node("Alakhai Bekhi", 
+            [Node("Orghana", [Node("Mubarak Shah", []);]);]); 
+        Node("Checheikhen", []); 
+        Node("Alaltun", []);])
+
+    TreeDrawing.generateDrawing(genghisKhanTree, firstn=13, hover=true, fontSize=12.0) |> showDrawing
 
     0

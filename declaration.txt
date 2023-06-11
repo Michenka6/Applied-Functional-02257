@@ -1,0 +1,17 @@
+Declaration 11/06/2023
+
+Lucas - s223126:
+    1. Plotting trees using Plotly.NET
+    2. Translating a relative position tree into an absolute one
+    3. mirrorTest implementation and report description
+    4. subTreeTest report description
+    5. creating arbitrarily sized trees using generators
+    6. Joint evaluation of the project
+    7. Visualization of Trees report description
+Amir - s204743:
+    1. Translating SML code into F#
+    2. fitTest implementation and report description
+    3. symmetryTest implementation and report description
+    4. Absract
+    5. subTreeTest implementation
+    6. Joint evaluation of the project
