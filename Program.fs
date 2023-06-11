@@ -21,6 +21,14 @@ let main args =
         [Node("asdjlaksj", [Node("asjdla", [Node("lskadja i wish i wan the way iyam", []); Node("dsjal", [Node("das", [])])])]);
         Node("laras", [Node("lskjadoia", [t4]); Node("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", []); Node("djalk", [Node("djaskl", []); Node("222daassdsad", [])])])])
 
-    TreeDrawing.generateDrawing(t5, scale=5.0, firstn=11, hover=true, fontSize=12.0) |> showDrawing 
+    let ast = Node("+", 
+        [Node("4", []); Node("+", 
+            [Node("*", 
+                [Node("2", []); Node("10", [])]);
+                Node("*", 
+                    [Node("3", []); Node("+", 
+                    [Node("5", []); Node("1", [])])])])])
+
+    TreeDrawing.generateDrawing(ast, firstn=11, hover=true, fontSize=20.0) |> showDrawing 
     
     0
