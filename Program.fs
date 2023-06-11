@@ -570,6 +570,7 @@ let main args =
         [Node("asdjlaksj", [Node("asjdla", [Node("lskadja i wish i wan the way iyam", []); Node("dsjal", [Node("das", [])])])]);
         Node("laras", [Node("lskjadoia", []); Node("i know u can heasd", []); Node("djalk", [Node("djaskl", []); Node("222daassdsad", [])])])])
 
-    t5 |> generateChart 5.0 10 true |> showChart
-
+    Plot.generateChart(t5, scale=5.0, firstn=10, hover=true) |> showChart
+    //Plot.generateChart(t5, factor=5.0, firstn=10, hover=true) |> showChart
+    
     0

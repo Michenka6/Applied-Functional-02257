@@ -77,13 +77,13 @@ let rec horizontalLines (factor: float) (Node((_, (_, _)), subTrees)) =
             ShowLegend = false
         )
         :: List.collect (horizontalLines factor) subTrees
-let rec annotations (firstn: int) (hover: bool) (Node((label, (x, y)), subTrees)) =
-    let labelText = (string label).[0..firstn-1]
+let rec annotations (firstn: int option) (hover: bool) (Node((label, (x, y)), subTrees)) =
+    let labelText = if firstn.IsSome then (string label).[0..firstn.Value-1] else string label
 
     Annotation.init (X = x, Y = y, Text = labelText, HoverText = string label, ShowArrow = false, CaptureEvents = hover)
     :: List.collect (annotations firstn hover) subTrees
 
-let layout firstn hover t =
+let layout (firstn : int option) hover t =
     Layout.init (
         Annotations = annotations firstn hover t,
         Font = Font.init (StyleParam.FontFamily.Arial, 10.0, Color.fromString "black"),
@@ -95,18 +95,22 @@ let layout firstn hover t =
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
     verticalLines factor t @ horizontalLines factor t
 
-let generateChart factor firstn hover t =
-    let absT = t |> design |> absTree |> scaleAbsTree factor
+[<Sealed>]
+type Plot() = 
+    static member generateChart(t, ?scale: float, ?firstn: int, ?hover: bool) : GenericChart.GenericChart =
+        let factor = defaultArg scale 1.0
+        let hover = defaultArg hover false
+        let absT = t |> design |> absTree |> scaleAbsTree factor
 
-    let chart =
-        absT
-        |> pointsAndLines factor
-        |> Chart.combine
-        |> GenericChart.setLayout (layout firstn hover absT)
+        let chart =
+            absT
+            |> pointsAndLines factor
+            |> Chart.combine
+            |> GenericChart.setLayout (layout firstn hover absT)
 
-    let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
+        let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
 
-    chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
+        chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
 
 let saveChart (path: string) (c: GenericChart.GenericChart) =
     Chart.saveHtml (path, OpenInBrowser = false)
