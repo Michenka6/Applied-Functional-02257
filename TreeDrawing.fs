@@ -83,10 +83,10 @@ let rec annotations (firstn: int option) (hover: bool) (Node((label, (x, y)), su
     Annotation.init (X = x, Y = y, Text = labelText, HoverText = string label, ShowArrow = false, CaptureEvents = hover)
     :: List.collect (annotations firstn hover) subTrees
 
-let layout (firstn : int option) hover t =
+let layout (firstn : int option) hover fontSize t =
     Layout.init (
         Annotations = annotations firstn hover t,
-        Font = Font.init (StyleParam.FontFamily.Arial, 10.0, Color.fromString "black"),
+        Font = Font.init (StyleParam.FontFamily.Arial, fontSize, Color.fromString "black"),
         AutoSize = true,
         PaperBGColor = Color.fromString "white",
         PlotBGColor = Color.fromHex "0xE5ECF6"
@@ -99,16 +99,16 @@ let pointsAndLines factor (t: Tree<'a * (float * float)>) =
 type TreeDrawing = TD of GenericChart.GenericChart
 
 type TreeDrawing with
-    static member generateDrawing(t, ?scale: float, ?firstn: int, ?hover: bool) =
+    static member generateDrawing(t, ?scale: float, ?firstn: int, ?hover: bool, ?fontSize: float) =
         let factor = defaultArg scale 1.0
         let hover = defaultArg hover false
         let absT = t |> design |> absTree |> scaleAbsTree factor
-
+        let size = defaultArg fontSize 12.0
         let chart =
             absT
             |> pointsAndLines factor
             |> Chart.combine
-            |> GenericChart.setLayout (layout firstn hover absT)
+            |> GenericChart.setLayout (layout firstn hover size absT )
 
         let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
 

@@ -570,8 +570,6 @@ let main args =
         [Node("asdjlaksj", [Node("asjdla", [Node("lskadja i wish i wan the way iyam", []); Node("dsjal", [Node("das", [])])])]);
         Node("laras", [Node("lskjadoia", []); Node("i know u can heasd", []); Node("djalk", [Node("djaskl", []); Node("222daassdsad", [])])])])
 
-    TreeDrawing.generateDrawing(t5, scale=5.0, firstn=10, hover=true) |> showDrawing
-
-    //Plot.generateChart(t5, factor=5.0, firstn=10, hover=true) |> showChart
+    TreeDrawing.generateDrawing(t5, scale=5.0, firstn=2, hover=true) |> showDrawing 
     
     0
