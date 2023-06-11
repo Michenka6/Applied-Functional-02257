@@ -29,6 +29,5 @@ let main args =
                     [Node("3", []); Node("+", 
                     [Node("5", []); Node("1", [])])])])])
 
-    TreeDrawing.generateDrawing(ast, firstn=11, hover=true, fontSize=20.0) |> showDrawing 
-    
+    TreeDrawing.generateDrawing(t5, firstn=11, hover=true, fontSize=12.0) |> saveDrawing "longLabels1.html"
     0

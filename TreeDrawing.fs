@@ -88,7 +88,7 @@ let layout (firstn : int option) hover fontSize t =
         Annotations = annotations firstn hover t,
         Font = Font.init (StyleParam.FontFamily.Arial, fontSize, Color.fromString "black"),
         AutoSize = true,
-        PaperBGColor = Color.fromString "white",
+        PaperBGColor = Color.fromHex "0xE5ECF6",
         PlotBGColor = Color.fromHex "0xE5ECF6"
     )
 
@@ -111,8 +111,8 @@ type TreeDrawing with
             |> GenericChart.setLayout (layout firstn hover size absT )
 
         let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
-        //let ys = getCoords absT |> List.map (fun (x,y) -> y)
-        //let yAxis = LinearAxis.init (Visible = false, Range=StyleParam.Range.ofMinMax((List.min ys) - 10.0*factor, (List.max ys) + 10.0*factor))
+        //let xs = getCoords absT |> List.map (fun (x,y) -> x)
+        //let yAxis = LinearAxis.init (Visible = false, Range=StyleParam.Range.ofMinMax((List.min xs) - 3.0*factor, 1.0))
 
         chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis |> TD
 
