@@ -111,6 +111,8 @@ type TreeDrawing with
             |> GenericChart.setLayout (layout firstn hover size absT )
 
         let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
+        //let ys = getCoords absT |> List.map (fun (x,y) -> y)
+        //let yAxis = LinearAxis.init (Visible = false, Range=StyleParam.Range.ofMinMax((List.min ys) - 10.0*factor, (List.max ys) + 10.0*factor))
 
         chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis |> TD
 
