@@ -95,9 +95,11 @@ let layout (firstn : int option) hover t =
 let pointsAndLines factor (t: Tree<'a * (float * float)>) =
     verticalLines factor t @ horizontalLines factor t
 
-[<Sealed>]
-type TreeDrawing() = 
-    static member generateDrawing(t, ?scale: float, ?firstn: int, ?hover: bool) : GenericChart.GenericChart =
+
+type TreeDrawing = TD of GenericChart.GenericChart
+
+type TreeDrawing with
+    static member generateDrawing(t, ?scale: float, ?firstn: int, ?hover: bool) =
         let factor = defaultArg scale 1.0
         let hover = defaultArg hover false
         let absT = t |> design |> absTree |> scaleAbsTree factor
@@ -110,9 +112,9 @@ type TreeDrawing() =
 
         let xAxis = LinearAxis.init (Visible = false, Mirror = StyleParam.Mirror.True)
 
-        chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis
+        chart |> Chart.withXAxis xAxis |> Chart.withYAxis xAxis |> TD
 
-let saveDrawing (path: string) (c: GenericChart.GenericChart) =
-    Chart.saveHtml (path, OpenInBrowser = false)
+let saveDrawing (path: string) (TD(c)) =
+   c |> Chart.saveHtml (path, OpenInBrowser = false)
 
-let showDrawing (c: GenericChart.GenericChart) = c |> Chart.show
+let showDrawing ((TD(c): TreeDrawing)) = c |> Chart.show
