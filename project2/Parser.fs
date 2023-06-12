@@ -121,3 +121,187 @@ let arithmeticParser: Parser<Arithmetic, unit> =
     <|> mulParser
     <|> divParser
     <|> sqrtParser
+
+
+let rec commandListParser: Parser<CommandList, unit> =
+    let geParser: Parser<Condition, unit> =
+        between
+            (pstring "ifGE[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return GE c
+            })
+
+    let gtParser: Parser<Condition, unit> =
+        between
+            (pstring "ifGT[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return GT c
+            })
+
+    let eqParser: Parser<Condition, unit> =
+        between
+            (pstring "ifEQ[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return EQ c
+            })
+
+    let ltParser: Parser<Condition, unit> =
+        between
+            (pstring "ifLT[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return LT c
+            })
+
+    let leParser: Parser<Condition, unit> =
+        between
+            (pstring "ifLE[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return LE c
+            })
+
+    let rec commandParser: Parser<Command, unit> =
+        (parse {
+            let! cmd = arithmeticParser
+            return A cmd
+        })
+        <|> (parse {
+            let! cmd = comparisonParser
+            return C cmd
+        })
+        <|> (parse {
+            let! cmd = conditionParser
+            return Cond cmd
+        })
+
+    and conditionParser: Parser<Condition, unit> =
+        geParser <|> gtParser <|> eqParser <|> leParser <|> ltParser
+
+    (parse {
+        let! c = commandParser
+        return Cmnd c
+    })
+    <|> (parse {
+        let! c = commandParser
+        let! _ = pchar ','
+        let! cs = commandListParser
+        return Cmnds(c, cs)
+    })
+
+
+let rec commandParser: Parser<Command, unit> =
+    let rec commandListParser: Parser<CommandList, unit> =
+        (parse {
+            let! c = commandParser
+            return Cmnd c
+        })
+        <|> (parse {
+            let! c = commandParser
+            let! _ = pchar ','
+            let! cs = commandListParser
+            return Cmnds(c, cs)
+        })
+
+    let geParser: Parser<Condition, unit> =
+        between
+            (pstring "ifGE[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return GE c
+            })
+
+    let gtParser: Parser<Condition, unit> =
+        between
+            (pstring "ifGT[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return GT c
+            })
+
+    let eqParser: Parser<Condition, unit> =
+        between
+            (pstring "ifEQ[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return EQ c
+            })
+
+    let ltParser: Parser<Condition, unit> =
+        between
+            (pstring "ifLT[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return LT c
+            })
+
+    let leParser: Parser<Condition, unit> =
+        between
+            (pstring "ifLE[")
+            (pchar ']')
+            (parse {
+                let! c = commandListParser
+                return LE c
+            })
+
+    let conditionParser: Parser<Condition, unit> =
+        geParser <|> gtParser <|> eqParser <|> leParser <|> ltParser
+
+    (parse {
+        let! cmd = arithmeticParser
+        return A cmd
+    })
+    <|> (parse {
+        let! cmd = comparisonParser
+        return C cmd
+    })
+    <|> (parse {
+        let! cmd = conditionParser
+        return Cond cmd
+    })
+
+let stepParser: Parser<Step, unit> =
+    between
+        (pstring "step[")
+        (pchar ']')
+
+        (parse {
+            let! cmd = commandListParser
+            return Stp cmd
+        })
+
+let rootParser: Parser<Root, unit> =
+    (parse {
+        let! c = concParser
+        return Conc c
+    })
+    <|> (parse {
+        let! s = stepParser
+        return S s
+    })
+
+let rec rootListParser: Parser<RootList, unit> =
+    (parse {
+        let! rt = rootParser
+        return Rt rt
+    })
+    <|> (parse {
+        let! rt = rootParser
+        let! _ = pchar ','
+        let! rts = rootListParser
+        return Rts(rt, rts)
+    })
+
+let parse: Parser<CRN, unit> = between (pstring "crn={") (pchar '}') rootListParser
