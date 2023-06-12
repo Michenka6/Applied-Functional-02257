@@ -4,8 +4,8 @@
 open Parser
 open FParsec
 
-let input = "conc[species1,42]"
+let input = "add[A,B,C]"
 
-match run concParser input with
-| Success (result, _, _) -> printfn $"Conc : {result}"
-| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg
+match run arithmeticParser input with
+| Success (result, _, _) -> printfn $"add : {result}"
+| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg input

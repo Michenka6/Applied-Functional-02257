@@ -15,9 +15,6 @@ type Arithmetic =
 
 type Comparison = Cmp of Species * Species
 
-type Modules =
-    | A of Arithmetic
-    | C of Comparison
 
 type Condition =
     | GE of CommandList
@@ -29,8 +26,9 @@ type Condition =
 and Step = Stp of CommandList
 
 and Command =
-    | Modl of Modules
     | Cond of Condition
+    | A of Arithmetic
+    | C of Comparison
 
 and CommandList =
     | Cmnd of Command
