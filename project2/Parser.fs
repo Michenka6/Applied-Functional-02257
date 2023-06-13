@@ -127,4 +127,4 @@ let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (
 
 pRootListRef.Value <- chainr1 pR pRLopt
 
-let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "}" .>>  eof) pRootList >>= fun rl -> preturn (Crn rl)
+let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "}" .>>  eof) pRootList >>= fun rl -> preturn (Crn rl) 
