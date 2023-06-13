@@ -4,27 +4,77 @@ open FParsec
 open System
 open AST
 
+(* Many of these first functions from example code given on Learn ExprParser....fsx *)
 let token p = p .>> spaces
 let symbol s = token (pstring s)
 
-let rerserved = Set.empty |> Set.add "," |> Set.add "[" |> Set.add "]" |> Set.add "conc" |> Set.add "step" 
+let reserved =
+    Set.empty
+    |> Set.add ","
+    |> Set.add "["
+    |> Set.add "]"
+    |> Set.add "conc"
+    |> Set.add "step"
+
 let isLetter c = c |> Char.IsLetter
 let isDigit d = d |> Char.IsDigit
 
-let species: Parser<string,unit> = 
-            let charOrDigit c = isLetter c || isDigit c
-            token(many1Satisfy2L isLetter charOrDigit "species");;
+let ident: Parser<string, unit> = // use in pSpecies and possibly elsewhere
+    let charOrDigit c = isLetter c || isDigit c
+    token (many1Satisfy2L isLetter charOrDigit "identifier")
 
-// conc[〈species〉,〈number 〉]
+let pinteger: Parser<int32, unit> = token pint32
+let pfloat: Parser<float, unit> = token pfloat
+
+
+let pInt: Parser<Number, unit> = pinteger >>= fun n -> preturn (Int n)
+let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (Float n)
+let pNumber: Parser<Number, unit> = pInt <|> pFloat
+
 let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
-    species >>= fun s -> preturn (Sp s)  
+    ident >>= fun s -> preturn (Sp s)
 
-let intParser: Parser<Number, unit> = token pint32
-let floatParser: Parser<Number, unit> = token pfloat 
+// TODO: enforce the src != dest constraint
+let pSqrt: Parser<Arithmetic, unit> =
+    between (symbol "sqrt[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Sqrt(sp1, sp2)))
+
+let pDiv: Parser<Arithmetic, unit> =
+    between
+        (symbol "div[")
+        (symbol "]")
+        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Div(sp1, sp2, sp3)))
+
+let pMul: Parser<Arithmetic, unit> =
+    between
+        (symbol "mul[")
+        (symbol "]")
+        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Mul(sp1, sp2, sp3)))
+
+let pSub: Parser<Arithmetic, unit> =
+    between
+        (symbol "sub[")
+        (symbol "]")
+        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Sub(sp1, sp2, sp3)))
+
+let pAdd: Parser<Arithmetic, unit> =
+    between
+        (symbol "add[")
+        (symbol "]")
+        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Add(sp1, sp2, sp3)))
+
+let pLd: Parser<Arithmetic, unit> =
+    between (symbol "ld[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Ld(sp1, sp2)))
+
+let arithmeticParser: Parser<Arithmetic, unit> =
+    pLd
+    <|> pAdd
+    <|> pSub
+    <|> pMul
+    <|> pDiv
+    <|> pSqrt
 
 
-
-let concParser: Parser<Concentration, unit> =
+(* let concParser: Parser<Concentration, unit> =
     between
         (token (pstring "conc["))
         (token (pchar ']'))
@@ -244,3 +294,4 @@ let rec rootListParser: Parser<RootList, unit> =
 
 let crnParser: Parser<CRN, unit> =
     between (token (pstring "crn={")) (pchar '}') rootListParser
+ *)
