@@ -16,31 +16,42 @@ open AST
 let token p = p .>> spaces
 let symbol s = token (pstring s)
 
+// A lot of these only really make matter to check for if we allow spaces between instruction and "[" ??
 let reserved =
     Set.empty
-    |> Set.add ","
-    |> Set.add "["
-    |> Set.add "]"
     |> Set.add "conc"
     |> Set.add "step"
+    |> Set.add "rxn"
+    |> Set.add "ld"
+    |> Set.add "sub"
+    |> Set.add "mul"
+    |> Set.add "div"
+    |> Set.add "sqrt"
+    |> Set.add "cmp"
+    |> Set.add "ifGT"
+    |> Set.add "ifGE"
+    |> Set.add "ifEQ"
+    |> Set.add "ifLT"
+    |> Set.add "ifLE"
 
 let isLetter c = c |> Char.IsLetter
 let isDigit d = d |> Char.IsDigit
 
-let ident: Parser<string, unit> = // use in pSpecies and possibly elsewhere
+let ident: Parser<string, unit> = // only used in species right now. 
     let charOrDigit c = isLetter c || isDigit c
     token (many1Satisfy2L isLetter charOrDigit "identifier")
 
+let isReserved str s = Set.contains str s
+
 let pinteger: Parser<int32, unit> = token pint32
 let pfloat: Parser<float, unit> = token pfloat
-
 
 let pInt: Parser<Number, unit> = pinteger >>= fun n -> preturn (Int n)
 let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (Float n)
 let pNumber: Parser<Number, unit> = pInt <|> pFloat
 
 let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
-    ident >>= fun s -> preturn (Sp s)
+    ident >>= fun s -> if (not (isReserved s reserved)) then preturn (Sp s) else pzero   
 
 // TODO: enforce the src != dest constraint
 let pSqrt: Parser<Arithmetic, unit> =

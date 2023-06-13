@@ -7,7 +7,7 @@ open FParsec
 let tryParse s =
     match parseString s with 
     | Success (result, _, _) -> printfn $"crn : {result}"
-    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg s
+    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg
  
 let gcd = "crn={
     conc[b,32 ],
