@@ -4,6 +4,14 @@ open FParsec
 open System
 open AST
 
+(*  
+    TODO: 
+        Decide whether whitespace allowed between [ and {, } and ]
+        Decide whether whitespace allowed between instruction name and [
+        Decide whether programs must end with ;
+        Type checker what is this? Right now we accept or do not
+*)
+
 (* Many of these first functions from example code given on Learn ExprParser....fsx *)
 let token p = p .>> spaces
 let symbol s = token (pstring s)
@@ -36,7 +44,7 @@ let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
 
 // TODO: enforce the src != dest constraint
 let pSqrt: Parser<Arithmetic, unit> =
-    between (symbol "sqrt[") (symbol "]") (pipe2 (pSpecies .>> symbol "½") pSpecies (fun sp1 sp2 -> Sqrt(sp1, sp2)))
+    between (symbol "sqrt[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Sqrt(sp1, sp2)))
 
 let pDiv: Parser<Arithmetic, unit> =
     between
@@ -84,19 +92,19 @@ let (pRootList, pRootListRef) = createParserForwardedToRef<RootList, unit>()
 let (pCmdList, pCmdListRef) = createParserForwardedToRef<CommandList, unit>()
 
 let pGT: Parser<Conditional,unit> = 
-    between (symbol "ifGT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (GT l))
+    between (symbol "ifGT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (IfGT l))
 
 let pGE: Parser<Conditional,unit> = 
-    between (symbol "ifGE[{") (symbol "}]") (pCmdList >>= fun l -> preturn (GE l))
+    between (symbol "ifGE[{") (symbol "}]") (pCmdList >>= fun l -> preturn (IfGE l))
     
 let pEQ: Parser<Conditional,unit> = 
-    between (symbol "ifEQ[{") (symbol "}]") (pCmdList >>= fun l -> preturn (EQ l))
+    between (symbol "ifEQ[{") (symbol "}]") (pCmdList >>= fun l -> preturn (IfEQ l))
 
 let pLT: Parser<Conditional,unit> = 
-    between (symbol "ifLT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (LT l))
+    between (symbol "ifLT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (IfLT l))
 
 let pLE: Parser<Conditional,unit> = 
-    between (symbol "ifLE[{") (symbol "}]") (pCmdList >>= fun l -> preturn (LE l))
+    between (symbol "ifLE[{") (symbol "}]") (pCmdList >>= fun l -> preturn (IfLE l))
 
 let pCond: Parser<Conditional, unit> =
     pGT 
@@ -127,4 +135,7 @@ let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (
 
 pRootListRef.Value <- chainr1 pR pRLopt
 
-let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "};" .>>  eof) pRootList >>= fun rl -> preturn (Crn rl) 
+let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "};") pRootList >>= fun rl -> preturn (Crn rl) 
+
+// eof consume till end of input
+let parseString = run (pCrn  .>>  eof) 

@@ -4,13 +4,11 @@
 open Parser
 open FParsec
 
-let input = "add[A,B,C]"
-
-match run pArithmetic input with
-| Success (result, _, _) -> printfn $"add : {result}"
-| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg input
-
-
+let tryParse s =
+    match parseString s with 
+    | Success (result, _, _) -> printfn $"crn : {result}"
+    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg s
+ 
 let gcd = "crn={
     conc[b,32 ],
     conc[a,12 ],
@@ -27,11 +25,6 @@ let gcd = "crn={
 
 let p1 = "crn={ conc[b, 32], conc[a, 12]}"
 
-match run pCrn gcd with 
-| Success (result, _, _) -> printfn $"crn : {result}"
-| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg gcd
-
-
 let discreteCounter = "crn={
  conc[c,2], conc[cInitial, 4],
  conc[one ,1], conc[zero ,0],
@@ -45,6 +38,20 @@ let discreteCounter = "crn={
  }]
 };"
 
-match run pCrn discreteCounter with 
-| Success (result, _, _) -> printfn $"crn : {result}"
-| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg discreteCounter
+let fac =  "crn={
+ conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+ step[{
+ cmp[i,one ],
+ mul[f , i , fnext ],
+ sub[ i ,one, inext ]
+ }],
+ step[{
+ ifGT[{
+ ld[ inext , i ],
+ ld[ fnext , f ]
+ }]
+ }]
+};"
+
+
+tryParse fac    

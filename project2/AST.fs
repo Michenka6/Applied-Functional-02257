@@ -27,11 +27,11 @@ and Arithmetic =
 and Comparison = Cmp of Species * Species
 
 and Conditional = 
-    | GT of CommandList
-    | GE of CommandList
-    | EQ of CommandList
-    | LT of CommandList
-    | LE of CommandList
+    | IfGT of CommandList
+    | IfGE of CommandList
+    | IfEQ of CommandList
+    | IfLT of CommandList
+    | IfLE of CommandList
 
 and Species = Sp of string  
 
