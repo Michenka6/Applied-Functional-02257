@@ -36,34 +36,34 @@ let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
 
 // TODO: enforce the src != dest constraint
 let pSqrt: Parser<Arithmetic, unit> =
-    between (symbol "sqrt[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Sqrt(sp1, sp2)))
+    between (symbol "sqrt[") (symbol "]") (pipe2 (pSpecies .>> symbol "½") pSpecies (fun sp1 sp2 -> Sqrt(sp1, sp2)))
 
 let pDiv: Parser<Arithmetic, unit> =
     between
         (symbol "div[")
         (symbol "]")
-        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Div(sp1, sp2, sp3)))
+        (pipe3 (pSpecies .>> symbol ",") (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 sp3 -> Div(sp1, sp2, sp3)))
 
 let pMul: Parser<Arithmetic, unit> =
     between
         (symbol "mul[")
         (symbol "]")
-        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Mul(sp1, sp2, sp3)))
+        (pipe3 (pSpecies .>> symbol ",") (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 sp3 -> Mul(sp1, sp2, sp3)))
 
 let pSub: Parser<Arithmetic, unit> =
     between
         (symbol "sub[")
         (symbol "]")
-        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Sub(sp1, sp2, sp3)))
+        (pipe3 (pSpecies .>> symbol ",") (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 sp3 -> Sub(sp1, sp2, sp3)))
 
 let pAdd: Parser<Arithmetic, unit> =
     between
         (symbol "add[")
         (symbol "]")
-        (pipe3 (pSpecies .>> pchar ',') (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 sp3 -> Add(sp1, sp2, sp3)))
+        (pipe3 (pSpecies .>> symbol ",") (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 sp3 -> Add(sp1, sp2, sp3)))
 
 let pLd: Parser<Arithmetic, unit> =
-    between (symbol "ld[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Ld(sp1, sp2)))
+    between (symbol "ld[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Ld(sp1, sp2)))
 
 let pArithmetic: Parser<Arithmetic, unit> =
     pLd
@@ -74,7 +74,7 @@ let pArithmetic: Parser<Arithmetic, unit> =
     <|> pSqrt
 
 let pCmp: Parser<Comparison, unit> = 
-    between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
+    between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
 
 
 let pModule: Parser<Module, unit> =  (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp))
@@ -84,19 +84,19 @@ let (pRootList, pRootListRef) = createParserForwardedToRef<RootList, unit>()
 let (pCmdList, pCmdListRef) = createParserForwardedToRef<CommandList, unit>()
 
 let pGT: Parser<Conditional,unit> = 
-    between (symbol "ifGT[") (symbol "]") (pCmdList >>= fun l -> preturn (GT l))
+    between (symbol "ifGT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (GT l))
 
 let pGE: Parser<Conditional,unit> = 
-    between (symbol "ifGE[") (symbol "]") (pCmdList >>= fun l -> preturn (GE l))
+    between (symbol "ifGE[{") (symbol "}]") (pCmdList >>= fun l -> preturn (GE l))
     
 let pEQ: Parser<Conditional,unit> = 
-    between (symbol "ifEQ[") (symbol "]") (pCmdList >>= fun l -> preturn (EQ l))
+    between (symbol "ifEQ[{") (symbol "}]") (pCmdList >>= fun l -> preturn (EQ l))
 
 let pLT: Parser<Conditional,unit> = 
-    between (symbol "ifLT[") (symbol "]") (pCmdList >>= fun l -> preturn (LT l))
+    between (symbol "ifLT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (LT l))
 
 let pLE: Parser<Conditional,unit> = 
-    between (symbol "ifLE[") (symbol "]") (pCmdList >>= fun l -> preturn (LE l))
+    between (symbol "ifLE[{") (symbol "}]") (pCmdList >>= fun l -> preturn (LE l))
 
 let pCond: Parser<Conditional, unit> =
     pGT 
@@ -111,7 +111,7 @@ let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond 
 
 let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Conc(sp, n)))
 
-let pStep: Parser<Root, unit> = between (symbol "step[") (symbol "]") (pCmdList >>= fun l -> preturn (Step l))
+let pStep: Parser<Root, unit> = between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (Step l))
 
 let pRoot: Parser<Root, unit> = pConc <|> pStep
 
@@ -127,4 +127,4 @@ let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (
 
 pRootListRef.Value <- chainr1 pR pRLopt
 
-let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "}" .>>  eof) pRootList >>= fun rl -> preturn (Crn rl) 
+let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "};" .>>  eof) pRootList >>= fun rl -> preturn (Crn rl) 

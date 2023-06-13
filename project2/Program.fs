@@ -15,8 +15,8 @@ let program = "crn={
     conc[b,32 ],
     conc[a,12 ],
     step[{
-    ld [a, atmp],
-    ld [b, btmp],
+    ld[a, atmp],
+    ld[b, btmp],
     cmp[a,b]
     }],
     step[{
@@ -27,6 +27,6 @@ let program = "crn={
 
 let p1 = "crn={ conc[b, 32], conc[a, 12]}"
 
-match run pCrn p1 with 
+match run pCrn program with 
 | Success (result, _, _) -> printfn $"crn : {result}"
 | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg program
