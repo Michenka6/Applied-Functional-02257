@@ -9,7 +9,7 @@ open AST
         Decide whether whitespace allowed between [ and {, } and ]
         Decide whether whitespace allowed between instruction name and [
         Decide whether programs must end with ;
-        Type checker what is this? Right now we accept or do not
+        Type checker what is this? Right now we accept or do not -- CHECK IF NO CYCLES CMP BEFORE COND ETC...
 *)
 
 (* Many of these first functions from example code given on Learn ExprParser....fsx *)
