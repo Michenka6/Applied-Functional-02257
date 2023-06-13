@@ -2,9 +2,9 @@ module AST
 
 type CRN = Crn of RootList 
 
-and RootList = RL of Root * RLopt
-
-and RLopt = RSeq of Root * RLopt | REpsilon
+//and RootList = RL of Root * RLopt
+and RootList = R of Root | RL of RootList * RootList
+//and RLopt = RSeq of Root * RLopt | REpsilon
 
 and Root = Conc of Species * Number | Step of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? 
 

@@ -107,32 +107,24 @@ let pCond: Parser<Conditional, unit> =
 
 let pMdl: Parser<Command, unit> = pModule >>= fun m -> preturn (Mdl m)
 
-
 let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond cond))
 
-
-let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pNumber (fun sp  n -> Conc(sp, n)))
+let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Conc(sp, n)))
 
 let pStep: Parser<Root, unit> = between (symbol "step[") (symbol "]") (pCmdList >>= fun l -> preturn (Step l))
 
 let pRoot: Parser<Root, unit> = pConc <|> pStep
 
-let pRLopt: Parser<RLopt, unit> = failwith "not implemented"
-
-//let pCLopt: Parser<CLopt->CLopt,unit> = (symbol "," >>. pCmd) >>= fun cmd -> preturn (fun clo -> CSeq(cmd, clo))
-
-//let pMinus: Parser<E->E->E,unit> = symbol "-" >>. preturn (fun e e' -> Sub(e,e'));;
-
-(* let pCLopt: Parser<Command->CLopt->CLopt,unit> = symbol "," >>.  preturn (fun cmd clo -> CSeq(cmd, clo))
-let pMaybe = (symbol "," >>. pCmd) >>= (fun cmd1 -> preturn (fun cmd clo -> CL(cmd1, CSeq(cmd, clo))))
- *)
-
 let pC: Parser<CommandList, unit> = pCmd >>= fun c -> preturn (C c) 
-
-//let pCLopt: Parser<CommandList->CommandList->CommandList, unit> = symbol "," >>. preturn (fun c cl -> CL(c,cl))
 
 let pCLopt: Parser<CommandList->CommandList->CommandList,unit> = symbol "," >>. preturn (fun c1 c2 -> CL(c1,c2))
 
 pCmdListRef.Value <- chainr1 pC pCLopt
 
+let pR: Parser<RootList, unit> = pRoot >>= fun r -> preturn (R r)
 
+let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (fun r1 r2 -> RL(r1,r2))
+
+pRootListRef.Value <- chainr1 pR pRLopt
+
+let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "}" .>>  eof) pRootList >>= fun rl -> preturn (Crn rl)
