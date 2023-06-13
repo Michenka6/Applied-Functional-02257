@@ -5,17 +5,20 @@ open System
 open AST
 
 let token p = p .>> spaces
+let symbol s = token (pstring s)
 
 let rerserved = Set.empty |> Set.add "," |> Set.add "[" |> Set.add "]" |> Set.add "conc" |> Set.add "step" 
 let isLetter c = c |> Char.IsLetter
 let isDigit d = d |> Char.IsDigit
 
+let species: Parser<string,unit> = 
+            let charOrDigit c = isLetter c || isDigit c
+            token(many1Satisfy2L isLetter charOrDigit "species");;
 
 // conc[〈species〉,〈number 〉]
-let speciesParser: Parser<Species, unit> = // or symbol pstring thing ?
-    token (manySatisfy isLetter |>> String.Concat)
+let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
+    species >>= fun s -> preturn (Sp s)  
 
- 
 let intParser: Parser<Number, unit> = token pint32
 let floatParser: Parser<Number, unit> = token pfloat 
 

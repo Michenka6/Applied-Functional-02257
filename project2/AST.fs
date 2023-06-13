@@ -1,3 +1,5 @@
+module AST
+
 type CRN = Crn of RootList 
 
 and RootList = RL of Root * RLopt
@@ -10,7 +12,7 @@ and CommandList = CL of Command * CLopt
 
 and CLopt =  CSeq of Command * CLopt | CEpsilon 
 
-and Command = Mdl of Module | | Cond of Conditional
+and Command = Mdl of Module | Cond of Conditional
 
 and Module = Ar of Arithmetic | Comp of Comparison  // Skip module syntactic category as type?
 
@@ -31,5 +33,6 @@ and Conditional =
     | LT of CommandList
     | LE of CommandList
 
-and Species = string 
+and Species = Sp of string  
+
 and Number = Int of int | Real of float
