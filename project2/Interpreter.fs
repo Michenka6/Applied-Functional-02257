@@ -27,21 +27,18 @@ type State =
       concentrations: Concentrations
       nSteps: int }
 
-let intepretStep = failwith "not implemented "
-let intepretSteps steps (state: State) n =
-    let rec loop steps c =
-        match steps with 
-        | [] -> c Map.empty
-        | stp::steps -> loop steps (fun res -> c (let s, x = (intepretStep stp state) in res |> Map.add s x))  
-    
-    let cncs = loop steps id
-    
-    {status = Running; concentrations = cncs; nSteps = n}
+let intepretStep stp state =
+    failwith "not implemented"
+
+let rec intepretSteps steps (state: State) = 
+    match steps with 
+    | [] -> state 
+    | stp::steps -> intepretSteps steps (intepretStep stp state)
 
 let rec stateSequence steps state n =
     seq {
       match n with
-        | 0 -> yield intepretSteps steps state n
+        | 0 -> yield intepretSteps steps state
         | n when n > 0 -> 
                yield state 
                yield! stateSequence steps state (n-1)
