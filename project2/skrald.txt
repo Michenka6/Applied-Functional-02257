@@ -1,0 +1,11 @@
+(* let rec pCLopt (cl: CommandList): Parser<CLopt, unit> = 
+    ((symbol ",") >>. pCmd) >>= (fun cmd -> preturn (CSeq (cmd, (pCLopt cl))))
+ *)
+
+//let pCSeq: Parser<CLopt->CLopt,unit> = ((symbol ",") >>. pCmd) >>= (fun cmd cl -> preturn (fun cl -> CSeq(cmd, cl)))
+
+(* let rec pCLopt (cl: CommandList) = parse { let! _ = symbol "," 
+                          let! cmd = pCmd                                        
+                          return! pCLopt(CSeq(cmd,e)) }
+                  <|> preturn cl;;
+ *)

@@ -65,13 +65,65 @@ let pAdd: Parser<Arithmetic, unit> =
 let pLd: Parser<Arithmetic, unit> =
     between (symbol "ld[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Ld(sp1, sp2)))
 
-let arithmeticParser: Parser<Arithmetic, unit> =
+let pArithmetic: Parser<Arithmetic, unit> =
     pLd
     <|> pAdd
     <|> pSub
     <|> pMul
     <|> pDiv
     <|> pSqrt
+
+let pCmp: Parser<Comparison, unit> = 
+    between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
+
+
+let pModule: Parser<Module, unit> =  (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp))
+
+(* Slide 11 Parsing.pdf *)
+let (pRootList, pRootListRef) = createParserForwardedToRef<RootList, unit>()
+let (pCmdList, pCmdListRef) = createParserForwardedToRef<CommandList, unit>()
+
+let pGT: Parser<Conditional,unit> = 
+    between (symbol "ifGT[") (symbol "]") (pCmdList >>= fun l -> preturn (GT l))
+
+let pGE: Parser<Conditional,unit> = 
+    between (symbol "ifGE[") (symbol "]") (pCmdList >>= fun l -> preturn (GE l))
+    
+let pEQ: Parser<Conditional,unit> = 
+    between (symbol "ifEQ[") (symbol "]") (pCmdList >>= fun l -> preturn (EQ l))
+
+let pLT: Parser<Conditional,unit> = 
+    between (symbol "ifLT[") (symbol "]") (pCmdList >>= fun l -> preturn (LT l))
+
+let pLE: Parser<Conditional,unit> = 
+    between (symbol "ifLE[") (symbol "]") (pCmdList >>= fun l -> preturn (LE l))
+
+let pCond: Parser<Conditional, unit> =
+    pGT 
+    <|> pGE
+    <|> pEQ
+    <|> pLT
+    <|> pLE 
+
+let pMdl: Parser<Command, unit> = pModule >>= fun m -> preturn (Mdl m)
+
+
+let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond cond))
+
+
+let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> pchar ',') pNumber (fun sp  n -> Conc(sp, n)))
+
+let pStep: Parser<Root, unit> = between (symbol "step[") (symbol "]") (pCmdList >>= fun l -> preturn (Step l))
+
+let pRoot: Parser<Root, unit> = pConc <|> pStep
+
+let pRLopt: Parser<RLopt, unit> = failwith "not implemented"
+
+let rec pEopt e = parse { let! _ = symbol "," 
+                          let! e' = pCmd                                        
+                          return! pEopt(CSeq(e',e)) } 
+                  <|> preturn e;;
+
 
 
 (* let concParser: Parser<Concentration, unit> =

@@ -14,7 +14,7 @@ and CLopt =  CSeq of Command * CLopt | CEpsilon
 
 and Command = Mdl of Module | Cond of Conditional
 
-and Module = Ar of Arithmetic | Comp of Comparison  // Skip module syntactic category as type?
+and Module = Ar of Arithmetic | Comp of Comparison  // Skip module syntactic category as type? instead seems cleaner...
 
 and Arithmetic = 
     | Ld of Species * Species
