@@ -8,9 +8,9 @@ and RLopt = RSeq of Root * RLopt | REpsilon
 
 and Root = Conc of Species * Number | Step of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? 
 
-and CommandList = CL of Command * CLopt
-
-and CLopt =  CSeq of Command * CLopt | CEpsilon 
+//and CommandList = CL of Command * CLopt
+and CommandList = C of Command | CL of CommandList * CommandList 
+//and CLopt =  CSeq of Command * CLopt | CEpsilon 
 
 and Command = Mdl of Module | Cond of Conditional
 
