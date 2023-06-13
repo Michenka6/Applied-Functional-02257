@@ -11,7 +11,7 @@ match run pArithmetic input with
 | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg input
 
 
-let program = "crn={
+let gcd = "crn={
     conc[b,32 ],
     conc[a,12 ],
     step[{
@@ -27,6 +27,24 @@ let program = "crn={
 
 let p1 = "crn={ conc[b, 32], conc[a, 12]}"
 
-match run pCrn program with 
+match run pCrn gcd with 
 | Success (result, _, _) -> printfn $"crn : {result}"
-| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg program
+| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg gcd
+
+
+let discreteCounter = "crn={
+ conc[c,2], conc[cInitial, 4],
+ conc[one ,1], conc[zero ,0],
+ step[{
+ sub[c,one,cnext ],
+ cmp[c,zero]
+ }],
+ step[{
+ ifGT[{ ld[cnext ,c] }],
+ ifLE[{ ld[ cInitial ,c] }]
+ }]
+};"
+
+match run pCrn discreteCounter with 
+| Success (result, _, _) -> printfn $"crn : {result}"
+| Failure (errorMsg, _, _) -> printfn "Parsing failed: %s input is: %s" errorMsg discreteCounter
