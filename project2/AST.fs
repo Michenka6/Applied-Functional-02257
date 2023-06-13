@@ -1,16 +1,18 @@
 type CRN = Crn of RootList 
 
-and RootList = Rl of Root * Ropt
+and RootList = RL of Root * RLopt
 
-and Ropt = RSeq of RootList * Ropt | REpsilon
+and RLopt = RSeq of Root * RLopt | REpsilon
 
 and Root = Conc of Species * Number | Step of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? 
 
-and CommandList = Cl of Command * Copt
+and CommandList = CL of Command * CLopt
 
-and Copt =  CSeq of CommandList * Copt | CEpsilon 
+and CLopt =  CSeq of Command * CLopt | CEpsilon 
 
-and Command = Ar of Arithmetic | Comp of Comparison | Cond of Conditional
+and Command = Mdl of Module | | Cond of Conditional
+
+and Module = Ar of Arithmetic | Comp of Comparison  // Skip module syntactic category as type?
 
 and Arithmetic = 
     | Ld of Species * Species
@@ -23,11 +25,11 @@ and Arithmetic =
 and Comparison = Cmp of Species * Species
 
 and Conditional = 
-    | GE of CommandList
     | GT of CommandList
+    | GE of CommandList
     | EQ of CommandList
-    | LE of CommandList
     | LT of CommandList
+    | LE of CommandList
 
 and Species = string 
-and Number = int //Int of int | Real of float
+and Number = Int of int | Real of float

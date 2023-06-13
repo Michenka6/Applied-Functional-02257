@@ -1,10 +1,10 @@
---------------* Grammar Draft *-------------------
+--------------* Grammar Draft 1 *-------------------
 
 Crn = "crn = {" RootList "}"
 
 RootSList = RootS Ropt
 
-Ropt = "," RootSList Ropt | epsilon
+Ropt = "," RootS Ropt | epsilon
 
 RootS = ConcS | StepS
 
@@ -29,6 +29,7 @@ Number = Int | Float
 
 ---------------------------------------------------
 
+----------------------* F# types *-----------------------
 type CRN = Crn of RootList 
 
 and RootList = Rl of Root * Ropt
@@ -62,3 +63,109 @@ and Conditional =
 
 and Species = String 
 and Number = Int of int | Real of float ;; 
+
+----------------------------------------------------
+
+
+
+--------------* Grammar Draft 2 *-------------------
+
+Crn = "crn = {" RootList "}"
+
+RootSList = RootS RLopt
+
+RLopt = "," RootS Ropt | epsilon
+
+RootS = ConcS | StepS
+
+Concs = "conc[" Species "," Number "]"
+
+StepS = "step[" CommandSList "]" 
+
+CommandSList = { CommandS Copt } // notice { } not in grammar but in examples
+
+Copt = "," CommandS Copt 
+
+CommandS = ModuleS | ConditionalS 
+
+ModuleS = ArithmeticS | CmpS
+
+AritmeticS = ...
+
+CmpS = "cmp[" species "," species "]" 
+
+ConditionalS = ... 
+
+Species = letter letdigs (such that not reserved)
+Number = Int | Float 
+
+---------------------------------------------------
+
+Restrictions (that are not imposed by the grammar): 
+
+* In some arithmetic module op[src1, src2, dst] we must have dst != src1 and dst!= src2
+also we say that the operands are species. Output species must be different than input
+species.
+
+* Multiple instructions that do not conflict with each other can be part of same step and 
+they are executed in parallel. Conflict?
+	Conflict: 
+	Cyclic dependencies, output of one operation input of other operation.
+	Example: 
+		Step[{ mul[a, b, c], add[c, d, a] }]
+	Is NOT allowed since output of add is input to mul and output of mul input to add.
+	Same as when we have input species = output species, cycle of length 1
+
+
+* In examples it looks as if lists (command list and root list) are surrounded by "{" "}". 
+Not mentioned in grammar...
+
+* After calling cmp in a step a user can use intructions ifGT ... in subsequent steps - the flags 
+are active until the next call to the cmp module. So probably also these flags can not be used in 
+same step as cmp operation. The dependency thing. 
+
+* To use conditionals we must have done a comparison in a previous step. 
+
+--------------------------------------------------------------------------
+
+
+--------------------* F# types 2 *---------------------------------------
+
+type CRN = Crn of RootList 
+
+and RootList = RL of Root * RLopt
+
+and RLopt = RSeq of Root * RLopt | REpsilon
+
+and Root = Conc of Species * Number | Step of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? 
+
+and CommandList = CL of Command * CLopt
+
+and CLopt =  CSeq of Command * CLopt | CEpsilon 
+
+and Command = Mdl of Module | | Cond of Conditional
+
+and Module = Ar of Arithmetic | Comp of Comparison  // Skip module syntactic category as type?
+
+and Arithmetic = 
+    | Ld of Species * Species
+    | Add of Species * Species * Species
+    | Sub of Species * Species * Species
+    | Mul of Species * Species * Species
+    | Div of Species * Species * Species
+    | Sqrt of Species * Species
+
+and Comparison = Cmp of Species * Species
+
+and Conditional = 
+    | GT of CommandList
+    | GE of CommandList
+    | EQ of CommandList
+    | LT of CommandList
+    | LE of CommandList
+
+and Species = string 
+and Number = Int of int | Real of float
+
+---------------------
+	

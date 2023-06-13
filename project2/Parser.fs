@@ -16,8 +16,9 @@ let speciesParser: Parser<Species, unit> = // or symbol pstring thing ?
     token (manySatisfy isLetter |>> String.Concat)
 
  
+let intParser: Parser<Number, unit> = token pint32
+let floatParser: Parser<Number, unit> = token pfloat 
 
-let numberParser: Parser<Number, unit> = token pint32
 
 
 let concParser: Parser<Concentration, unit> =
