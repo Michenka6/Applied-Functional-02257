@@ -35,4 +35,4 @@ and Conditional =
 
 and Species = Sp of string  
 
-and Number = Int of int | Float of float
+and Number = float 

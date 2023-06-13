@@ -19,7 +19,7 @@ let getRWArith a =
 let getRWModule m = 
     match m with 
     | Ar(a) -> getRWArith a
-    | Comp(_) -> Set.empty<'a>, Set.empty<'a> // what do comp
+    | Comp(_) -> failwith "not implemented" //Set.empty<'a>, Set.empty<'a> // what do comp
 
 let getRWCond con = failwith "not implemented"
 let getRWC c =

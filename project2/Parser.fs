@@ -46,9 +46,9 @@ let isReserved str s = Set.contains str s
 let pinteger: Parser<int32, unit> = token pint32
 let pfloat: Parser<float, unit> = token pfloat
 
-let pInt: Parser<Number, unit> = pinteger >>= fun n -> preturn (Int n)
-let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (Float n)
-let pNumber: Parser<Number, unit> = pInt <|> pFloat
+//let pInt: Parser<Number, unit> = pinteger >>= fun n -> preturn (Int n)
+let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (n)
+let pNumber: Parser<Number, unit> = pFloat //pInt <|> pFloat
 
 let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
     ident >>= fun s -> if (not (isReserved s reserved)) then preturn (Sp s) else pzero   

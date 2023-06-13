@@ -1,8 +1,8 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
 
-
-open Parser
 open FParsec
+open Parser
+open Interpreter
 
 let tryParse s =
     match parseString s with 
@@ -23,7 +23,7 @@ let gcd = "crn={
      }]
      };"
 
-let p1 = "crn={ conc[b, 32], conc[a, 12]}"
+let p1 = "crn={ conc[b, 32], conc[a, 12]};"
 
 let discreteCounter = "crn={
  conc[c,2], conc[cInitial, 4],
@@ -55,3 +55,5 @@ let fac =  "crn={
 
 
 tryParse fac    
+
+analysis p1 5 |> printfn "%A" 
