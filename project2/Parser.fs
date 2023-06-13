@@ -119,23 +119,15 @@ let pRoot: Parser<Root, unit> = pConc <|> pStep
 
 let pRLopt: Parser<RLopt, unit> = failwith "not implemented"
 
-let rec pEopt e = parse { let! _ = symbol "," 
-                          let! e' = pCmd                                        
-                          return! pEopt(CSeq(e',e)) } 
-                  <|> preturn e;;
+let rec pCLopt (cl: CLopt) = parse { 
+                                let! _ = symbol "," 
+                                let! cmd = pCmd 
+                                return! pCLopt (CSeq (cmd, cl)) }
+                            <|> preturn cl
+
+let pMinus: Parser<CLopt->CLopt,unit> = (symbol "," >>. pCmd) >>= fun cmd -> preturn (fun co -> CSeq(cmd, co));;
 
 
-
-(* let concParser: Parser<Concentration, unit> =
-    between
-        (token (pstring "conc["))
-        (token (pchar ']'))
-        (parse {
-            let! species = speciesParser
-            let! _ = token (pchar ',')
-            let! number = numberParser
-            return Cnc(species, number)
-        })
 
 // cmp [〈species〉,〈species〉]
 let comparisonParser: Parser<Comparison, unit> =

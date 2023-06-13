@@ -9,3 +9,32 @@
                           return! pCLopt(CSeq(cmd,e)) }
                   <|> preturn cl;;
  *)
+
+ (* let rec pCLopt (cl: CommandList): Parser<CLopt, unit> = 
+    ((symbol ",") >>. pCmd) >>= (fun cmd -> preturn (CSeq (cmd, (pCLopt cl))))
+ *)
+
+//let pCSeq: Parser<CLopt->CLopt,unit> = ((symbol ",") >>. pCmd) >>= (fun cmd cl -> preturn (fun cl -> CSeq(cmd, cl)))
+
+(* let rec pCLopt (cl: CommandList) = parse { let! _ = symbol "," 
+                          let! cmd = pCmd                                        
+                          return! pCLopt(CSeq(cmd,e)) }
+                  <|> preturn cl;;
+
+ *)
+(* let concParser: Parser<Concentration, unit> =
+    between
+        (token (pstring "conc["))
+        (token (pchar ']'))
+        (parse {
+            let! species = speciesParser
+            let! _ = token (pchar ',')
+            let! number = numberParser
+            return Cnc(species, number)
+        })
+
+
+let rec pEopt e = parse { let! _ = symbol "," 
+                          let! e' = pCmd                                        
+                          return! pEopt(CSeq(e',e)) } 
+                  <|> preturn e;;
