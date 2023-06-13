@@ -132,6 +132,10 @@ same step as cmp operation. The dependency thing.
 
 * According to grammar ConcS may follow a StepS... ok but annoying to implement
 
+* Load and cycles.... Cmp and cycles ---> both operands to dst set and should be different.
+
+* Can same species be dst multiple times?
+
 --------------------------------------------------------------------------
 
 
