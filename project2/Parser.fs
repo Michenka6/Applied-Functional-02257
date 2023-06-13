@@ -4,20 +4,29 @@ open FParsec
 open System
 open AST
 
-// conc[〈species〉,〈number 〉]
-let speciesParser: Parser<Species, unit> =
-    manySatisfy (fun c -> not (c = ',' || c = ']')) |>> String.Concat
+let token p = p .>> spaces
 
-let numberParser: Parser<Number, unit> = spaces >>. pint32
+let rerserved = Set.empty |> Set.add "," |> Set.add "[" |> Set.add "]" |> Set.add "conc" |> Set.add "step" 
+let isLetter c = c |> Char.IsLetter
+let isDigit d = d |> Char.IsDigit
+
+
+// conc[〈species〉,〈number 〉]
+let speciesParser: Parser<Species, unit> = // or symbol pstring thing ?
+    token (manySatisfy isLetter |>> String.Concat)
+
+ 
+
+let numberParser: Parser<Number, unit> = token pint32
 
 
 let concParser: Parser<Concentration, unit> =
     between
-        (pstring "conc[")
-        (pchar ']')
+        (token (pstring "conc["))
+        (token (pchar ']'))
         (parse {
             let! species = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! number = numberParser
             return Cnc(species, number)
         })
@@ -25,11 +34,11 @@ let concParser: Parser<Concentration, unit> =
 // cmp [〈species〉,〈species〉]
 let comparisonParser: Parser<Comparison, unit> =
     between
-        (pstring "cmp[")
-        (pchar ']')
+        (token (pstring "cmp["))
+        (token (pchar ']'))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
             return Cmp(species1, species2)
         })
@@ -37,13 +46,13 @@ let comparisonParser: Parser<Comparison, unit> =
 //add [〈species〉,〈species〉,〈species〉]
 let addParser: Parser<Arithmetic, unit> =
     between
-        (pstring "add[")
-        (pstring "]")
+        (token (pstring "add["))
+        (token (pstring "]"))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species3 = speciesParser
             return Add(species1, species2, species3)
         })
@@ -51,13 +60,13 @@ let addParser: Parser<Arithmetic, unit> =
 //sub [〈species〉,〈species〉,〈species〉]
 let subParser: Parser<Arithmetic, unit> =
     between
-        (pstring "sub[")
-        (pchar ']')
+        (token (pstring "sub["))
+        (token (pchar ']'))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species3 = speciesParser
             return Sub(species1, species2, species3)
         })
@@ -65,13 +74,13 @@ let subParser: Parser<Arithmetic, unit> =
 //mul [〈species〉,〈species〉,〈species〉]
 let mulParser: Parser<Arithmetic, unit> =
     between
-        (pstring "mul[")
-        (pchar ']')
+        (token (pstring "mul["))
+        (token (pchar ']'))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species3 = speciesParser
             return Mul(species1, species2, species3)
         })
@@ -79,13 +88,13 @@ let mulParser: Parser<Arithmetic, unit> =
 //div [〈species〉,〈species〉,〈species〉]
 let divParser: Parser<Arithmetic, unit> =
     between
-        (pstring "div[")
-        (pchar ']')
+        (token (pstring "div["))
+        (token (pchar ']'))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species3 = speciesParser
             return Div(species1, species2, species3)
         })
@@ -93,11 +102,11 @@ let divParser: Parser<Arithmetic, unit> =
 //sqrt [〈species〉,〈species〉]
 let sqrtParser: Parser<Arithmetic, unit> =
     between
-        (pstring "sqrt[")
-        (pchar ']')
+        (token (pstring "sqrt["))
+        (token (pchar ']'))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
             return Sqrt(species1, species2)
         })
@@ -105,11 +114,11 @@ let sqrtParser: Parser<Arithmetic, unit> =
 //ld [〈species〉,〈species〉]
 let loadParser: Parser<Arithmetic, unit> =
     between
-        (pstring "ld[")
-        (pchar ']')
+        (token (pstring "ld["))
+        (token (pchar ']'))
         (parse {
             let! species1 = speciesParser
-            let! _ = pchar ','
+            let! _ = token (pchar ',')
             let! species2 = speciesParser
             return Ld(species1, species2)
         })
@@ -126,8 +135,8 @@ let arithmeticParser: Parser<Arithmetic, unit> =
 let rec commandListParser: Parser<CommandList, unit> =
     let geParser: Parser<Condition, unit> =
         between
-            (pstring "ifGE[")
-            (pchar ']')
+            (token (pstring "ifGE["))
+            (token (pchar ']'))
             (parse {
                 let! c = commandListParser
                 return GE c
@@ -135,8 +144,8 @@ let rec commandListParser: Parser<CommandList, unit> =
 
     let gtParser: Parser<Condition, unit> =
         between
-            (pstring "ifGT[")
-            (pchar ']')
+            (token (pstring "ifGT["))
+            (token (pchar ']'))
             (parse {
                 let! c = commandListParser
                 return GT c
@@ -144,8 +153,8 @@ let rec commandListParser: Parser<CommandList, unit> =
 
     let eqParser: Parser<Condition, unit> =
         between
-            (pstring "ifEQ[")
-            (pchar ']')
+            (token (pstring "ifEQ["))
+            (token (pchar ']'))
             (parse {
                 let! c = commandListParser
                 return EQ c
@@ -153,8 +162,8 @@ let rec commandListParser: Parser<CommandList, unit> =
 
     let ltParser: Parser<Condition, unit> =
         between
-            (pstring "ifLT[")
-            (pchar ']')
+            (token (pstring "ifLT["))
+            (token (pchar ']'))
             (parse {
                 let! c = commandListParser
                 return LT c
@@ -162,8 +171,8 @@ let rec commandListParser: Parser<CommandList, unit> =
 
     let leParser: Parser<Condition, unit> =
         between
-            (pstring "ifLE[")
-            (pchar ']')
+            (token (pstring "ifLE["))
+            (token (pchar ']'))
             (parse {
                 let! c = commandListParser
                 return LE c
@@ -192,90 +201,15 @@ let rec commandListParser: Parser<CommandList, unit> =
     })
     <|> (parse {
         let! c = commandParser
-        let! _ = pchar ','
+        let! _ = token (pchar ',')
         let! cs = commandListParser
         return Cmnds(c, cs)
     })
 
-
-let rec commandParser: Parser<Command, unit> =
-    let rec commandListParser: Parser<CommandList, unit> =
-        (parse {
-            let! c = commandParser
-            return Cmnd c
-        })
-        <|> (parse {
-            let! c = commandParser
-            let! _ = pchar ','
-            let! cs = commandListParser
-            return Cmnds(c, cs)
-        })
-
-    let geParser: Parser<Condition, unit> =
-        between
-            (pstring "ifGE[")
-            (pchar ']')
-            (parse {
-                let! c = commandListParser
-                return GE c
-            })
-
-    let gtParser: Parser<Condition, unit> =
-        between
-            (pstring "ifGT[")
-            (pchar ']')
-            (parse {
-                let! c = commandListParser
-                return GT c
-            })
-
-    let eqParser: Parser<Condition, unit> =
-        between
-            (pstring "ifEQ[")
-            (pchar ']')
-            (parse {
-                let! c = commandListParser
-                return EQ c
-            })
-
-    let ltParser: Parser<Condition, unit> =
-        between
-            (pstring "ifLT[")
-            (pchar ']')
-            (parse {
-                let! c = commandListParser
-                return LT c
-            })
-
-    let leParser: Parser<Condition, unit> =
-        between
-            (pstring "ifLE[")
-            (pchar ']')
-            (parse {
-                let! c = commandListParser
-                return LE c
-            })
-
-    let conditionParser: Parser<Condition, unit> =
-        geParser <|> gtParser <|> eqParser <|> leParser <|> ltParser
-
-    (parse {
-        let! cmd = arithmeticParser
-        return A cmd
-    })
-    <|> (parse {
-        let! cmd = comparisonParser
-        return C cmd
-    })
-    <|> (parse {
-        let! cmd = conditionParser
-        return Cond cmd
-    })
-
 let stepParser: Parser<Step, unit> =
     between
-        (pstring "step[")
-        (pchar ']')
+        (token (pstring "step["))
+        (token (pchar ']'))
 
         (parse {
             let! cmd = commandListParser
@@ -299,9 +233,10 @@ let rec rootListParser: Parser<RootList, unit> =
     })
     <|> (parse {
         let! rt = rootParser
-        let! _ = pchar ','
+        let! _ = token (pchar ',')
         let! rts = rootListParser
         return Rts(rt, rts)
     })
 
-let parse: Parser<CRN, unit> = between (pstring "crn={") (pchar '}') rootListParser
+let crnParser: Parser<CRN, unit> =
+    between (token (pstring "crn={")) (pchar '}') rootListParser

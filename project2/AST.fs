@@ -1,11 +1,18 @@
-module AST
+type CRN = Crn of RootList 
 
-type Species = string
-type Number = int
-type Expr = E of Species * Species
+and RootList = Rl of Root * Ropt
 
+and Ropt = RSeq of RootList * Ropt | REpsilon
 
-type Arithmetic =
+and Root = Conc of Species * Number | Step of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? 
+
+and CommandList = Cl of Command * Copt
+
+and Copt =  CSeq of CommandList * Copt | CEpsilon 
+
+and Command = Ar of Arithmetic | Comp of Comparison | Cond of Conditional
+
+and Arithmetic = 
     | Ld of Species * Species
     | Add of Species * Species * Species
     | Sub of Species * Species * Species
@@ -13,36 +20,14 @@ type Arithmetic =
     | Div of Species * Species * Species
     | Sqrt of Species * Species
 
-type Comparison = Cmp of Species * Species
+and Comparison = Cmp of Species * Species
 
-
-type Condition =
+and Conditional = 
     | GE of CommandList
     | GT of CommandList
     | EQ of CommandList
     | LE of CommandList
     | LT of CommandList
 
-and Step = Stp of CommandList
-
-and Command =
-    | Cond of Condition
-    | A of Arithmetic
-    | C of Comparison
-
-and CommandList =
-    | Cmnd of Command
-    | Cmnds of Command * CommandList
-
-and Concentration = Cnc of Species * Number
-
-and Root =
-    | Conc of Concentration
-    | S of Step
-
-and RootList =
-    | Rt of Root
-    | Rts of Root * RootList
-
-
-and CRN = RootList
+and Species = string 
+and Number = int //Int of int | Real of float
