@@ -251,3 +251,25 @@ let crnParser: Parser<CRN, unit> =
     between (token (pstring "crn={")) (pchar '}') rootListParser
  *)
  *)
+
+
+
+
+
+let rec stateSequence (steps: Root list)  (state: State) (nSteps: int) = 
+
+
+(*     seq { 
+        match nSteps with
+            | 0 -> yield intepretSteps steps state
+            | n when n > 0 -> 
+                let state = intepretSteps steps state 
+                yield state 
+                yield! (stateSequence steps state (nSteps-1))
+            | _ -> failwith "negative number of steps" 
+    }
+ *)
+   (*  match nSteps with 
+    | 0 -> seq { intepretSteps }
+    | 0
+     *)

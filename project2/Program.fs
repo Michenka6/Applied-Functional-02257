@@ -56,4 +56,4 @@ let fac =  "crn={
 
 tryParse fac    
 
-analysis discreteCounter 15 |> List.ofSeq |> printfn "%A"
+analysis fac 15 |> List.ofSeq |> printfn "%A"
