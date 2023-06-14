@@ -17,18 +17,18 @@ type Status =
     | Converged
 
 type Concentrations = Map<string, float>
-//type Flags = Map<string, bool> // is continuous somehwo but..
+
 type Flags = 
         { Xgty: bool
           Xlty: bool
           Ygtx: bool
-          Yltx: bool} 
+          Yltx: bool } 
 
 type State =
     { status: Status
       concentrations: Concentrations
       flags: Flags
-      nSteps: int }
+    } 
 
 // Lots of choices regarding the flags. Explain! 
 let comparison (Cmp(Sp(a), Sp(b))) env =
@@ -79,9 +79,9 @@ let arithmetic expr concs : Map<string, float> option =
 
 let updateState (oldState: State) (env: Map<string, float> option) (flags: Flags option) = 
     if env.IsSome && flags.IsSome then 
-        {status = oldState.status; concentrations = env.Value; flags = flags.Value; nSteps = oldState.nSteps}
+        {status = oldState.status; concentrations = env.Value; flags = flags.Value}
     else 
-        {status = Error; concentrations = env.Value; flags = flags.Value; nSteps = oldState.nSteps}
+        {status = Error; concentrations = env.Value; flags = flags.Value}
 
 let intepretModule m state =
     match m with 
@@ -106,6 +106,7 @@ and interpretConditional con state =
     | IfEQ(cmds) -> if flags.Xgty && flags.Ygtx then interpretCmdList cmds state else state
     | IfLT(cmds) ->  if flags.Xlty && flags.Ygtx then interpretCmdList cmds state else state
     | IfLE(cmds) ->  if flags.Ygtx then interpretCmdList cmds state else state
+
 let rec interpretSteps (steps: Step list) (state: State) = 
     match steps with 
     | [] -> state 
@@ -148,7 +149,7 @@ let interpret (Crn(rs)) (nSteps: int) =
         { status = Running
           concentrations = initCncs
           flags = { Xgty = false; Xlty = false; Ygtx = false; Yltx = false } // initial value of flags. should not matter if well formed program
-          nSteps = nSteps }
+        }
 
     (stateSequence steps state0 nSteps) |> Seq.append (seq { state0 })
     
