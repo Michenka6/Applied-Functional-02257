@@ -1,0 +1,85 @@
+Restrictions (that are not imposed by the grammar) and questoins: 
+
+* The grammar: left factorized but types do not reflect this, parser does. 
+
+--------------* Grammar Draft 2 *-------------------
+
+Crn = "crn = {" RootList "};"
+
+RootSList = RootS RLopt
+
+RLopt = "," RootS Ropt | epsilon
+
+RootS = ConcS | StepS
+
+Concs = "conc[" Species "," Number "]" // consider merging. pros and cons. 
+
+StepS = "step[" CommandSList "]" 
+
+CommandSList = { CommandS Copt } // notice { } not in grammar but in examples
+
+Copt = "," CommandS Copt 
+
+CommandS = ModuleS | ConditionalS 
+
+ModuleS = ArithmeticS | CmpS
+
+AritmeticS = ...
+
+CmpS = "cmp[" species "," species "]" 
+
+ConditionalS = ... 
+
+Species = letter letdigs (such that not reserved)
+Number = Int | Float 
+
+---------------------------------------------------
+
+* In some arithmetic module op[src1, src2, dst] we must have dst != src1 and dst!= src2
+also we say that the operands are species. Output species must be different than input
+species.
+
+* Multiple instructions that do not conflict with each other can be part of same step and 
+they are executed in parallel. Conflict?
+	Conflict: 
+	Cyclic dependencies, output of one operation input of other operation.
+	Example: 
+		Step[{ mul[a, b, c], add[c, d, a] }]
+	Is NOT allowed since output of add is input to mul and output of mul input to add.
+	Same as when we have input species = output species, cycle of length 1
+
+
+* In examples it looks as if lists (command list and root list) are surrounded by "{" "}". 
+Not mentioned in grammar...
+
+* Also not mentioned in grammar but in programs: End program with ";". some do some do not
+
+* After calling cmp in a step a user can use intructions ifGT ... in subsequent steps - the flags 
+are active until the next call to the cmp module. So probably also these flags can not be used in 
+same step as cmp operation. The dependency thing. 
+
+* To use conditionals we must have done a comparison in a previous step. 
+
+* Should we allow spaces between for instance add and [] add[ or also add [. Just pick one. looks weird maybe
+
+* According to grammar ConcS may follow a StepS... ok but annoying to implement
+
+* Load and cycles.... Cmp and cycles ---> both operands to dst set and should be different.
+
+* Can same species be dst multiple times? No harm but then not deterministic because ordering within steps 
+does not matter according to specification?
+
+* Four flags in total? not X_gt X_lt for every variable x. But two flags like this corresponding to 
+operands of cmp. Or for each variable? Or just two but no then how eq.
+
+* Initial state is the one obtained after running all concs? 
+
+* Source operands must be declared before being used but not destination operands, can appear
+"dynamically"
+
+* For now we assume that Conc statements may not follow Step statements.
+    So that program consits of two parts: first Concs, then Steps. 
+
+* type checker should check all these things and then interpreter runs without checking anything?
+
+

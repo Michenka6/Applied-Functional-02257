@@ -134,7 +134,8 @@ same step as cmp operation. The dependency thing.
 
 * Load and cycles.... Cmp and cycles ---> both operands to dst set and should be different.
 
-* Can same species be dst multiple times?
+* Can same species be dst multiple times? No harm but then not deterministic because ordering within steps 
+does not matter according to specification?
 
 * Four flags in total? not X_gt X_lt for every variable x. But two flags like this corresponding to 
 operands of cmp. Or for each variable? Or just two but no then how eq.
@@ -143,6 +144,11 @@ operands of cmp. Or for each variable? Or just two but no then how eq.
 
 * Source operands must be declared before being used but not destination operands, can appear
 "dynamically"
+
+* For now we assume that Conc statements may not follow Step statements.
+    So that program consits of two parts: first Concs, then Steps. 
+
+
 
 --------------------------------------------------------------------------
 

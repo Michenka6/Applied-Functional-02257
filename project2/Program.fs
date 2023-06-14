@@ -26,7 +26,7 @@ let gcd = "crn={
 let p1 = "crn={ conc[b, 32], conc[a, 12]};"
 
 let discreteCounter = "crn={
- conc[c,2], conc[cInitial, 4],
+ conc[c,3], conc[cInitial, 3],
  conc[one ,1], conc[zero ,0],
  step[{
  sub[c,one,cnext ],
@@ -39,7 +39,7 @@ let discreteCounter = "crn={
 };"
 
 let fac =  "crn={
- conc[ f ,1], conc[one ,1], conc[ i , 3 ],
+ conc[ f ,1], conc[one ,1], conc[ i , 5 ],
  step[{
  cmp[i,one ],
  mul[f , i , fnext ],
@@ -56,4 +56,4 @@ let fac =  "crn={
 
 tryParse fac    
 
-analysis fac 10 |> List.ofSeq |> printfn "%A" 
+analysis discreteCounter 15 |> List.ofSeq |> printfn "%A"
