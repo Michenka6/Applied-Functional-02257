@@ -29,12 +29,19 @@ type State =
       concentrations: Concentrations
       flags: Flags
       nSteps: int }
-
-let comparison com state = failwith "not implemented"
-
-let interpretConditional con state = failwith "not implemented"
-
-
+      
+let checkFlags fsToCheck (flags: Flags) = fsToCheck |> List.forall (fun f -> flags |> Map.containsKey f && flags[f])
+let comparison (Cmp(Sp(a), Sp(b))) env =
+    if env |> Map.containsKey a && env |> Map.containsKey b then
+        let t = 
+            match abs(env[a] - env[b]) < 0.000001 with  
+            | true -> Map.empty |> Map.add "Xgty" true |> Map.add "Xlty" false |> Map.add "Ygtx" true |> Map.add "Yltx" false
+            | _ -> 
+                match env[a] > env[b] with
+                | true -> Map.empty |> Map.add "Xgty" true |> Map.add "Xlty" false |> Map.add "Ygtx" false |> Map.add "Yltx" true
+                | _ -> Map.empty |> Map.add "Xgty" false |> Map.add "Xlty" true |> Map.add "Ygtx" true |> Map.add "Yltx" false
+        t |> Some 
+    else None
 let updateConcs dst env (newVal: float option) = 
     if newVal.IsSome then env |> Map.add dst newVal.Value |> Some else None
 
@@ -60,7 +67,7 @@ let loadIfDef src dst env =
     if env |> Map.containsKey src then env |> Map.add dst env[src] |> Some
     else None
 
-// Either change to option type or do nothing and rely on type checker 
+// Either change to option type or do nothing and rely on type checker. Check the src dst thing only in type checker?  
 let arithmetic expr concs : Map<string, float> option = 
     match expr with 
     | Ld(Sp(a), Sp(b)) -> concs |> applyUnaryIfDef ( id ) a |> updateConcs b concs 
@@ -70,40 +77,50 @@ let arithmetic expr concs : Map<string, float> option =
     | Div(Sp(a), Sp(b), Sp(c)) -> concs |> applyIfDef ( / ) a b |> updateConcs c concs 
     | Sqrt(Sp(a), Sp(b)) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs 
 
+let updateState (oldState: State) (env: Map<string, float> option) (flags: Map<string, bool> option) = 
+    if env.IsSome && flags.IsSome then 
+        {status = oldState.status; concentrations = env.Value; flags = flags.Value; nSteps = oldState.nSteps}
+    else 
+        {status = Error; concentrations = env.Value; flags = flags.Value; nSteps = oldState.nSteps}
+
 let intepretModule m state =
     match m with 
-    | Ar(a) -> 
-        let z = arithmetic a state.concentrations
-        if z.IsSome then 
-            {status = Running; concentrations = z.Value; flags = state.flags; nSteps = state.nSteps}
-        else 
-            {status = Error; concentrations = state.concentrations; flags = state.flags; nSteps = state.nSteps}
-    | Comp(com) -> comparison com state 
+    | Ar(a) -> (arithmetic a state.concentrations, Some(state.flags)) ||> updateState state   
+    | Comp(com) -> (Some(state.concentrations), comparison com state.concentrations) ||> updateState state
 
-let interpretCommand (cmd: Command) (state: State) =
+let rec interpretCmd (cmd: Command) (state: State) =
     let cncs = state.concentrations 
     match cmd with 
     | Mdl(m) -> intepretModule m state 
     | Cond(con) -> interpretConditional con state
 
-let rec interpretStep (cmds: CommandList) (state: State) =
+and interpretCmdList (cmds: CommandList) (state: State) =
     match cmds with 
-    | C(c) -> interpretCommand c state 
-    | CL(cl1, cl2) -> interpretStep cl1 state |> (interpretStep cl2)
+    | C(c) -> interpretCmd c state 
+    | CL(cl1, cl2) -> interpretCmdList cl1 state |> (interpretCmdList cl2)
 
+and interpretConditional con state =
+    let flags = state.flags
+    match con with 
+    | IfGT(cmds) -> if checkFlags ["Xgty"; "Yltx"] flags then interpretCmdList cmds state else state
+    | IfGE(cmds) ->  if checkFlags ["Xgty"] flags then interpretCmdList cmds state else state
+    | IfEQ(cmds) -> if checkFlags ["Xgty"; "Ygtx"] flags then interpretCmdList cmds state else state
+    | IfLT(cmds) ->  if checkFlags ["Xlty"; "Ygtx"] flags then interpretCmdList cmds state else state
+    | IfLE(cmds) ->  if checkFlags ["Ygtx"] flags then interpretCmdList cmds state else state
 let rec interpretSteps (steps: Step list) (state: State) = 
     match steps with 
     | [] -> state 
-    | (St(c))::steps -> interpretSteps steps (interpretStep c state)
+    | (St(c))::steps -> interpretSteps steps (interpretCmdList c state)
 
 let rec stateSequence steps state n =
     seq {
       match n with
-        | 0 -> yield interpretSteps steps state
-        | n when n > 0 -> 
-               yield state 
-               yield! stateSequence steps state (n-1)
-        | _ -> failwith "negative number"
+        | 0 ->  yield interpretSteps steps state 
+        | n when n > 0 ->
+               let newS =  interpretSteps steps state 
+               yield newS 
+               yield! stateSequence steps newS (n-1)
+        | _ -> failwith "negative n" 
     }
 
 let initFlags = 

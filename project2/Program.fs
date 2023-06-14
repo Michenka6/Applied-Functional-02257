@@ -39,7 +39,7 @@ let discreteCounter = "crn={
 };"
 
 let fac =  "crn={
- conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+ conc[ f ,1], conc[one ,1], conc[ i , 3 ],
  step[{
  cmp[i,one ],
  mul[f , i , fnext ],
@@ -56,4 +56,4 @@ let fac =  "crn={
 
 tryParse fac    
 
-analysis fac 5 |> printfn "%A" 
+analysis fac 10 |> List.ofSeq |> printfn "%A" 
