@@ -94,10 +94,8 @@ and interpretCmdList (cmds: CommandList) (state: State) =
     match cmds with 
     | [] -> state
     | cmd::cmds' -> interpretCmdList cmds' (interpretCmd cmd state)
-    (* | C(c) -> interpretCmd c state 
-    | CL(cl1, cl2) -> interpretCmdList cl1 state |> (interpretCmdList cl2)
-
- *)and interpretConditional con state =
+ 
+ and interpretConditional con state =
     let flags = state.flags
     match con with 
     | IfGT(cmds) -> if flags.Xgty && flags.Yltx then interpretCmdList cmds state else state
