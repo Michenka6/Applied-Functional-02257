@@ -5,7 +5,7 @@ module Interpreter
     So that program consits of two parts: first Concs, then Steps. 
 
 *)
-(* 
+
 open FParsec
 open AST
 open Parser
@@ -84,22 +84,20 @@ let updateState (oldState: State) (env: Map<string, float> option) (flags: Flags
     else 
         {status = Error; concentrations = env.Value; flags = flags.Value}
 
-let intepretModule m state =
-    match m with 
-    | Ar(a) -> (arithmetic a state.concentrations, Some(state.flags)) ||> updateState state   
-    | Comp(com) -> (Some(state.concentrations), comparison com state.concentrations) ||> updateState state
-
 let rec interpretCmd (cmd: Command) (state: State) = 
     match cmd with 
-    | Mdl(m) -> intepretModule m state 
+    | Ar(a) -> (arithmetic a state.concentrations, Some(state.flags)) ||> updateState state   
+    | Comp(c) -> (Some(state.concentrations), comparison c state.concentrations) ||> updateState state  
     | Cond(con) -> interpretConditional con state
 
 and interpretCmdList (cmds: CommandList) (state: State) =
     match cmds with 
-    | C(c) -> interpretCmd c state 
+    | [] -> state
+    | cmd::cmds' -> interpretCmdList cmds' (interpretCmd cmd state)
+    (* | C(c) -> interpretCmd c state 
     | CL(cl1, cl2) -> interpretCmdList cl1 state |> (interpretCmdList cl2)
 
-and interpretConditional con state =
+ *)and interpretConditional con state =
     let flags = state.flags
     match con with 
     | IfGT(cmds) -> if flags.Xgty && flags.Yltx then interpretCmdList cmds state else state
@@ -108,10 +106,11 @@ and interpretConditional con state =
     | IfLT(cmds) ->  if flags.Xlty && flags.Ygtx then interpretCmdList cmds state else state
     | IfLE(cmds) ->  if flags.Ygtx then interpretCmdList cmds state else state
 
-let rec interpretSteps (steps: Step list) (state: State) = 
+let rec interpretSteps (steps: Root list) (state: State) = 
     match steps with 
     | [] -> state 
-    | (St(c))::steps -> interpretSteps steps (interpretCmdList c state)
+    | (Step(c))::steps -> interpretSteps steps (interpretCmdList c state)
+    | _ -> failwith "Expected Steps only"
 
 let rec stateSequence steps state n =
     seq {
@@ -156,4 +155,3 @@ let analysis (src: string) (nSteps: int) =
     match parseString src with
     | Success(ast, _, _) -> interpret ast nSteps
     | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
- *)
