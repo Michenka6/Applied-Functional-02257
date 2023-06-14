@@ -44,9 +44,9 @@ let ident: Parser<string, unit> = // only used in species right now.
 let isReserved str s = Set.contains str s
 
 let pinteger: Parser<int32, unit> = token pint32
+
 let pfloat: Parser<float, unit> = token pfloat
 
-//let pInt: Parser<Number, unit> = pinteger >>= fun n -> preturn (Int n)
 let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (n)
 let pNumber: Parser<Number, unit> = pFloat //pInt <|> pFloat
 
@@ -95,9 +95,6 @@ let pArithmetic: Parser<Arithmetic, unit> =
 let pCmp: Parser<Comparison, unit> = 
     between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
 
-
-//let pModule: Parser<Module, unit> =  (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp))
-
 (* Slide 11 Parsing.pdf *)
 let (pRootList, pRootListRef) = createParserForwardedToRef<RootList, unit>()
 let (pCmdList, pCmdListRef) = createParserForwardedToRef<CommandList, unit>()
@@ -124,9 +121,6 @@ let pCond: Parser<Conditional, unit> =
     <|> pLT
     <|> pLE 
 
-//let pMdl: Parser<Command, unit> = pModule >>= fun m -> preturn (Mdl m)
-
-//let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond cond))
 let pCmd: Parser<Command, unit> = (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp)) <|> (pCond >>= fun cond -> preturn (Cond cond)) 
 let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Conc(sp, n)))
 

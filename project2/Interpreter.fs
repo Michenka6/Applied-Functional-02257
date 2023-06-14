@@ -2,7 +2,8 @@ module Interpreter
 
 (*
     For now we assume that Conc statements may not follow Step statements.
-    So that program consits of two parts: first Concs, then Steps. 
+    So that program consits of two parts: first Concs, then Steps.. ok but maybe enforce
+    in grammar? or check in TypeChecker  
 
 *)
 
@@ -30,7 +31,7 @@ type State =
       flags: Flags
     } 
 
-// Lots of choices regarding the flags. Explain! 
+// Lots of choices regarding the flags. Explain!. ugly.  
 let comparison (Cmp(Sp(a), Sp(b))) env =
     if env |> Map.containsKey a && env |> Map.containsKey b then
         let t = 
@@ -118,7 +119,7 @@ let rec stateSequence steps state n =
                let newS =  interpretSteps steps state 
                yield newS 
                yield! stateSequence steps newS (n-1)
-        | _ -> failwith "negative n" 
+        | _ -> failwith "negative number of iterations" 
     }
 
 let initConcs (concs: Root list) =

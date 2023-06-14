@@ -233,3 +233,36 @@ and Conditional =
 and Species = Sp of string  
 
 and Number = Int of int | Float of float
+
+
+
+--------------* Grammar Draft 3 *-------------------
+
+Crn = "crn = {" RootList "};"
+
+RootSList = ConcS RootS RLopt...
+
+RLopt = "," RootS RLopt | epsilon
+
+RootS = ConcS | StepS
+
+Concs = "conc[" Species "," Number "]"
+
+StepS = "step[" CommandSList "]" 
+
+CommandSList = { CommandS Copt } // notice { } not in grammar but in examples
+
+Copt = "," CommandS Copt 
+
+CommandS = ModuleS | ConditionalS 
+
+ModuleS = ArithmeticS | CmpS
+
+AritmeticS = ...
+
+CmpS = "cmp[" species "," species "]" 
+
+ConditionalS = ... 
+
+Species = letter letdigs (such that not reserved)
+Number = Int | Float 
