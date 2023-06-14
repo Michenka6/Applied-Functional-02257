@@ -240,7 +240,7 @@ and Number = Int of int | Float of float
 
 Crn = "crn = {" RootList "};"
 
-RootSList = ConcS RootS RLopt...
+RootSList = RootS RLopt...
 
 RLopt = "," RootS RLopt | epsilon
 

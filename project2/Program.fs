@@ -2,7 +2,9 @@
 
 open FParsec
 open Parser
+open TypeChecker
 open Interpreter
+
 
 let tryParse s =
     match parseString s with 
@@ -56,4 +58,5 @@ let fac =  "crn={
 
 tryParse fac    
 
-analysis fac 15 |> List.ofSeq |> printfn "%A"
+//analysis fac 15 |> List.ofSeq |> printfn "%A"
+analysisTpChkr fac
