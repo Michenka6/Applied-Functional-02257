@@ -9,6 +9,7 @@ module Interpreter
 open FParsec
 open AST
 open Parser
+open System 
 
 type Status =
     | Running
@@ -31,14 +32,52 @@ type State =
 
 let comparison com state = failwith "not implemented"
 
-let arithmetic a state = 
-    failwith "not implemented"
-
 let interpretConditional con state = failwith "not implemented"
+
+
+let updateConcs dst env (newVal: float option) = 
+    if newVal.IsSome then env |> Map.add dst newVal.Value |> Some else None
+
+let applyIfDef op src1 src2 env =
+    if env |> Map.containsKey src1 && env |> Map.containsKey src2 then 
+        try 
+            Some (op env[src1] env[src2])
+        with 
+            | :? OverflowException -> None 
+            | :? DivideByZeroException -> None
+    else None
+
+let applyUnaryIfDef op src env = 
+    if env |> Map.containsKey src then
+        try 
+            Some (op env[src])
+        with 
+            | :? OverflowException -> None 
+            | :? DivideByZeroException -> None
+    else None
+
+let loadIfDef src dst env = 
+    if env |> Map.containsKey src then env |> Map.add dst env[src] |> Some
+    else None
+
+// Either change to option type or do nothing and rely on type checker 
+let arithmetic expr concs : Map<string, float> option = 
+    match expr with 
+    | Ld(Sp(a), Sp(b)) -> concs |> applyUnaryIfDef ( id ) a |> updateConcs b concs 
+    | Add(Sp(a), Sp(b), Sp(c)) -> concs |> applyIfDef ( + ) a b |> updateConcs c concs 
+    | Sub(Sp(a), Sp(b), Sp(c)) -> concs |> applyIfDef ( - ) a b |> updateConcs c concs 
+    | Mul(Sp(a), Sp(b), Sp(c)) -> concs |> applyIfDef ( * ) a b |> updateConcs c concs 
+    | Div(Sp(a), Sp(b), Sp(c)) -> concs |> applyIfDef ( / ) a b |> updateConcs c concs 
+    | Sqrt(Sp(a), Sp(b)) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs 
 
 let intepretModule m state =
     match m with 
-    | Ar(a) -> arithmetic a state 
+    | Ar(a) -> 
+        let z = arithmetic a state.concentrations
+        if z.IsSome then 
+            {status = Running; concentrations = z.Value; flags = state.flags; nSteps = state.nSteps}
+        else 
+            {status = Error; concentrations = state.concentrations; flags = state.flags; nSteps = state.nSteps}
     | Comp(com) -> comparison com state 
 
 let interpretCommand (cmd: Command) (state: State) =
@@ -81,9 +120,7 @@ let initConcs (concs: Conc list) =
 let splitRoot r =
     match r with
     | Cnc(c) -> [c], []
-    | Stp(s) -> [], [s]
-    //| Conc(s, n) -> [ Conc(s, n) ], []
-    //| Step(cmds) -> [], [ Step(cmds) ]
+    | Stp(s) -> [], [s] 
 
 let rec splitRoots (rs: RootList) : Conc list * Step list =
     match rs with

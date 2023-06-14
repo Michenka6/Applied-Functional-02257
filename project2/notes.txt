@@ -137,7 +137,12 @@ same step as cmp operation. The dependency thing.
 * Can same species be dst multiple times?
 
 * Four flags in total? not X_gt X_lt for every variable x. But two flags like this corresponding to 
-operands of cmp. Or for each variable? Or just two but no then how eq. 
+operands of cmp. Or for each variable? Or just two but no then how eq.
+
+* Initial state is the one obtained after running all concs? 
+
+* Source operands must be declared before being used but not destination operands, can appear
+"dynamically"
 
 --------------------------------------------------------------------------
 
