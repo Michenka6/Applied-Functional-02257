@@ -136,6 +136,9 @@ same step as cmp operation. The dependency thing.
 
 * Can same species be dst multiple times?
 
+* Four flags in total? not X_gt X_lt for every variable x. But two flags like this corresponding to 
+operands of cmp. Or for each variable? Or just two but no then how eq. 
+
 --------------------------------------------------------------------------
 
 
