@@ -5,7 +5,7 @@ module Interpreter
     So that program consits of two parts: first Concs, then Steps. 
 
 *)
-
+(* 
 open FParsec
 open AST
 open Parser
@@ -42,6 +42,7 @@ let comparison (Cmp(Sp(a), Sp(b))) env =
                 | _ ->  { Xgty = false; Xlty = true; Ygtx = true; Yltx = false }
         t |> Some 
     else None
+
 let updateConcs dst env (newVal: float option) = 
     if newVal.IsSome then env |> Map.add dst newVal.Value |> Some else None
 
@@ -123,23 +124,21 @@ let rec stateSequence steps state n =
         | _ -> failwith "negative n" 
     }
 
-let initConcs (concs: Conc list) =
+let initConcs (concs: Root list) =
     let rec loop c =
         function
         | [] -> c Map.empty
-        | Cn((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs 
-
+        | Conc((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs 
+        | _ -> failwith "Expected Concs only"
     loop id concs
 
-let splitRoot r =
-    match r with
-    | Cnc(c) -> [c], []
-    | Stp(s) -> [], [s] 
-
-let rec splitRoots (rs: RootList) : Conc list * Step list =
-    match rs with
-    | R(r) -> splitRoot r
-    | RL(rs1, rs2) -> (fun (cs1, stps1) (cs2, stps2) -> cs1 @ cs2, stps1 @ stps2) (splitRoots rs1) (splitRoots rs2)
+let splitRoots (rs: RootList) =
+    let rec loop rs (rs1, rs2) : Root list * Root list =
+        match rs with
+        | [] -> (rs1, rs2)
+        | Conc(s, n)::rest -> loop rest (rs1 @ [Conc(s, n)], rs2) // order does not matter may as well use cons
+        | Step(s)::rest -> loop rest (rs1, rs2 @ [Step(s)])
+    loop rs ([], [])
 
 let interpret (Crn(rs)) (nSteps: int) =
     let concs, steps = splitRoots rs
@@ -157,3 +156,4 @@ let analysis (src: string) (nSteps: int) =
     match parseString src with
     | Success(ast, _, _) -> interpret ast nSteps
     | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
+ *)

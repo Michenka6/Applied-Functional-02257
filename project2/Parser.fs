@@ -96,7 +96,7 @@ let pCmp: Parser<Comparison, unit> =
     between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
 
 
-let pModule: Parser<Module, unit> =  (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp))
+//let pModule: Parser<Module, unit> =  (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp))
 
 (* Slide 11 Parsing.pdf *)
 let (pRootList, pRootListRef) = createParserForwardedToRef<RootList, unit>()
@@ -124,27 +124,27 @@ let pCond: Parser<Conditional, unit> =
     <|> pLT
     <|> pLE 
 
-let pMdl: Parser<Command, unit> = pModule >>= fun m -> preturn (Mdl m)
+//let pMdl: Parser<Command, unit> = pModule >>= fun m -> preturn (Mdl m)
 
-let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond cond))
+//let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond cond))
+let pCmd: Parser<Command, unit> = (pArithmetic |>> fun ar -> Ar(ar)) <|> (pCmp |>> fun cmp -> Comp(cmp)) <|> (pCond >>= fun cond -> preturn (Cond cond)) 
+let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Conc(sp, n)))
 
-let pConc: Parser<Conc, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Cn(sp, n)))
-
-let pStep: Parser<Step, unit> = between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (St l))
+let pStep: Parser<Root, unit> = between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (Step l))
 
 let pRoot: Parser<Root, unit> = 
-    pConc >>= (fun c -> preturn (Cnc c)) 
-    <|> (pStep >>= (fun s -> preturn (Stp s)))
+    pConc 
+    <|> pStep 
 
-let pC: Parser<CommandList, unit> = pCmd >>= fun c -> preturn (C c) 
+let pC: Parser<CommandList, unit> = pCmd >>= fun c -> preturn ([c]) 
 
-let pCLopt: Parser<CommandList->CommandList->CommandList,unit> = symbol "," >>. preturn (fun c1 c2 -> CL(c1,c2))
+let pCLopt: Parser<CommandList->CommandList->CommandList,unit> = symbol "," >>. preturn (fun c1 c2 -> c1 @ c2)
 
 pCmdListRef.Value <- chainr1 pC pCLopt
 
-let pR: Parser<RootList, unit> = pRoot >>= fun r -> preturn (R r)
+let pR: Parser<RootList, unit> = pRoot >>= fun r -> preturn ([r])
 
-let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (fun r1 r2 -> RL(r1,r2))
+let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (fun r1 r2 -> r1 @ r2)
 
 pRootListRef.Value <- chainr1 pR pRLopt
 
