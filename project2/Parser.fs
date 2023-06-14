@@ -128,11 +128,13 @@ let pMdl: Parser<Command, unit> = pModule >>= fun m -> preturn (Mdl m)
 
 let pCmd: Parser<Command, unit> = pMdl <|> (pCond >>= fun cond -> preturn (Cond cond))
 
-let pConc: Parser<Root, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Conc(sp, n)))
+let pConc: Parser<Conc, unit> = between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp  n -> Cn(sp, n)))
 
-let pStep: Parser<Root, unit> = between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (Step l))
+let pStep: Parser<Step, unit> = between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (St l))
 
-let pRoot: Parser<Root, unit> = pConc <|> pStep
+let pRoot: Parser<Root, unit> = 
+    pConc >>= (fun c -> preturn (Cnc c)) 
+    <|> (pStep >>= (fun s -> preturn (Stp s)))
 
 let pC: Parser<CommandList, unit> = pCmd >>= fun c -> preturn (C c) 
 

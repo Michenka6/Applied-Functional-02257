@@ -6,7 +6,10 @@ type CRN = Crn of RootList
 and RootList = R of Root | RL of RootList * RootList
 //and RLopt = RSeq of Root * RLopt | REpsilon
 
-and Root = Conc of Species * Number | Step of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? 
+and Root = Cnc of Conc | Stp of Step 
+
+and Conc = Cn of Species * Number 
+and Step = St of CommandList // RootS ConcS and StepS merged to save derivation steps... ok? not anymore
 
 //and CommandList = CL of Command * CLopt
 and CommandList = C of Command | CL of CommandList * CommandList 

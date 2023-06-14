@@ -1,4 +1,5 @@
 module TypeChecker
+(* module TypeChecker
 
 open FParsec
 open AST
@@ -52,4 +53,4 @@ let checkReadWrite (Crn(rs)) =
 let analysis (input: string) = 
     match parseString input with 
     | Success (result, _, _) -> printfn $"crn : {result}"
-    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg
+    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg *)

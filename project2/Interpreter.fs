@@ -27,10 +27,9 @@ type State =
       concentrations: Concentrations
       nSteps: int }
 
-let intepretStep stp state =
-    failwith "not implemented"
+let intepretStep (stp: Step) (state: State) = failwith "not implemented"
 
-let rec intepretSteps steps (state: State) = 
+let rec intepretSteps (steps: Step list) (state: State) = 
     match steps with 
     | [] -> state 
     | stp::steps -> intepretSteps steps (intepretStep stp state)
@@ -45,21 +44,22 @@ let rec stateSequence steps state n =
         | _ -> failwith "negative number"
     }
 
-let initializeConcs (concs: Root list) =
+let initializeConcs (concs: Conc list) =
     let rec loop c =
         function
         | [] -> c Map.empty
-        | Conc((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs
-        | _ -> failwith "only expected concs"
+        | Cn((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs 
 
     loop id concs
 
 let splitRoot r =
     match r with
-    | Conc(s, n) -> [ Conc(s, n) ], []
-    | Step(cmds) -> [], [ Step(cmds) ]
+    | Cnc(c) -> [c], []
+    | Stp(s) -> [], [s]
+    //| Conc(s, n) -> [ Conc(s, n) ], []
+    //| Step(cmds) -> [], [ Step(cmds) ]
 
-let rec splitRoots (rs: RootList) : Root list * Root list =
+let rec splitRoots (rs: RootList) : Conc list * Step list =
     match rs with
     | R(r) -> splitRoot r
     | RL(rs1, rs2) -> (fun (cs1, stps1) (cs2, stps2) -> cs1 @ cs2, stps1 @ stps2) (splitRoots rs1) (splitRoots rs2)

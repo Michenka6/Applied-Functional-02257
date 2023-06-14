@@ -56,4 +56,4 @@ let fac =  "crn={
 
 tryParse fac    
 
-analysis p1 5 |> printfn "%A" 
+//analysis p1 5 |> printfn "%A" 
