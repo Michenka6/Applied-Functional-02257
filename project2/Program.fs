@@ -46,7 +46,7 @@ let fac =  "crn={
  cmp[i,one ],
  mul[f , i , fnext ],
  sub[ i ,one, inext ]
- }], 
+ }],
  step[{
  ifGT[{
  ld[ inext , i ],
