@@ -103,10 +103,11 @@ and interpretCmdList (cmds: CommandList) (state: State) =
     | IfLT(cmds) ->  if flags.Xlty && flags.Ygtx then interpretCmdList cmds state else state
     | IfLE(cmds) ->  if flags.Ygtx then interpretCmdList cmds state else state
 
-let rec interpretSteps (steps: StepList) (state: State) = 
-    match steps with 
+let interpretSteps (steps: StepList) (state: State) = 
+    steps |> List.fold (fun s (Stp(cl)) -> interpretCmdList cl s) state 
+   (*  match steps with 
     | [] -> state 
-    | (Stp(c))::steps -> interpretSteps steps (interpretCmdList c state) 
+    | (Stp(c))::steps -> interpretSteps steps (interpretCmdList c state)  *)
 
 let rec stateSequence steps state n =
     seq {

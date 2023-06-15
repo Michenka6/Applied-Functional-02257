@@ -1,56 +1,83 @@
 module TypeChecker
 
-(* open FParsec
+open FParsec
 open AST
 open Parser 
 
 // Possibly also check all sources defined here then do no such checks in intepreter. 
-type Error = CycleConflict | ConcAfterStep | WriteTwice | SameSpeciesComp | CondNoFlags 
+type Error = CycleConflict | WriteTwice | SameSpeciesComp | CondNoFlags 
 type Result = NoErrors | Errors of Error list 
-
 
 let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.empty
 
-let splitRoots (rs: RootList) =
-    let rec loop rs (rs1, rs2) : Root list * Root list =
-        match rs with
-        | [] -> (rs1, rs2)
-        | Conc(s, n)::rest -> loop rest (rs1 @ [Conc(s, n)], rs2) // order does not matter may as well use cons
-        | Step(s)::rest -> loop rest (rs1, rs2 @ [Step(s)])
-    loop rs ([], [])
 
+let diffSpeciesComp (sl) =
+    sl 
+    |> List.collect (fun (Stp(cl)) -> cl)
+    |> List.fold 
+        (fun cmps cmd -> 
+            match cmd with 
+            | Comp(Cmp(a, b)) -> (a,b)::cmps
+            | _ -> cmps     
+        ) List.empty<Species*Species> 
+    |> List.forall (fun (a,b) -> a <> b)
 
-let writeTwiceArith a = failwith "not implemented"
-let writeTwiceCond cn = failwith "not implemented"
+let checkSameSpeciesComp(Crn(_, sl)) = 
+    match diffSpeciesComp sl with 
+    | true -> None
+    | _ -> Some SameSpeciesComp
 
-let writeTwiceCommand cmd = 
+// accepts all commands of program in order. extracted from steps. 
+let rec condNoFlags cs =
+    match cs with 
+    | Ar(_)::cs' -> condNoFlags cs' 
+    | Cond(_)::_ -> true // if a cmp had preceeded this would not match 
+    | _ -> false  
+
+let checkCondNoFlags(Crn(_, sl)) = 
+    let allCmds = sl |> List.collect (fun (Stp(cl)) -> cl) 
+    match condNoFlags allCmds with 
+    | true -> Some CondNoFlags
+    | _ -> None
+
+(* let writeTwiceArith a = 
+    match a with 
+    | Ld(_, dst) -> dst
+    | Add(_, _, dst) -> dst  
+    | Sub(_, _, dst) -> dst
+    | Mul(_, _, dst) -> dst
+    | Div(_, _, dst) -> dst  
+    | Sqrt(_, dst) -> dst 
+
+let rec writeTwiceCond = function 
+    | IfGT(cl) -> cl |> List.collect writeTwiceCommand 
+    | IfGE(cl) -> cl |> List.collect writeTwiceCommand  
+    | IfEQ(cl) -> cl |> List.collect writeTwiceCommand  
+    | IfLT(cl) -> cl |> List.collect writeTwiceCommand  
+    | IfLE(cl) -> cl |> List.collect writeTwiceCommand  
+
+and writeTwiceCommand cmd = 
     match cmd with 
     | Ar(a) -> writeTwiceArith a
-    | Comp(_) -> None
+    | Comp(_) -> [] 
     | Cond(cn) -> writeTwiceCond cn
 
-let writeTwiceStep stp = 
-    match stp |> List.map writeTwiceCommand |> List.filter (fun e -> e.IsSome) with 
-    | [] -> None
-    | _ -> Some WriteTwice
+and writeTwiceCL cl = 
+    match cl with 
+    | Ar(a)::cl' -> writeTwiceArith a 
+    
+
+and writeTwice (stp: Step) = failwith "not implemented" 
 
 let writeTwiceSteps steps = failwith "not implemented"
 
 let writeTwiceConcs concs = failwith "not implemented"
-let checkWriteTwice (Crn(rl)) = 
-    let concs, steps = splitRoots rl
-    match writeTwiceConcs concs, writeTwiceSteps steps with
+
+let checkWriteTwice (Crn(cl, sl)) = 
+    match writeTwiceConcs cl, writeTwiceSteps sl with
     | None, None -> None  
-    | _ -> Some WriteTwice
+    | _ -> Some WriteTwice *)
 
-
-let checkConcsStps (Crn(rl)) =
-    let rec aux rl =  
-        match rl with 
-        | Step(_)::Conc(_,_)::_ -> Some ConcAfterStep
-        | _::rs -> aux rs 
-        | [] -> None  
-    aux rl
 // add the strings isntead of whole thing TODO
 let getRWArith a = 
     match a with 
@@ -83,18 +110,14 @@ and getRWCond (c: Conditional) =
     | IfLT(cl) -> getRWCL cl
     | IfLE(cl) -> getRWCL cl
 
-let getRWStep (stp: Root) = 
-    match stp with 
-    | Step(cl) -> getRWCL cl
-    | _ -> failwith "Expected Step"
+let getRWStep (Stp(cl)) = getRWCL cl 
 
 // Get read write set for a root list
-let getRWRL (rs: RootList) = 
-    rs |> List.map getRWStep 
+let getRWRL (sl: StepList) = 
+    sl |> List.map (fun (Stp(cl)) -> getRWCL cl) 
 
-let checkReadWrite (Crn(rl)) =
-    let _, rs = splitRoots rl
-    match rs |> getRWRL |> List.forall (fun (rSet, wSet) -> (rSet, wSet) |> isDisjoint) with
+let checkReadWrite (Crn(_, sl)) = 
+    match sl |> getRWRL |> List.forall (fun (rSet, wSet) -> (rSet, wSet) |> isDisjoint) with
     | true -> None 
     | _ -> Some CycleConflict 
 let checkAll (checks: (CRN -> Error option) list) (crn: CRN) : Result = 
@@ -105,5 +128,5 @@ let checkAll (checks: (CRN -> Error option) list) (crn: CRN) : Result =
 
 let analysisTpChkr (input: string) = 
     match parseString input with 
-    | Success (ast, _, _) -> checkAll [checkReadWrite; checkConcsStps] ast
-    | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg) *)
+    | Success (ast, _, _) -> checkAll [checkReadWrite; checkCondNoFlags; checkSameSpeciesComp] ast
+    | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
