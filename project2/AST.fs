@@ -1,12 +1,16 @@
 module AST
 
-type CRN = Crn of RootList 
+type CRN = Crn of ConcList * StepList 
 
-and RootList = Root list 
+and ConcList = Conc list 
+and StepList = Step list 
+and Conc = Cnc of Species * Number 
+and Step = Stp of CommandList 
+//and RootList = Root list 
 
-and Root = Conc of Species * Number | Step of CommandList 
+//and Root = Conc of Species * Number | Step of CommandList 
 
-and CommandList = Command list // we could do without this type...  
+and CommandList = Command list // we could do without this type... but its okay  
 
 and Command = Ar of Arithmetic | Comp of Comparison | Cond of Conditional 
 

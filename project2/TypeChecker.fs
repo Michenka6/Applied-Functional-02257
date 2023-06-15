@@ -1,6 +1,6 @@
 module TypeChecker
 
-open FParsec
+(* open FParsec
 open AST
 open Parser 
 
@@ -9,13 +9,6 @@ type Error = CycleConflict | ConcAfterStep | WriteTwice | SameSpeciesComp | Cond
 type Result = NoErrors | Errors of Error list 
 
 
-let checkConcsStps (Crn(rl)) =
-    let rec aux rl =  
-        match rl with 
-        | Step(_)::Conc(_,_)::_ -> Some ConcAfterStep
-        | _::rs -> aux rs 
-        | [] -> None  
-    aux rl
 let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.empty
 
 let splitRoots (rs: RootList) =
@@ -26,6 +19,38 @@ let splitRoots (rs: RootList) =
         | Step(s)::rest -> loop rest (rs1, rs2 @ [Step(s)])
     loop rs ([], [])
 
+
+let writeTwiceArith a = failwith "not implemented"
+let writeTwiceCond cn = failwith "not implemented"
+
+let writeTwiceCommand cmd = 
+    match cmd with 
+    | Ar(a) -> writeTwiceArith a
+    | Comp(_) -> None
+    | Cond(cn) -> writeTwiceCond cn
+
+let writeTwiceStep stp = 
+    match stp |> List.map writeTwiceCommand |> List.filter (fun e -> e.IsSome) with 
+    | [] -> None
+    | _ -> Some WriteTwice
+
+let writeTwiceSteps steps = failwith "not implemented"
+
+let writeTwiceConcs concs = failwith "not implemented"
+let checkWriteTwice (Crn(rl)) = 
+    let concs, steps = splitRoots rl
+    match writeTwiceConcs concs, writeTwiceSteps steps with
+    | None, None -> None  
+    | _ -> Some WriteTwice
+
+
+let checkConcsStps (Crn(rl)) =
+    let rec aux rl =  
+        match rl with 
+        | Step(_)::Conc(_,_)::_ -> Some ConcAfterStep
+        | _::rs -> aux rs 
+        | [] -> None  
+    aux rl
 // add the strings isntead of whole thing TODO
 let getRWArith a = 
     match a with 
@@ -81,4 +106,4 @@ let checkAll (checks: (CRN -> Error option) list) (crn: CRN) : Result =
 let analysisTpChkr (input: string) = 
     match parseString input with 
     | Success (ast, _, _) -> checkAll [checkReadWrite; checkConcsStps] ast
-    | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
+    | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg) *)

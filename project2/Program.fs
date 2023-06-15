@@ -57,7 +57,7 @@ let fac =  "crn={
 
 
 tryParse fac    
-
+(* 
 //analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
 let result = analysisTpChkr fac
-result |> printfn "%A"
+result |> printfn "%A" *)

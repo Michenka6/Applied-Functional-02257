@@ -6,7 +6,7 @@ module Interpreter
     in grammar? or check in TypeChecker  
 
 *)
-
+(* 
 open FParsec
 open AST
 open Parser
@@ -151,4 +151,4 @@ let interpret (Crn(rs)) (nSteps: int) =
 let analysisIntprt (src: string) (nSteps: int) =
     match parseString src with
     | Success(ast, _, _) -> interpret ast nSteps
-    | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
+    | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg) *)
