@@ -92,10 +92,8 @@ let rec interpretCmd (cmd: Command) (state: State) =
     | Cond(con) -> interpretConditional con state
 
 and interpretCmdList (cmds: CommandList) (state: State) =
-    match cmds with 
-    | [] -> state
-    | cmd::cmds' -> interpretCmdList cmds' (interpretCmd cmd state)
- 
+    cmds |> List.fold (fun s cmd -> interpretCmd cmd s) state 
+
  and interpretConditional con state =
     let flags = state.flags
     match con with 
@@ -150,7 +148,7 @@ let interpret (Crn(rs)) (nSteps: int) =
 
     (stateSequence steps state0 nSteps) |> Seq.append (seq { state0 })
     
-let analysis (src: string) (nSteps: int) =
+let analysisIntprt (src: string) (nSteps: int) =
     match parseString src with
     | Success(ast, _, _) -> interpret ast nSteps
     | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)

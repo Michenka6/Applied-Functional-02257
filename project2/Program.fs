@@ -46,7 +46,7 @@ let fac =  "crn={
  cmp[i,one ],
  mul[f , i , fnext ],
  sub[ i ,one, inext ]
- }],
+ }], 
  step[{
  ifGT[{
  ld[ inext , i ],
@@ -58,5 +58,5 @@ let fac =  "crn={
 
 tryParse fac    
 
-//analysis fac 15 |> List.ofSeq |> printfn "%A"
-analysisTpChkr fac
+analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
+//analysisTpChkr fac
