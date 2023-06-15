@@ -6,7 +6,7 @@ module Interpreter
     in grammar? or check in TypeChecker  
 
 *)
-(* 
+
 open FParsec
 open AST
 open Parser
@@ -103,11 +103,10 @@ and interpretCmdList (cmds: CommandList) (state: State) =
     | IfLT(cmds) ->  if flags.Xlty && flags.Ygtx then interpretCmdList cmds state else state
     | IfLE(cmds) ->  if flags.Ygtx then interpretCmdList cmds state else state
 
-let rec interpretSteps (steps: Root list) (state: State) = 
+let rec interpretSteps (steps: StepList) (state: State) = 
     match steps with 
     | [] -> state 
-    | (Step(c))::steps -> interpretSteps steps (interpretCmdList c state)
-    | _ -> failwith "Expected Steps only"
+    | (Stp(c))::steps -> interpretSteps steps (interpretCmdList c state) 
 
 let rec stateSequence steps state n =
     seq {
@@ -120,24 +119,15 @@ let rec stateSequence steps state n =
         | _ -> failwith "negative number of iterations" 
     }
 
-let initConcs (concs: Root list) =
+let initConcs (concs: ConcList) =
     let rec loop c =
         function
         | [] -> c Map.empty
-        | Conc((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs 
-        | _ -> failwith "Expected Concs only"
+        | Cnc((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs  
     loop id concs
 
-let splitRoots (rs: RootList) =
-    let rec loop rs (rs1, rs2) : Root list * Root list =
-        match rs with
-        | [] -> (rs1, rs2)
-        | Conc(s, n)::rest -> loop rest (rs1 @ [Conc(s, n)], rs2) // order does not matter may as well use cons
-        | Step(s)::rest -> loop rest (rs1, rs2 @ [Step(s)])
-    loop rs ([], [])
-
-let interpret (Crn(rs)) (nSteps: int) =
-    let concs, steps = splitRoots rs
+let interpret (Crn(concs, steps)) (nSteps: int) =
+    
     let initCncs = initConcs concs
     
     let state0 =
@@ -151,4 +141,4 @@ let interpret (Crn(rs)) (nSteps: int) =
 let analysisIntprt (src: string) (nSteps: int) =
     match parseString src with
     | Success(ast, _, _) -> interpret ast nSteps
-    | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg) *)
+    | Failure(errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)

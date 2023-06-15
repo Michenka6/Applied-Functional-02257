@@ -3,12 +3,12 @@ module AST
 type CRN = Crn of ConcList * StepList 
 
 and ConcList = Conc list 
-and StepList = Step list 
-and Conc = Cnc of Species * Number 
-and Step = Stp of CommandList 
-//and RootList = Root list 
 
-//and Root = Conc of Species * Number | Step of CommandList 
+and StepList = Step list 
+
+and Conc = Cnc of Species * Number 
+
+and Step = Stp of CommandList 
 
 and CommandList = Command list // we could do without this type... but its okay  
 
