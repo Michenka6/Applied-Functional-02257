@@ -20,7 +20,7 @@
           "net7.0"
         ],
         "sources": {
-          "/usr/share/dotnet/sdk/7.0.302/FSharp/library-packs": {},
+          "/usr/lib/dotnet/sdk/7.0.107/FSharp/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -42,7 +42,7 @@
             "FSharp.Core": {
               "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
               "target": "Package",
-              "version": "[7.0.300, )",
+              "version": "[7.0.0, )",
               "generatePathProperty": true
             }
           },
@@ -62,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.107/RuntimeIdentifierGraph.json"
         }
       }
     }

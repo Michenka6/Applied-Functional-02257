@@ -96,6 +96,8 @@ let pCmp: Parser<Comparison, unit> =
     between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
 
 (* Slide 11 Parsing.pdf *)
+//let (pConcList, pConcListRef    ) = createParserForwardedToRef<RootList, unit>()
+//let (pStepList, pStepListRef) = createParserForwardedToRef<RootList, unit>()
 let (pRootList, pRootListRef) = createParserForwardedToRef<RootList, unit>()
 let (pCmdList, pCmdListRef) = createParserForwardedToRef<CommandList, unit>()
 
@@ -140,6 +142,13 @@ let pR: Parser<RootList, unit> = pRoot >>= fun r -> preturn ([r])
 let pRLopt: Parser<RootList->RootList->RootList,unit> = symbol "," >>. preturn (fun r1 r2 -> r1 @ r2)
 
 pRootListRef.Value <- chainr1 pR pRLopt 
+
+//let pCncL: Parser<RootList, unit> = pConc >>= fun c -> preturn ([c])
+//let pStpL: Parser<RootList, unit> = pStep >>= fun s -> preturn ([s])
+
+//pConcListRef.Value <- chainr1 pCncL pRLopt
+//pStepListRef.Value <- chainr1 pStpL pRLopt
+//pRootListRef.Value <- pipe2 (pConcList .>> symbol ",") pStepList (fun cncL stpL -> cncL @ stpL)
 
 let pCrn: Parser<CRN, unit> = between (spaces >>. symbol "crn={") (symbol "};") pRootList >>= fun rl -> preturn (Crn rl) 
 

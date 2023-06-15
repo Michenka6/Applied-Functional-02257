@@ -24,7 +24,7 @@
           }
         }
       },
-      "FSharp.Core/7.0.300": {
+      "FSharp.Core/7.0.0": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/FSharp.Core.dll": {
@@ -104,15 +104,14 @@
         "lib/netstandard2.0/FParsecCS.xml"
       ]
     },
-    "FSharp.Core/7.0.300": {
-      "sha512": "8vvItREJ1l5lcp3vBCSJ1mFevVAhR48I34DuF/EoUa7o1KlFpQpagyuZkVYMAsHPIjdp47ZxM9sI4eqeXaeWkA==",
+    "FSharp.Core/7.0.0": {
+      "sha512": "OTyT8L38YFRM3AeYTPn8BwZTI9Q/7Mi27GDdYYnlvWrqK9MU4pwwXdfU393WYf4WbveMKqpI6j3Q7ANS5ofPGQ==",
       "type": "package",
-      "path": "fsharp.core/7.0.300",
+      "path": "fsharp.core/7.0.0",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "Icon.png",
-        "fsharp.core.7.0.300.nupkg.sha512",
+        "fsharp.core.7.0.0.nupkg.sha512",
         "fsharp.core.nuspec",
         "lib/netstandard2.0/FSharp.Core.dll",
         "lib/netstandard2.0/FSharp.Core.xml",
@@ -150,7 +149,7 @@
   "projectFileDependencyGroups": {
     "net7.0": [
       "FParsec >= 1.1.1",
-      "FSharp.Core >= 7.0.300"
+      "FSharp.Core >= 7.0.0"
     ]
   },
   "packageFolders": {
@@ -172,7 +171,7 @@
         "net7.0"
       ],
       "sources": {
-        "/usr/share/dotnet/sdk/7.0.302/FSharp/library-packs": {},
+        "/usr/lib/dotnet/sdk/7.0.107/FSharp/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -194,7 +193,7 @@
           "FSharp.Core": {
             "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
             "target": "Package",
-            "version": "[7.0.300, )",
+            "version": "[7.0.0, )",
             "generatePathProperty": true
           }
         },
@@ -214,7 +213,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.107/RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -8,6 +8,14 @@ open Parser
 type Error = CycleConflict | ConcAfterStep | WriteTwice | SameSpeciesComp | CondNoFlags 
 type Result = NoErrors | Errors of Error list 
 
+
+let checkConcsStps (Crn(rl)) =
+    let rec aux rl =  
+        match rl with 
+        | Step(_)::Conc(_,_)::_ -> Some ConcAfterStep
+        | _::rs -> aux rs 
+        | [] -> None  
+    aux rl
 let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.empty
 
 let splitRoots (rs: RootList) =
@@ -58,19 +66,19 @@ let getRWStep (stp: Root) =
 // Get read write set for a root list
 let getRWRL (rs: RootList) = 
     rs |> List.map getRWStep 
-let checkReadWrite (rs: RootList) =  
+
+let checkReadWrite (Crn(rl)) =
+    let _, rs = splitRoots rl
     match rs |> getRWRL |> List.forall (fun (rSet, wSet) -> (rSet, wSet) |> isDisjoint) with
-    | true -> []
-    | _ -> [CycleConflict]
+    | true -> None 
+    | _ -> Some CycleConflict 
+let checkAll (checks: (CRN -> Error option) list) (crn: CRN) : Result = 
+    let es = checks |> List.map (fun f -> f crn) |> List.filter (fun e -> e.IsSome) |> List.map (fun e -> e.Value)
+    match es with 
+    | [] -> NoErrors
+    | es -> Errors(es)
 
 let analysisTpChkr (input: string) = 
     match parseString input with 
-    | Success (Crn(rs), _, _) ->
-        let concs, rs = splitRoots rs 
-        let res = checkReadWrite rs 
-        match res with 
-        | [] -> NoErrors |> printfn "%A"
-        | e -> Errors(e) |> printfn "%A"
-
-        res |> printfn "%A"
-    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg
+    | Success (ast, _, _) -> checkAll [checkReadWrite; checkConcsStps] ast
+    | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
