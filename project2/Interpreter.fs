@@ -121,12 +121,15 @@ let rec stateSequence steps state n =
     }
 
 let initConcs (concs: ConcList) =
-    let rec loop c =
+    concs |> List.fold (fun env (Cnc((Sp s), n)) -> env |> Map.add s n) Map.empty
+
+
+(*     let rec loop c =
         function
         | [] -> c Map.empty
         | Cnc((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs  
     loop id concs
-
+ *)
 let interpret (Crn(concs, steps)) (nSteps: int) =
     
     let initCncs = initConcs concs

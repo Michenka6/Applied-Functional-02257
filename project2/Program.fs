@@ -55,10 +55,9 @@ let fac =  "crn={
  }]
 };"
 
+tryParse gcd    
 
-tryParse fac    
 
+analysisTpChkr gcd |> printfn "%A"
 
-analysisTpChkr fac |> printfn "%A"
-
-analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
+analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"

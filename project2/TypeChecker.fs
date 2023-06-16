@@ -5,11 +5,24 @@ open AST
 open Parser 
 
 // Possibly also check all sources defined here then do no such checks in intepreter. 
-type Error = CycleConflict | WriteTwice | SameSpeciesComp | CondNoFlags 
+type Error = CycleConflict | WriteTwice | SameSpeciesComp | CondNoFlags | SrcOpNotDef 
 type Result = NoErrors | Errors of Error list 
 
 let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.empty
 
+
+let initConcs (concs: ConcList) =
+    concs |> List.fold (fun env (Cnc((Sp s), _)) -> env |> Set.add s) Set.empty
+
+
+(* let rec srcOpNotDef env0 cl =
+    match cl with 
+
+
+let checkSrcOpNotDef (Crn(cl, sl)) = 
+    let env0 = initConcs cl 
+
+ *)
 
 let diffSpeciesComp (sl) =
     sl 
