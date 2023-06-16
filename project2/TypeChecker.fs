@@ -59,15 +59,33 @@ let checkCondNoFlags (Crn (_, sl)) =
 
     if condNoFlags allCmds then Some CondNoFlags else None
 
+let getFromCnd =
+    function
+    | IfGE cl -> cl
+    | IfGT cl -> cl
+    | IfEQ cl -> cl
+    | IfLE cl -> cl
+    | IfLT cl -> cl
 
-(* let writeTwiceArith a = 
-    match a with 
-    | Ld(_, dst) -> dst
-    | Add(_, _, dst) -> dst  
-    | Sub(_, _, dst) -> dst
-    | Mul(_, _, dst) -> dst
-    | Div(_, _, dst) -> dst  
-    | Sqrt(_, dst) -> dst 
+// let writeTwice (Stp cl) =
+
+//     let aux =
+//         function
+//         | Comp _ -> []
+//         | Ar a ->
+//             match a with
+//             | Ld (_, dst) -> [ dst ]
+//             | Add (_, _, dst) -> [ dst ]
+//             | Sub (_, _, dst) -> [ dst ]
+//             | Mul (_, _, dst) -> [ dst ]
+//             | Div (_, _, dst) -> [ dst ]
+//             | Sqrt (_, dst) -> [ dst ]
+//         | Cond cnd -> cnd |> getFromCnd |> getDst
+
+//     let ls = List.collect aux cl
+//     List.distinct ls = ls
+
+(*
 
 let rec writeTwiceCond = function 
     | IfGT(cl) -> cl |> List.collect writeTwiceCommand 

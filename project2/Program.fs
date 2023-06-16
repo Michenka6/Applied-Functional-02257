@@ -69,7 +69,7 @@ tryParse gcd
 
 // analysisTpChkr gcd |> printfn "%A"
 
-// analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
+analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
 
 // let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 // let rxn2 = "rxn[C, e, 1.0]"

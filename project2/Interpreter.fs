@@ -5,23 +5,22 @@ open Types
 open Parser
 open System
 
-type Status =
-    | Running
-    | Error
-    | Converged
+module List =
+    let rec foldMap f acc =
+        function
+        | [] -> [ acc ]
+        | head :: tail -> acc :: foldMap f (f acc head) tail
 
-type Concentrations = Map<string, float>
-
-type Flags =
-    { Xgty: bool
-      Xlty: bool
-      Ygtx: bool
-      Yltx: bool }
-
-type State =
-    { status: Status
-      concentrations: Concentrations
-      flags: Flags }
+module Option =
+    let apply f a b =
+        match a, b with
+        | Some a, Some b ->
+            try
+                Some(f a b)
+            with
+            | :? OverflowException -> None
+            | :? DivideByZeroException -> None
+        | _ -> None
 
 // Lots of choices regarding the flags. Explain!. ugly.
 let comparison (Cmp (Sp (a), Sp (b))) env =
@@ -81,7 +80,7 @@ let loadIfDef src dst env =
         None
 
 // Either change to option type or do nothing and rely on type checker. Check the src dst thing only in type checker?
-let arithmetic expr concs : Map<string, float> option =
+let arithmetic expr concs : Concentrations option =
     match expr with
     | Ld (Sp (a), Sp (b)) -> concs |> applyUnaryIfDef (id) a |> updateConcs b concs
     | Add (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (+) a b |> updateConcs c concs
@@ -90,7 +89,7 @@ let arithmetic expr concs : Map<string, float> option =
     | Div (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (/) a b |> updateConcs c concs
     | Sqrt (Sp (a), Sp (b)) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
 
-let updateState (oldState: State) (env: Map<string, float> option) (flags: Flags option) =
+let updateState (oldState: State) (env: Concentrations option) (flags: Flags option) =
     if env.IsSome && flags.IsSome then
         { status = oldState.status
           concentrations = env.Value
@@ -115,23 +114,12 @@ and interpretConditional con state =
     let flags = state.flags
 
     match con with
-    | IfGT (cmds) ->
-        if flags.Xgty && flags.Yltx then
-            interpretCmdList cmds state
-        else
-            state
-    | IfGE (cmds) -> if flags.Xgty then interpretCmdList cmds state else state
-    | IfEQ (cmds) ->
-        if flags.Xgty && flags.Ygtx then
-            interpretCmdList cmds state
-        else
-            state
-    | IfLT (cmds) ->
-        if flags.Xlty && flags.Ygtx then
-            interpretCmdList cmds state
-        else
-            state
-    | IfLE (cmds) -> if flags.Ygtx then interpretCmdList cmds state else state
+    | IfGT (cmds) when flags.Xgty && flags.Yltx -> interpretCmdList cmds state
+    | IfGE (cmds) when flags.Xgty -> interpretCmdList cmds state
+    | IfEQ (cmds) when flags.Xgty && flags.Ygtx -> interpretCmdList cmds state
+    | IfLT (cmds) when flags.Xlty && flags.Ygtx -> interpretCmdList cmds state
+    | IfLE (cmds) when flags.Ygtx -> interpretCmdList cmds state
+    | _ -> state
 
 let interpretSteps (steps: StepList) (state: State) =
     steps |> List.fold (fun s (Stp (cl)) -> interpretCmdList cl s) state
@@ -139,16 +127,13 @@ let interpretSteps (steps: StepList) (state: State) =
     | [] -> state 
     | (Stp(c))::steps -> interpretSteps steps (interpretCmdList c state)  *)
 
-let rec stateSequence steps state n =
+let rec stateSequence steps state =
     seq {
-        match n with
-        | 0 -> yield interpretSteps steps state
-        | n when n > 0 ->
-            let newS = interpretSteps steps state
-            yield newS
-            yield! stateSequence steps newS (n - 1)
-        | _ -> failwith "negative number of iterations"
+        let s = interpretSteps steps state
+        yield s
+        yield! stateSequence steps s
     }
+
 
 let initConcs (concs: ConcList) =
     concs |> List.fold (fun env (Cnc ((Sp s), n)) -> env |> Map.add s n) Map.empty
@@ -174,7 +159,7 @@ let interpret (Crn (concs, steps)) (nSteps: int) =
               Yltx = false } // initial value of flags. should not matter if well formed program
         }
 
-    (stateSequence steps state0 nSteps) |> Seq.append (seq { state0 })
+    (stateSequence steps state0) |> Seq.take nSteps |> Seq.append (seq { state0 })
 
 let analysisIntprt (src: string) (nSteps: int) =
     match parseString src with
