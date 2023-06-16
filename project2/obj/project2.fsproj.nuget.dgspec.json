@@ -1,26 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj": {}
+    "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj": {}
   },
   "projects": {
-    "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj": {
+    "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj",
+        "projectUniqueName": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj",
         "projectName": "project2",
-        "projectPath": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj",
-        "packagesPath": "/home/luc/.nuget/packages/",
-        "outputPath": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/obj/",
+        "projectPath": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj",
+        "packagesPath": "/Users/amiralimov/.nuget/packages/",
+        "outputPath": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/luc/.nuget/NuGet/NuGet.Config"
+          "/Users/amiralimov/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "/usr/lib/dotnet/sdk/7.0.107/FSharp/library-packs": {},
+          "/usr/local/share/dotnet/sdk/7.0.102/FSharp/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -62,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.107/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.102/RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -61,7 +61,7 @@ type State =
 (* Types used in type checker. Defines various types of errors *)
 // Possibly also check all sources defined here then do no such checks in intepreter. 
 type Error = CycleConflict | WriteTwice | SameSpeciesComp | CondNoFlags | SrcOpNotDef 
-type Result = NoErrors | Errors of Error list 
+type Result = NoErrors | Errors of Error list
 
 (* Types for reactions *)
 type Expr = Empty | EL of Species list 

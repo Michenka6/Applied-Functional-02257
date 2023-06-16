@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "7DZZfAn+jj/uYaxamRVEs+V+oUdydMG9m4FsrWyahcFDIIT6s43zIrQ9HsoEtJfqNh1rn1i6XIdzWPo2y9jfnA==",
+  "dgSpecHash": "lrM/+PIXq2WxMxm//rypqYdq04C37LTPGkwdBB+pkjXdisX7WqrphmzOqu9NHcNlVBdD6hDRtWfpcFl/H26oZA==",
   "success": true,
-  "projectFilePath": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj",
+  "projectFilePath": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj",
   "expectedPackageFiles": [
-    "/home/luc/.nuget/packages/fparsec/1.1.1/fparsec.1.1.1.nupkg.sha512",
-    "/home/luc/.nuget/packages/fsharp.core/7.0.0/fsharp.core.7.0.0.nupkg.sha512"
+    "/Users/amiralimov/.nuget/packages/fparsec/1.1.1/fparsec.1.1.1.nupkg.sha512",
+    "/Users/amiralimov/.nuget/packages/fsharp.core/7.0.0/fsharp.core.7.0.0.nupkg.sha512"
   ],
   "logs": []
 }
