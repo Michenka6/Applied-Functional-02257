@@ -70,6 +70,6 @@ let fac =  "crn={
 //analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
 
 let rxn1 = "rxn[A+B, A+B+C, 1.0]"
-let rxn2 = "rxn[C, , 1.0]"
-tryParseRxn rxn1 |> printfn "%A"
-tryParseRxn rxn1 |> printfn "%A"
+let rxn2 = "rxn[C, e, 1.0]"
+tryParseRxn rxn1 
+tryParseRxn rxn2 
