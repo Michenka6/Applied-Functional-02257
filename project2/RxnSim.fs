@@ -5,14 +5,23 @@ open Types
 open RxnsParser
 
 
-let simulateRxn rxn = failwith "not implemented" 
+let simulateRxn (step: float) (state: State) (rxn: Rxns) : State = failwith "not implemented" 
 
-let simulateRxnS (step: float) (rxns: Rxns list)  = failwith "not implemented"
+let simulateRxnS (step: float) (rxns: Rxns list) (state: State): State =
+    rxns |> List.fold (simulateRxn step) (state) 
 
 let simulate (T: int) (step: float) (rxns: Rxns list) =
+    
+    let state0 =
+        {   status = Running
+            concentrations = Map.empty
+            flags = { Xgty = false; Xlty = false; Ygtx = false; Yltx = false } // initial value of flags. should not matter if well formed program
+        } 
+    
     seq {
         for i in 0..(T-1) do 
-            yield simulateRxnS (float i * step) rxns
+            let state = simulateRxnS (float i * step) rxns
+            yield state 
     }
 
 let runSim T step s = 
