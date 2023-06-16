@@ -1,5 +1,5 @@
 module Rxns
-open AST 
+open Types
 
 type Expr = Empty | EL of Species list 
 

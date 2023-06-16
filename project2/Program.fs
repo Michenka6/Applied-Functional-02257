@@ -4,7 +4,6 @@ open FParsec
 open Parser
 open TypeChecker
 open Interpreter
-open Rxns
 open RxnsParser
 
 
@@ -63,11 +62,11 @@ let fac =  "crn={
  }]
 };"
 
-//tryParse gcd    
+tryParse gcd    
 
-//analysisTpChkr gcd |> printfn "%A"
+analysisTpChkr gcd |> printfn "%A"
 
-//analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
+analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
 
 let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"

@@ -1,7 +1,7 @@
 module Interpreter
 
 open FParsec
-open AST
+open Types
 open Parser
 open System 
 

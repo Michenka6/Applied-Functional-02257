@@ -2,7 +2,7 @@ module Parser
 
 open FParsec
 open System
-open AST
+open Types
 
 (* Many of these first functions from example code given on Learn ExprParser....fsx *)
 let token p = p .>> spaces

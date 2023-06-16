@@ -1,7 +1,8 @@
 module TypeChecker
 
 open FParsec
-open AST
+//open AST
+open Types
 open Parser 
 
 // Possibly also check all sources defined here then do no such checks in intepreter. 

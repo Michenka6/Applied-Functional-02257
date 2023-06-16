@@ -2,8 +2,7 @@ module RxnsParser
 
 open FParsec
 open System
-open AST
-open Rxns
+open Types
 
 let token p = p .>> spaces
 
