@@ -71,5 +71,8 @@ let fac =  "crn={
 
 let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"
+let crn1 = rxn1 + "," + rxn2
+
 tryParseRxn rxn1 
-tryParseRxn rxn2 
+tryParseRxn rxn2
+tryParseRxn crn1

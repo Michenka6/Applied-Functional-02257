@@ -54,4 +54,9 @@ let pE: Parser<Expr, unit> = pEmpty <|> ((chainr1 pSL pSLopt) >>= fun l -> pretu
 
 let pRxn: Parser<Rxns, unit> = between (symbol "rxn[") (symbol "]") (pipe3 (pE .>> symbol ",")  (pE .>> symbol ",") (pfloat) (fun s1 s2 n -> Rxn(s1, s2, n)))
 
-let parseRxn = run (pRxn  .>>  eof) 
+let pRxnL: Parser<Rxns list, unit> = pRxn >>= fun rxn -> preturn [rxn]
+let pRxnLopt: Parser<Rxns list -> Rxns list -> Rxns list,unit> = symbol "," >>. preturn  (fun rxn1 rxn2 -> rxn1 @ rxn2)
+
+let pRxnS: Parser<Rxns list, unit>  = chainr1 pRxnL pRxnLopt
+
+let parseRxn = run (pRxnS  .>>  eof) 
