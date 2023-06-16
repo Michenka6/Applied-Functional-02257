@@ -5,10 +5,6 @@ open FParsec
 open Types
 open Parser 
 
-// Possibly also check all sources defined here then do no such checks in intepreter. 
-type Error = CycleConflict | WriteTwice | SameSpeciesComp | CondNoFlags | SrcOpNotDef 
-type Result = NoErrors | Errors of Error list 
-
 let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.empty
 
 

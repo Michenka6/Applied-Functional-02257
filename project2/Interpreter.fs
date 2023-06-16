@@ -5,25 +5,6 @@ open Types
 open Parser
 open System 
 
-type Status =
-    | Running
-    | Error
-    | Converged
-
-type Concentrations = Map<string, float>
-
-type Flags = 
-        { Xgty: bool
-          Xlty: bool
-          Ygtx: bool
-          Yltx: bool } 
-
-type State =
-    { status: Status
-      concentrations: Concentrations
-      flags: Flags
-    } 
-
 // Lots of choices regarding the flags. Explain!. ugly.  
 let comparison (Cmp(Sp(a), Sp(b))) env =
     if env |> Map.containsKey a && env |> Map.containsKey b then
