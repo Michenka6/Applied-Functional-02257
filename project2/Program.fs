@@ -4,13 +4,21 @@ open FParsec
 open Parser
 open TypeChecker
 open Interpreter
+open Rxns
+open RxnsParser
 
 
 let tryParse s =
     match parseString s with 
     | Success (result, _, _) -> printfn $"crn : {result}"
     | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg
+
+let tryParseRxn s =
+    match parseRxn s with 
+    | Success (result, _, _) -> printfn $"rxn : {result}"
+    | Failure (errorMsg, _, _) -> printfn "Parsing failed: %s" errorMsg
  
+
 let gcd = "crn={
     conc[b,32 ],
     conc[a,12 ],
@@ -55,9 +63,13 @@ let fac =  "crn={
  }]
 };"
 
-tryParse gcd    
+//tryParse gcd    
 
+//analysisTpChkr gcd |> printfn "%A"
 
-analysisTpChkr gcd |> printfn "%A"
+//analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
 
-analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
+let rxn1 = "rxn[A+B, A+B+C, 1.0]"
+let rxn2 = "rxn[C, , 1.0]"
+tryParseRxn rxn1 |> printfn "%A"
+tryParseRxn rxn1 |> printfn "%A"

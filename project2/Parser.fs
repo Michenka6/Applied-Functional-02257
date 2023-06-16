@@ -4,14 +4,6 @@ open FParsec
 open System
 open AST
 
-(*  
-    TODO: 
-        Decide whether whitespace allowed between [ and {, } and ]
-        Decide whether whitespace allowed between instruction name and [
-        Decide whether programs must end with ;
-        Type checker what is this? Right now we accept or do not -- CHECK IF NO CYCLES CMP BEFORE COND ETC...
-*)
-
 (* Many of these first functions from example code given on Learn ExprParser....fsx *)
 let token p = p .>> spaces
 let symbol s = token (pstring s)
@@ -43,8 +35,6 @@ let ident: Parser<string, unit> = // only used in species right now.
 
 let isReserved str s = Set.contains str s
 
-let pinteger: Parser<int32, unit> = token pint32
-
 let pfloat: Parser<float, unit> = token pfloat
 
 let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (n)
@@ -53,7 +43,7 @@ let pNumber: Parser<Number, unit> = pFloat //pInt <|> pFloat
 let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
     ident >>= fun s -> if (not (isReserved s reserved)) then preturn (Sp s) else pzero   
 
-// TODO: enforce the src != dest constraint
+// TODO: enforce the src != dest constraint. done in type checker
 let pSqrt: Parser<Arithmetic, unit> =
     between (symbol "sqrt[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Sqrt(sp1, sp2)))
 

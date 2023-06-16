@@ -1,12 +1,5 @@
 module Interpreter
 
-(*
-    For now we assume that Conc statements may not follow Step statements.
-    So that program consits of two parts: first Concs, then Steps.. ok but maybe enforce
-    in grammar? or check in TypeChecker  
-
-*)
-
 open FParsec
 open AST
 open Parser

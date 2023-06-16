@@ -1,0 +1,8 @@
+TODO: 
+    Decide whether whitespace allowed between [ and {, } and ]
+    Decide whether whitespace allowed between instruction name and [
+    Decide whether programs must end with ;
+    Type checker what is this? Right now we accept or do not -- CHECK IF NO CYCLES CMP BEFORE COND ETC...
+    Implement check for writing to the same variable twice in a step
+    Implement check making sure that all source variables are defined before they are used and
+    then make no such tests in intepreter
