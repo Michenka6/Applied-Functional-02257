@@ -12,6 +12,7 @@
     <Compile Include="Interpreter.fs" />
     <Compile Include="Rxns.fs" />
     <Compile Include="RxnsParser.fs" />
+    <Compile Include="RxnSim.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
