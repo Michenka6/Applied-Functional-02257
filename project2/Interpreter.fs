@@ -48,6 +48,7 @@ let comparison (Cmp (Sp (a), Sp (b))) env =
               Ygtx = true
               Yltx = false }
 
+// Lots of choices regarding the flags. Explain!. ugly.
 
 let updateConcs dst env (newVal: float option) =
 
