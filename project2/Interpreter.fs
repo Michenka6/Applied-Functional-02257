@@ -23,7 +23,7 @@ module Option =
         | _ -> None
 
 // Lots of choices regarding the flags. Explain!. ugly.
-let comparison (Cmp (Sp (a), Sp (b))) env =
+let comparison (Cmp ( a, b)) env =
 
     match Map.tryFind a env, Map.tryFind b env with
     | None, _ -> None
@@ -82,12 +82,12 @@ let loadIfDef src dst env =
 // Either change to option type or do nothing and rely on type checker. Check the src dst thing only in type checker?
 let arithmetic expr concs : Concentrations option =
     match expr with
-    | Ld (Sp (a), Sp (b)) -> concs |> applyUnaryIfDef (id) a |> updateConcs b concs
-    | Add (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (+) a b |> updateConcs c concs
-    | Sub (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (-) a b |> updateConcs c concs
-    | Mul (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef ( * ) a b |> updateConcs c concs
-    | Div (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (/) a b |> updateConcs c concs
-    | Sqrt (Sp (a), Sp (b)) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
+    | Ld (a, b) -> concs |> applyUnaryIfDef (id) a |> updateConcs b concs
+    | Add (a, b, c) -> concs |> applyIfDef (+) a b |> updateConcs c concs
+    | Sub (a, b, c) -> concs |> applyIfDef (-) a b |> updateConcs c concs
+    | Mul (a, b, c) -> concs |> applyIfDef ( * ) a b |> updateConcs c concs
+    | Div (a, b, c) -> concs |> applyIfDef (/) a b |> updateConcs c concs
+    | Sqrt (a, b) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
 
 let updateState (oldState: State) (env: Concentrations option) (flags: Flags option) =
     if env.IsSome && flags.IsSome then
@@ -136,7 +136,7 @@ let rec stateSequence steps state =
 
 
 let initConcs (concs: ConcList) =
-    concs |> List.fold (fun env (Cnc ((Sp s), n)) -> env |> Map.add s n) Map.empty
+    concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) Map.empty
 
 
 (*     let rec loop c =

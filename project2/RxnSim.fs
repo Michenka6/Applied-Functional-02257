@@ -7,10 +7,10 @@ open RxnsParser
 let addNewConcs oldState concs = 
     {status = oldState.status; concentrations = concs; flags = oldState.flags}
 
-let countOccurences (s: string) (sl : Species list) = 
-    sl |> List.countBy id |> Map.ofList |> Map.tryFind (Sp(s)) |> (fun k -> if k.IsSome then k.Value else 0)
+let countOccurences (s: Species) (sl : Species list) = 
+    sl |> List.countBy id |> Map.ofList |> Map.tryFind s |> (fun k -> if k.IsSome then k.Value else 0)
 
-let netChange (s: string) (Rxn(e1, e2, k)) = 
+let netChange (s: Species) (Rxn(e1, e2, k)) = 
     match e1, e2 with 
     | Empty, Empty -> 0
     | Empty, EL(sl) -> countOccurences s sl 
@@ -23,12 +23,12 @@ let prodReactants (Rxn(e1, e2, k)) (state: State) =
     | EL(l) -> 
         l 
         |> List.countBy id 
-        |> List.fold (fun prod (Sp(s), m) -> prod * state.concentrations[s] ** m) 1.0
+        |> List.fold (fun prod (s, m) -> prod * state.concentrations[s] ** m) 1.0
 
-let concODETerm (s: string) (state: State) (Rxn(_, _, k) as rxn) = 
+let concODETerm (s: Species) (state: State) (Rxn(_, _, k) as rxn) = 
     k * float (netChange s rxn) * (prodReactants rxn state)
 
-let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: string) =    
+let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: Species) =    
     rxns 
     |> List.map (concODETerm species state)
     |> List.sum
@@ -42,7 +42,7 @@ let simulateRxnS (delta: float) (rxns: Rxns list) (state: State): State =
 let extractSpecies (e: Expr) = 
     match e with 
     | Empty -> []
-    | EL(l) -> l |> List.map (fun (Sp(s)) -> s) 
+    | EL(l) -> l |> List.map (fun s -> s) 
 
 let extractAndExtend (state: State) (rxns: Rxns list) = 
     rxns 

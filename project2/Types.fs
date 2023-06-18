@@ -33,7 +33,7 @@ and Conditional =
     | IfLT of CommandList
     | IfLE of CommandList
 
-and Species = Sp of string  
+and Species = string
 
 and Number = float 
 

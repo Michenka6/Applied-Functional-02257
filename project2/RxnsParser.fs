@@ -41,7 +41,7 @@ let pinteger: Parser<int32, unit> = token pint32
 let pfloat: Parser<float, unit> = token pfloat
 
 let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
-    ident >>= fun s -> if (not (isReserved s reserved)) then preturn (Sp s) else pzero   
+    ident >>= fun s -> if (not (isReserved s reserved)) then preturn s else pzero   
 
 let pEmpty: Parser<Expr, unit> = symbol "e" >>. preturn Empty
 

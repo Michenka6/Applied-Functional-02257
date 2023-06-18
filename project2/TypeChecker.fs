@@ -21,7 +21,7 @@ let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.emp
 
 
 let initConcs (concs: ConcList) =
-    concs |> List.fold (fun env (Cnc (Sp s, _)) -> env |> Set.add s) Set.empty
+    concs |> List.fold (fun env (Cnc (s, _)) -> env |> Set.add s) Set.empty
 
 
 (* let rec srcOpNotDef env0 cl =

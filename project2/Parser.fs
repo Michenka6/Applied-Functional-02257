@@ -44,7 +44,7 @@ let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
     ident
     >>= fun s ->
             if (not (isReserved s reserved)) then
-                preturn (Sp s)
+                preturn (s)
             else
                 pzero
 
