@@ -26,15 +26,9 @@ let prodReactants (Rxn(e1, e2, k)) (state: State) =
         |> List.fold (fun prod (Sp(s), m) -> prod * state.concentrations[s] ** m) 1.0
 
 let concODETerm (s: string) (state: State) (Rxn(_, _, k) as rxn) = 
-    //k * float (netChange s rxn) * (prodReactants rxn state) |> printfn "%A"
     k * float (netChange s rxn) * (prodReactants rxn state)
 
-let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: string) =
-    //rxns |> printfn "%A"
-    //rxns |> List.map (netChange "C") |> printfn "%A"
-    //rxns |> List.map (concODETerm species state) |> printfn "%A"
-    //rxns |> List.map (fun r -> prodReactants r state)  |> printfn "%A"
-    
+let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: string) =    
     rxns 
     |> List.map (concODETerm species state)
     |> List.sum
