@@ -105,12 +105,11 @@
       ]
     },
     "FSharp.Core/7.0.0": {
-      "sha512": "8hzwUheAViWMAHWQTr6kR/19C4LhjZ4TlftKfNeZO9y7XnRUzLTK6FJS1C+0oObuUe0e4KndYxjWE+Zgea9YXQ==",
+      "sha512": "OTyT8L38YFRM3AeYTPn8BwZTI9Q/7Mi27GDdYYnlvWrqK9MU4pwwXdfU393WYf4WbveMKqpI6j3Q7ANS5ofPGQ==",
       "type": "package",
       "path": "fsharp.core/7.0.0",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "Icon.png",
         "fsharp.core.7.0.0.nupkg.sha512",
         "fsharp.core.nuspec",
@@ -154,25 +153,25 @@
     ]
   },
   "packageFolders": {
-    "/Users/amiralimov/.nuget/packages/": {}
+    "/home/luc/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj",
+      "projectUniqueName": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj",
       "projectName": "project2",
-      "projectPath": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/project2.fsproj",
-      "packagesPath": "/Users/amiralimov/.nuget/packages/",
-      "outputPath": "/Users/amiralimov/Programming/Applied-Functional-02257/project2/obj/",
+      "projectPath": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/project2.fsproj",
+      "packagesPath": "/home/luc/.nuget/packages/",
+      "outputPath": "/home/luc/Documents/GitHub/Applied-Functional-02257/project2/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/amiralimov/.nuget/NuGet/NuGet.Config"
+        "/home/luc/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/sdk/7.0.102/FSharp/library-packs": {},
+        "/usr/lib/dotnet/sdk/7.0.107/FSharp/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -214,7 +213,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.102/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.107/RuntimeIdentifierGraph.json"
       }
     }
   }

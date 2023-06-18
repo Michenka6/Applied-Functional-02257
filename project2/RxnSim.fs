@@ -4,7 +4,6 @@ open FParsec
 open Types 
 open RxnsParser
 
-
 let addNewConcs oldState concs = 
     {status = oldState.status; concentrations = concs; flags = oldState.flags}
 
@@ -17,8 +16,6 @@ let netChange (s: string) (Rxn(e1, e2, k)) =
     | Empty, EL(sl) -> countOccurences s sl 
     | EL(sl), Empty -> -countOccurences s sl 
     | EL(sl1), EL(sl2) -> countOccurences s sl2 - countOccurences s sl1 
-    //let nRhs = e2 |> List.countBy id |> Map.ofList |> Map.tryFind s |> (fun k -> if k.IsSome then k.Value else 0)
-    //nLhs - nRhs
 
 let prodReactants (Rxn(e1, e2, k)) (state: State) = 
     match e1 with 
@@ -28,7 +25,7 @@ let prodReactants (Rxn(e1, e2, k)) (state: State) =
         |> List.countBy id 
         |> List.fold (fun prod (Sp(s), m) -> prod * state.concentrations[s] ** m) 1.0
 
-let concODETerm (s: string) (state: State) (Rxn(e1, e2, k) as rxn) = 
+let concODETerm (s: string) (state: State) (Rxn(_, _, k) as rxn) = 
     //k * float (netChange s rxn) * (prodReactants rxn state) |> printfn "%A"
     k * float (netChange s rxn) * (prodReactants rxn state)
 
@@ -41,13 +38,9 @@ let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: s
     rxns 
     |> List.map (concODETerm species state)
     |> List.sum
-    |> (fun cNext -> state.concentrations[species] + delta * cNext) 
+    |> (fun dsdt -> state.concentrations[species] + delta * dsdt) 
     
 let simulateRxnS (delta: float) (rxns: Rxns list) (state: State): State = 
-(*     state.concentrations
-    |> Map.map (fun s _  -> (simulateTimeStep delta state rxns s)) 
-    |> addNewConcs state |> printfn "%A"
- *)
     state.concentrations
     |> Map.map (fun s _  -> (simulateTimeStep delta state rxns s)) 
     |> addNewConcs state  
