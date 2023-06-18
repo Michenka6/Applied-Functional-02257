@@ -56,6 +56,7 @@ let pRxn: Parser<Rxns, unit> = between (symbol "rxn[") (symbol "]") (pipe3 (pE .
 let pRxnL: Parser<Rxns list, unit> = pRxn >>= fun rxn -> preturn [rxn]
 let pRxnLopt: Parser<Rxns list -> Rxns list -> Rxns list,unit> = symbol "," >>. preturn  (fun rxn1 rxn2 -> rxn1 @ rxn2)
 
+// "one big bowl"
 let pRxnS: Parser<Rxns list, unit>  = chainr1 pRxnL pRxnLopt
 
 let parseRxn = run (pRxnS  .>>  eof) 

@@ -47,10 +47,10 @@ type Status =
 type Concentrations = Map<string, float>
 
 type Flags = 
-        { Xgty: bool
-          Xlty: bool
-          Ygtx: bool
-          Yltx: bool } 
+        { Xgty: float
+          Xlty: float
+          Ygtx: float
+          Yltx: float } 
 
 type State =
     { status: Status

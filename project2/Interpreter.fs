@@ -30,22 +30,22 @@ let comparison (Cmp (Sp (a), Sp (b))) env =
     | _, None -> None
     | Some a, Some b when abs (a - b) < 0.000001 ->
         Some
-            { Xgty = true
-              Xlty = false
-              Ygtx = true
-              Yltx = false }
+            { Xgty = 1.0
+              Xlty = 0.0
+              Ygtx = 1.0 
+              Yltx = 0.0 }
     | Some a, Some b when a > b ->
         Some
-            { Xgty = true
-              Xlty = false
-              Ygtx = false
-              Yltx = true }
+            { Xgty = 1.0
+              Xlty = 0.0
+              Ygtx = 0.0
+              Yltx = 1.0}
     | Some a, Some b ->
         Some
-            { Xgty = false
-              Xlty = true
-              Ygtx = true
-              Yltx = false }
+            { Xgty = 0.0
+              Xlty = 1.0
+              Ygtx = 1.0 
+              Yltx = 0.0}
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
@@ -85,7 +85,7 @@ let arithmetic expr concs : Concentrations option =
     | Ld (Sp (a), Sp (b)) -> concs |> applyUnaryIfDef (id) a |> updateConcs b concs
     | Add (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (+) a b |> updateConcs c concs
     | Sub (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (-) a b |> updateConcs c concs
-    | Mul (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (*) a b |> updateConcs c concs
+    | Mul (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef ( * ) a b |> updateConcs c concs
     | Div (Sp (a), Sp (b), Sp (c)) -> concs |> applyIfDef (/) a b |> updateConcs c concs
     | Sqrt (Sp (a), Sp (b)) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
 
@@ -114,11 +114,11 @@ and interpretConditional con state =
     let flags = state.flags
 
     match con with
-    | IfGT (cmds) when flags.Xgty && flags.Yltx -> interpretCmdList cmds state
-    | IfGE (cmds) when flags.Xgty -> interpretCmdList cmds state
-    | IfEQ (cmds) when flags.Xgty && flags.Ygtx -> interpretCmdList cmds state
-    | IfLT (cmds) when flags.Xlty && flags.Ygtx -> interpretCmdList cmds state
-    | IfLE (cmds) when flags.Ygtx -> interpretCmdList cmds state
+    | IfGT (cmds) when flags.Xgty = 1.0 && flags.Yltx = 1.0 -> interpretCmdList cmds state
+    | IfGE (cmds) when flags.Xgty = 1.0 -> interpretCmdList cmds state
+    | IfEQ (cmds) when flags.Xgty = 1.0 && flags.Ygtx = 1.0 -> interpretCmdList cmds state
+    | IfLT (cmds) when flags.Xlty = 1.0 && flags.Ygtx = 1.0 -> interpretCmdList cmds state
+    | IfLE (cmds) when flags.Ygtx = 1.0 -> interpretCmdList cmds state
     | _ -> state
 
 let interpretSteps (steps: StepList) (state: State) =
@@ -153,10 +153,10 @@ let interpret (Crn (concs, steps)) (nSteps: int) =
         { status = Running
           concentrations = initCncs
           flags =
-            { Xgty = false
-              Xlty = false
-              Ygtx = false
-              Yltx = false } // initial value of flags. should not matter if well formed program
+            { Xgty = 0.0
+              Xlty = 0.0
+              Ygtx = 0.0
+              Yltx = 0.0 } // initial value of flags. should not matter if well formed program
         }
 
     (stateSequence steps state0) |> Seq.take nSteps |> Seq.append (seq { state0 })
