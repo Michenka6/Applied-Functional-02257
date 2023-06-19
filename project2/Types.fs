@@ -1,22 +1,18 @@
-module Types 
+module Types
 
 (* Types for ASTs for CRN++ *)
 
-type CRN = Crn of ConcList * StepList 
+type Species = string
 
-and ConcList = Conc list 
+type Number = float
 
-and StepList = Step list 
+type Comparison = Species * Species
 
-and Conc = Cnc of Species * Number 
+type Concentration = Species * Number
 
-and Step = Stp of CommandList 
+type Molecules = Map<Species, Number>
 
-and CommandList = Command list // we could do without this type... but its okay  
-
-and Command = Ar of Arithmetic | Comp of Comparison | Cond of Conditional 
-
-and Arithmetic = 
+type Arithmetic =
     | Ld of Species * Species
     | Add of Species * Species * Species
     | Sub of Species * Species * Species
@@ -24,19 +20,30 @@ and Arithmetic =
     | Div of Species * Species * Species
     | Sqrt of Species * Species
 
-and Comparison = Cmp of Species * Species
+type Command =
+    | Ar of Arithmetic
+    | Comp of Comparison
+    | Cond of Conditional
 
-and Conditional = 
-    | IfGT of CommandList
-    | IfGE of CommandList
-    | IfEQ of CommandList
-    | IfLT of CommandList
-    | IfLE of CommandList
+and Conditional =
+    | IfGT of Command list
+    | IfGE of Command list
+    | IfEQ of Command list
+    | IfLT of Command list
+    | IfLE of Command list
 
-and Species = Sp of string  
+type Step = Step of Command list
 
-and Number = float 
+type CRN =
+    { concentrations: Concentration list
+      steps: Step list }
 
+type CRN_Error =
+    | CycleConflict
+    | WriteTwice
+    | SameSpeciesComparison
+    | CondNoFlags
+    | SrcOpNotDef
 
 (* Types used in intepreter. State etc. *)
 type Status =
@@ -44,26 +51,36 @@ type Status =
     | Error
     | Converged
 
-type Concentrations = Map<string, float>
-
-type Flags = 
-        { Xgty: bool
-          Xlty: bool
-          Ygtx: bool
-          Yltx: bool } 
+type Flags =
+    { Xgty: bool
+      Xlty: bool
+      Ygtx: bool
+      Yltx: bool }
 
 type State =
     { status: Status
-      concentrations: Concentrations
-      flags: Flags
-    } 
+      concentrations: Molecules
+      flags: Flags }
 
 (* Types used in type checker. Defines various types of errors *)
-// Possibly also check all sources defined here then do no such checks in intepreter. 
-type Error = CycleConflict | WriteTwice | SameSpeciesComp | CondNoFlags | SrcOpNotDef 
-type Result = NoErrors | Errors of Error list
+// Possibly also check all sources defined here then do no such checks in intepreter.
 
 (* Types for reactions *)
-type Expr = Empty | EL of Species list 
+type Expr =
+    | Empty
+    | EL of Species list
 
-type Rxns = Rxn of Expr * Expr * float 
+type Rxns = Rxn of Expr * Expr * float
+
+
+type OptionBuilder() =
+    member this.Bind(opt, func) = Option.bind func opt
+
+    member this.Map(opt, func) = Option.map func opt
+
+    member this.Zero() = None
+
+    member this.Return(x) = Some x
+
+
+let option = new OptionBuilder()

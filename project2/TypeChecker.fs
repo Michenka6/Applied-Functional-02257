@@ -5,47 +5,27 @@ open FParsec
 open Types
 open Parser
 
-// Possibly also check all sources defined here then do no such checks in intepreter.
-type Error =
-    | CycleConflict
-    | WriteTwice
-    | SameSpeciesComp
-    | CondNoFlags
-    | SrcOpNotDef
-
-type Result =
-    | NoErrors
-    | Errors of Error list
-
 let isDisjoint (s1: Set<'a>, s2: Set<'a>) = (s1, s2) ||> Set.intersect = Set.empty
 
 
-let initConcs (concs: ConcList) =
-    concs |> List.fold (fun env (Cnc (Sp s, _)) -> env |> Set.add s) Set.empty
-
-
-(* let rec srcOpNotDef env0 cl =
-    match cl with 
-
-
-let checkSrcOpNotDef (Crn(cl, sl)) = 
-    let env0 = initConcs cl 
-
- *)
+let initConcs (concs: Concentration list) = concs |> List.map fst |> Set
 
 let diffSpeciesComp (sl) =
     sl
-    |> List.collect (fun (Stp (cl)) -> cl)
+    |> List.collect (fun (Step (cl)) -> cl)
     |> List.fold
         (fun cmps cmd ->
             match cmd with
-            | Comp (Cmp (a, b)) -> (a, b) :: cmps
+            | Comp (a, b) -> (a, b) :: cmps
             | _ -> cmps)
-        List.empty<Species * Species>
+        []
     |> List.forall (fun (a, b) -> a <> b)
 
-let checkSameSpeciesComp (Crn (_, sl)) =
-    if diffSpeciesComp sl then None else Some SameSpeciesComp
+let checkSameSpeciesComp crn =
+    if diffSpeciesComp crn.steps then
+        None
+    else
+        Some SameSpeciesComparison
 
 // accepts all commands of program in order. extracted from steps.
 let rec condNoFlags cs =
@@ -54,8 +34,8 @@ let rec condNoFlags cs =
     | Cond (_) :: _ -> true // if a cmp had preceeded this would not match
     | _ -> false
 
-let checkCondNoFlags (Crn (_, sl)) =
-    let allCmds = sl |> List.collect (fun (Stp (cl)) -> cl)
+let checkCondNoFlags crn =
+    let allCmds = crn.steps |> List.collect (fun (Step (cl)) -> cl)
 
     if condNoFlags allCmds then Some CondNoFlags else None
 
@@ -129,7 +109,7 @@ let getRWArith a =
 // Only one constructor but still do this bc......
 let getRWComp (c: Comparison) =
     match c with
-    | Cmp (s1, s2) -> Set [ s1; s2 ], Set.empty<Species>
+    | s1, s2 -> Set [ s1; s2 ], Set.empty<Species>
 
 let rec getRWC (cmd: Command) =
     match cmd with
@@ -137,7 +117,7 @@ let rec getRWC (cmd: Command) =
     | Comp (c) -> getRWComp c
     | Cond (c) -> getRWCond (c)
 
-and getRWCL (cl: CommandList) =
+and getRWCL (cl: Command list) =
     cl
     |> List.map getRWC
     |> List.fold (fun (f1, f2) (s1, s2) -> f1 |> Set.union s1, f2 |> Set.union s2) (Set.empty, Set.empty)
@@ -150,29 +130,33 @@ and getRWCond (c: Conditional) =
     | IfLT (cl) -> getRWCL cl
     | IfLE (cl) -> getRWCL cl
 
-let getRWStep (Stp (cl)) = getRWCL cl
+let getRWStep (Step (cl)) = getRWCL cl
 
 // Get read write set for a root list
-let getRWRL (sl: StepList) =
-    sl |> List.map (fun (Stp (cl)) -> getRWCL cl)
+let getRWRL (sl: Step list) =
+    sl |> List.map (fun (Step (cl)) -> getRWCL cl)
 
-let checkReadWrite (Crn (_, sl)) =
-    match sl |> getRWRL |> List.forall (fun (rSet, wSet) -> (rSet, wSet) |> isDisjoint) with
+let checkReadWrite crn =
+    match
+        crn.steps
+        |> getRWRL
+        |> List.forall (fun (rSet, wSet) -> (rSet, wSet) |> isDisjoint)
+    with
     | true -> None
     | _ -> Some CycleConflict
 
-let checkAll (checks: (CRN -> Error option) list) (crn: CRN) : Result =
-    let es =
-        checks
-        |> List.map (fun f -> f crn)
-        |> List.filter (fun e -> e.IsSome)
-        |> List.map (fun e -> e.Value)
+// let checkAll (checks: (CRN -> CRN_Error option) list) (crn: CRN) : CRN_Result =
+//     let es =
+//         checks
+//         |> List.map (fun f -> f crn)
+//         |> List.filter (fun e -> e.IsSome)
+//         |> List.map (fun e -> e.Value)
 
-    match es with
-    | [] -> NoErrors
-    | es -> Errors(es)
+//     match es with
+//     | [] -> Ok()
+//     | es -> Error es
 
-let analysisTpChkr (input: string) =
-    match parseString input with
-    | Success (ast, _, _) -> checkAll [ checkReadWrite; checkCondNoFlags; checkSameSpeciesComp ] ast
-    | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
+// let analysisTpChkr (input: string) =
+//     match parseString input with
+//     | Success (ast, _, _) -> checkAll [ checkReadWrite; checkCondNoFlags; checkSameSpeciesComp ] ast
+//     | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)

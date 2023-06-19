@@ -41,12 +41,7 @@ let pFloat: Parser<Number, unit> = pfloat >>= fun n -> preturn (n)
 let pNumber: Parser<Number, unit> = pFloat //pInt <|> pFloat
 
 let pSpecies: Parser<Species, unit> = // or symbol pstring thing ?
-    ident
-    >>= fun s ->
-            if (not (isReserved s reserved)) then
-                preturn (Sp s)
-            else
-                pzero
+    ident >>= fun s -> if (not (isReserved s reserved)) then preturn s else pzero
 
 // TODO: enforce the src != dest constraint. done in type checker
 let pSqrt: Parser<Arithmetic, unit> =
@@ -83,12 +78,14 @@ let pArithmetic: Parser<Arithmetic, unit> =
     pLd <|> pAdd <|> pSub <|> pMul <|> pDiv <|> pSqrt
 
 let pCmp: Parser<Comparison, unit> =
-    between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> Cmp(sp1, sp2)))
+    between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> sp1, sp2))
 
 (* Slide 11 Parsing.pdf *)
-let (pConcList, pConcListRef) = createParserForwardedToRef<ConcList, unit> ()
-let (pStepList, pStepListRef) = createParserForwardedToRef<StepList, unit> ()
-let (pCmdList, pCmdListRef) = createParserForwardedToRef<CommandList, unit> ()
+let (pConcList, pConcListRef) =
+    createParserForwardedToRef<Concentration list, unit> ()
+
+let (pStepList, pStepListRef) = createParserForwardedToRef<Step list, unit> ()
+let (pCmdList, pCmdListRef) = createParserForwardedToRef<Command list, unit> ()
 
 let pGT: Parser<Conditional, unit> =
     between (symbol "ifGT[{") (symbol "}]") (pCmdList >>= fun l -> preturn (IfGT l))
@@ -112,20 +109,20 @@ let pCmd: Parser<Command, unit> =
     <|> (pCmp |>> fun cmp -> Comp(cmp))
     <|> (pCond >>= fun cond -> preturn (Cond cond))
 
-let pConc: Parser<Conc, unit> =
-    between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp n -> Cnc(sp, n)))
+let pConc: Parser<Concentration, unit> =
+    between (symbol "conc[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pNumber (fun sp n -> sp, n))
 
 let pStep: Parser<Step, unit> =
-    between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (Stp l))
+    between (symbol "step[{") (symbol "}]") (pCmdList >>= fun l -> preturn (Step l))
 
-let pC: Parser<CommandList, unit> = pCmd >>= fun c -> preturn ([ c ])
+let pC: Parser<Command list, unit> = pCmd >>= fun c -> preturn ([ c ])
 
-let pCLopt: Parser<CommandList -> CommandList -> CommandList, unit> =
+let pCLopt: Parser<Command list -> Command list -> Command list, unit> =
     symbol "," >>. preturn (fun c1 c2 -> c1 @ c2)
 
 pCmdListRef.Value <- chainr1 pC pCLopt
 
-let pConcL: Parser<ConcList, unit> =
+let pConcL: Parser<Concentration list, unit> =
     (pConc >>= fun c -> preturn ([ c ])) .>> symbol ","
 
 let rec pConcLopt cl =
@@ -141,15 +138,18 @@ pConcListRef.Value <-
         return! pConcLopt cl
     }
 
-let pStepL: Parser<StepList, unit> = pStep >>= fun s -> preturn ([ s ])
+let pStepL: Parser<Step list, unit> = pStep >>= fun s -> preturn ([ s ])
 
-let pSLopt: Parser<StepList -> StepList -> StepList, unit> =
+let pSLopt: Parser<Step list -> Step list -> Step list, unit> =
     symbol "," >>. preturn (fun c1 c2 -> c1 @ c2)
 
 pStepListRef.Value <- chainr1 pStepL pSLopt
 
 let pCrn: Parser<CRN, unit> =
-    between (spaces >>. symbol "crn={") (symbol "};") (pipe2 (pConcList) (pStepList) (fun c s -> Crn(c, s))) //pRootList >>= fun rl -> preturn (Crn rl)
+    between
+        (spaces >>. symbol "crn={")
+        (symbol "};")
+        (pipe2 (pConcList) (pStepList) (fun c s -> { concentrations = c; steps = s })) //pRootList >>= fun rl -> preturn (Crn rl)
 
 // eof consume till end of input
 let parseString = run (pCrn .>> eof)
