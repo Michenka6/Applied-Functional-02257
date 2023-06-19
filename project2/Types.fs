@@ -55,7 +55,7 @@ type Flags =
 type State =
     { status: Status
       concentrations: Concentrations
-      flags: Flags
+      //flags: Flags
     } 
 
 (* Types used in type checker. Defines various types of errors *)

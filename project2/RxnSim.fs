@@ -5,7 +5,7 @@ open Types
 open RxnsParser
 
 let addNewConcs oldState concs = 
-    {status = oldState.status; concentrations = concs; flags = oldState.flags}
+    {status = oldState.status; concentrations = concs; } 
 
 let countOccurences (s: Species) (sl : Species list) = 
     sl |> List.countBy id |> Map.ofList |> Map.tryFind s |> (fun k -> if k.IsSome then k.Value else 0)

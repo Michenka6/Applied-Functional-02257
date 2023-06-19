@@ -1,10 +1,12 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
 
 open FParsec
+open FsCheck
 open Types 
 open Parser
 open TypeChecker
 open Interpreter
+open PBTest
 open RxnsParser
 open RxnSim
 open Plot 
@@ -71,9 +73,9 @@ let fac =
 
 // analysisTpChkr gcd |> printfn "%A"
 
-analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
+//analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
 
-analysisIntprt discreteCounter 12 |> (genPlotSelect pieceWiseLinear ["c"]) |> showPlot
+//analysisIntprt discreteCounter 12 |> (genPlotSelect pieceWiseLinear ["c"]) |> showPlot
 
 let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"
@@ -81,16 +83,18 @@ let crn1 = rxn1 + "," + rxn2
 
 // tryParseRxn rxn1
 // tryParseRxn rxn2
-tryParseRxn crn1
-
-
+//tryParseRxn crn1
 
 let flags0 = { Xgty = 0.0; Xlty = 0.0; Ygtx = 0.0; Yltx = 0.0 } // initial value of flags. should not matter if well formed program
-let concs0 = [("A", 6.0); ("B", 2.0); ("C", 0.0)] |> Map.ofList
+let concs0 = [("A", -5.889700915); ("B", 4.338130408); ("C", 2.013399836)] |> Map.ofList
 
-let state0 = { status = Running; concentrations = concs0; flags = flags0 }
+let state0 = { status = Running; concentrations = concs0; }
 
-//runSim 0.25 crn1 state0 |> Seq.take 15 |> List.ofSeq |> printfn "%A"
+//runSim 0.35 crn1 state0 |> Seq.take 25 |> List.ofSeq |> printfn "%A"
 
-// runSim 0.25 crn1 state0 |> Seq.take 25 |> genPlot |> showPlot
+//runSim 0.15 crn1 state0 |> Seq.take 100 |> genPlot line |> showPlot
 //step |> showPlot
+//     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
+
+Check.Quick propAddConverge
+Check.Quick propMulConverge

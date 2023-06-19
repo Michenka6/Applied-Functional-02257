@@ -30,22 +30,22 @@ let comparison (Cmp ( a, b)) env =
     | _, None -> None
     | Some a, Some b when abs (a - b) < 0.000001 ->
         Some
-            { Xgty = 1.0
-              Xlty = 0.0
-              Ygtx = 1.0 
-              Yltx = 0.0 }
+            [ "Xgty", 1.0;
+              "Xlty" , 0.0;
+              "Ygtx" , 1.0; 
+              "Yltx" , 0.0 ]
     | Some a, Some b when a > b ->
         Some
-            { Xgty = 1.0
-              Xlty = 0.0
-              Ygtx = 0.0
-              Yltx = 1.0}
+            [ "Xgty" , 1.0;
+              "Xlty" , 0.0;
+              "Ygtx" , 0.0;
+              "Yltx" , 1.0]
     | Some a, Some b ->
         Some
-            { Xgty = 0.0
-              Xlty = 1.0
-              Ygtx = 1.0 
-              Yltx = 0.0}
+            [ "Xgty" , 0.0;
+              "Xlty" , 1.0;
+              "Ygtx" , 1.0; 
+              "Yltx" , 0.0]
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
@@ -89,36 +89,45 @@ let arithmetic expr concs : Concentrations option =
     | Div (a, b, c) -> concs |> applyIfDef (/) a b |> updateConcs c concs
     | Sqrt (a, b) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
 
-let updateState (oldState: State) (env: Concentrations option) (flags: Flags option) =
-    if env.IsSome && flags.IsSome then
+let updateState (oldState: State) (env: Concentrations option)  =
+    if env.IsSome then
         { status = oldState.status
           concentrations = env.Value
-          flags = flags.Value }
+        }
     else
         { status = Error
           concentrations = env.Value
-          flags = flags.Value }
+        }
+
+let updateFlags (env: Concentrations) (flags: (string * float) list option) = 
+    if flags.IsSome then 
+        flags.Value |> List.fold (fun m (k, v) -> m |> Map.add k v) env |> Some
+    else 
+        None 
 
 let rec interpretCmd (cmd: Command) (state: State) =
     match cmd with
-    | Ar (a) -> (arithmetic a state.concentrations, Some(state.flags)) ||> updateState state
+    | Ar (a) -> (arithmetic a state.concentrations) |> updateState state
     | Comp (c) ->
-        (Some(state.concentrations), comparison c state.concentrations)
-        ||> updateState state
+        comparison c state.concentrations 
+        |> (updateFlags state.concentrations) 
+        |> (updateState state)
+        //(Some(state.concentrations), comparison c state.concentrations |> )
+        //||> updateState state
     | Cond (con) -> interpretConditional con state
 
 and interpretCmdList (cmds: CommandList) (state: State) =
     cmds |> List.fold (fun s cmd -> interpretCmd cmd s) state
 
 and interpretConditional con state =
-    let flags = state.flags
+    let concs = state.concentrations
 
     match con with
-    | IfGT (cmds) when flags.Xgty = 1.0 && flags.Yltx = 1.0 -> interpretCmdList cmds state
-    | IfGE (cmds) when flags.Xgty = 1.0 -> interpretCmdList cmds state
-    | IfEQ (cmds) when flags.Xgty = 1.0 && flags.Ygtx = 1.0 -> interpretCmdList cmds state
-    | IfLT (cmds) when flags.Xlty = 1.0 && flags.Ygtx = 1.0 -> interpretCmdList cmds state
-    | IfLE (cmds) when flags.Ygtx = 1.0 -> interpretCmdList cmds state
+    | IfGT (cmds) when concs["Xgty"] = 1.0 && concs["Yltx"] = 1.0 -> interpretCmdList cmds state
+    | IfGE (cmds) when concs["Xgty"] = 1.0 -> interpretCmdList cmds state
+    | IfEQ (cmds) when concs["Xgty"] = 1.0 && concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
+    | IfLT (cmds) when concs["Xlty"] = 1.0 && concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
+    | IfLE (cmds) when concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
     | _ -> state
 
 let interpretSteps (steps: StepList) (state: State) =
@@ -134,17 +143,10 @@ let rec stateSequence steps state =
         yield! stateSequence steps s
     }
 
-
 let initConcs (concs: ConcList) =
-    concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) Map.empty
+    let m = Map [("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0);]
+    concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) m
 
-
-(*     let rec loop c =
-        function
-        | [] -> c Map.empty
-        | Cnc((Sp s), n) :: cncs -> loop (fun res -> c (res |> Map.add s n)) cncs  
-    loop id concs
- *)
 let interpret (Crn (concs, steps)) (nSteps: int) =
 
     let initCncs = initConcs concs
@@ -152,12 +154,7 @@ let interpret (Crn (concs, steps)) (nSteps: int) =
     let state0 =
         { status = Running
           concentrations = initCncs
-          flags =
-            { Xgty = 0.0
-              Xlty = 0.0
-              Ygtx = 0.0
-              Yltx = 0.0 } // initial value of flags. should not matter if well formed program
-        }
+        }  
 
     (stateSequence steps state0) |> Seq.take nSteps |> Seq.append (seq { state0 })
 
