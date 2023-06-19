@@ -3,6 +3,8 @@ module RxnSim
 open FParsec
 open Types 
 open RxnsParser
+open System
+open Microsoft.FSharp.Core.Operators.Checked
 
 let addNewConcs oldState concs = 
     {status = oldState.status; concentrations = concs; } 
@@ -64,6 +66,16 @@ let euler (f: State -> Rxns list -> Species -> float) (delta: float) (state: Sta
 let simulateRxns (simTimeStep) (f: State-> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (state: State): State = 
     state.concentrations
     |> Map.map (fun s _  -> (simTimeStep f delta state rxns s)) 
+    //|> Map.map //(fun s _  -> 
+        //let v = simTimeStep f delta state rxns s
+        //if Double.IsNaN(v) then failwith "NaN" else v )
+        //let v = (simTimeStep f delta state rxns s) 
+        (* if abs v > 0.0 && abs v < 10000000.0*Double.Epsilon then 
+            if v > 0.0 then 1000.0*Double.Epsilon 
+            else -1000.0 * Double.Epsilon
+        else 
+            v
+        ) *)
     |> addNewConcs state  
 
 let extractSpecies (e: Expr) = 
