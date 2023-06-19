@@ -11,6 +11,9 @@ let floatRangeGen (min, max) =
     let range = max - min
     Gen.map (fun random -> min + random * range) myFloatGen 
 
+let myFloatGen' = Gen.map2 (fun i j -> float i + j) (Arb.generate<int>) (myFloatGen)
+let myFloatGen1 = Gen.map (fun i -> float i) (Arb.generate<int>)
+
 let charsSeqGen c1 c2 = seq {for c in c1 .. c2 do
                                yield gen {return c} }
 
@@ -28,7 +31,7 @@ let mySmallStringGen =
 let mySmallEnvGen  = 
        gen { let i = 7//let! i = Gen.choose (0, 5)
              let! vs = Gen.listOfLength i mySmallStringGen
-             let! ns = Gen.listOfLength i myFloatGen//(floatRangeGen(1.0, 100000.0))
+             let! ns = Gen.listOfLength i myFloatGen1//(floatRangeGen(1.0, 100000.0))
              //let ns = ns |> List.map (fun v -> if v > -1.0 && v < 0.0 then v-1.0 else  if v > 0.0 && v < 1.0 then v+1.0 else v)
              return Map.ofList (List.zip (vs |> List.mapi (fun i s -> s + string i)) ns ) }
 
@@ -126,7 +129,7 @@ let subConverge (state: State) =
 
    let staten = 
       simulate 0.001 crn state 
-      |> Seq.take 5000
+      |> Seq.take 15000
       |> List.ofSeq
       |> List.last
    

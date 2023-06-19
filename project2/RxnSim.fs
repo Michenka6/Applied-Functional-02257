@@ -9,6 +9,17 @@ open Microsoft.FSharp.Core.Operators.Checked
 let addNewConcs oldState concs = 
     {status = oldState.status; concentrations = concs; } 
 
+let extractSpecies (e: Expr) = 
+    match e with 
+    | Empty -> []
+    | EL(l) -> l |> List.map (fun s -> s) 
+
+let extractAndExtend (state: State) (rxns: Rxns list) = 
+    rxns 
+    |> List.collect (fun (Rxn(e1, e2, k)) -> (extractSpecies e1) @ (extractSpecies e2))
+    |> List.fold (fun (concs: Concentrations) s -> if (concs |> Map.containsKey s) then concs else concs |> Map.add s 0) state.concentrations 
+    |> addNewConcs state
+
 let countOccurences (s: Species) (sl : Species list) = 
     sl |> List.countBy id |> Map.ofList |> Map.tryFind s |> (fun k -> if k.IsSome then k.Value else 0)
 
@@ -31,6 +42,7 @@ let concODETerm (s: Species) (state: State) (Rxn(_, _, k) as rxn) =
     k * float (netChange s rxn) * (prodReactants rxn state)
 
 let slope (state: State) (rxns: Rxns list) (s: Species) =    
+    //rxns |> List.map (concODETerm s state) |> List.sum |> printfn "%A"
     rxns 
     |> List.map (concODETerm s state) 
     |> List.sum
@@ -63,31 +75,18 @@ let simulateRxnS_ (delta: float) (rxns: Rxns list) (state: State): State =
 let euler (f: State -> Rxns list -> Species -> float) (delta: float) (state: State) (rxns: Rxns list) (species: Species) =  
     state.concentrations[species] + delta * (f state rxns species)
 
+let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list) (species: Species) = 
+    (coeffs, states) ||> List.zip  
+    |> List.fold (fun sum (b, s) -> sum + s.concentrations[species] + delta*b*(f s rxns species)) 0.0 
+
+let adamsBashforth2 (f: State -> Rxns list -> Species -> float) delta states rxns species = 
+    multistep f delta [1.5; -0.5] states rxns species 
+
 let simulateRxns (simTimeStep) (f: State-> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (state: State): State = 
     state.concentrations
     |> Map.map (fun s _  -> (simTimeStep f delta state rxns s)) 
-    //|> Map.map //(fun s _  -> 
-        //let v = simTimeStep f delta state rxns s
-        //if Double.IsNaN(v) then failwith "NaN" else v )
-        //let v = (simTimeStep f delta state rxns s) 
-        (* if abs v > 0.0 && abs v < 10000000.0*Double.Epsilon then 
-            if v > 0.0 then 1000.0*Double.Epsilon 
-            else -1000.0 * Double.Epsilon
-        else 
-            v
-        ) *)
     |> addNewConcs state  
 
-let extractSpecies (e: Expr) = 
-    match e with 
-    | Empty -> []
-    | EL(l) -> l |> List.map (fun s -> s) 
-
-let extractAndExtend (state: State) (rxns: Rxns list) = 
-    rxns 
-    |> List.collect (fun (Rxn(e1, e2, k)) -> (extractSpecies e1) @ (extractSpecies e2))
-    |> List.fold (fun (concs: Concentrations) s -> if (concs |> Map.containsKey s) then concs else concs |> Map.add s 0) state.concentrations 
-    |> addNewConcs state
 
 let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =   
     seq {
@@ -96,9 +95,30 @@ let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =
             yield! simulate delta rxns (simulateRxns euler slope delta rxns state)
     }
 
+let simulateRxnsMulti simTimeStep (f: State -> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (states: State list) : State =
+    states |> List.head |> (fun s -> s.concentrations)
+    |> Map.map (fun s _ -> (simTimeStep f delta states rxns s))
+    |> addNewConcs (List.head states)
+
+let rec simulateMulti delta (rxns: Rxns list) (states: State list) : seq<State> = 
+    seq {
+        yield List.head states
+        let newState = simulateRxnsMulti adamsBashforth2 slope delta rxns states
+        let newStates = newState :: [List.head states] 
+        yield! simulateMulti delta rxns newStates 
+    } |> Seq.append (seq { List.last states })
+
+
+let setupAB f delta rxns state = 
+    simulateRxns euler f delta rxns state :: [state]  
+
+
 let runSim delta s state0 = 
     match parseRxn s with 
-    | Success (rxns, _, _) -> simulate delta rxns (rxns |> extractAndExtend state0)
+    | Success (rxns, _, _) ->
+        //let state = rxns |> extractAndExtend state0 
+        //simulateMulti delta rxns (setupAB slope delta rxns state)
+        simulate delta rxns (rxns |> extractAndExtend state0)
     | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
 
 

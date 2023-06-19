@@ -80,32 +80,33 @@ let fac =
 (* let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"
 let crn1 = rxn1 + "," + rxn2
- *)
 
+ *)
 let rxn1 = "rxn[A, A+C, 1.0]"
 let rxn2 = "rxn[B, B+H, 1.0]"
 let rxn3 = "rxn[C, e, 1.0]"
 let rxn4 = "rxn[C + H, e, 1.0]"
-let crn = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
-tryParseRxn crn
+let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
+//tryParseRxn crn
 // tryParseRxn rxn1
 // tryParseRxn rxn2
 //tryParseRxn crn1
 
 let flags0 = { Xgty = 0.0; Xlty = 0.0; Ygtx = 0.0; Yltx = 0.0 } // initial value of flags. should not matter if well formed program
-let concs0 = [("A", -5.889700915); ("B", 4.338130408); ("C", 2.013399836)] |> Map.ofList
+//let concs0 = [("A", -5.889700915); ("B", 4.338130408); ("C", 2.013399836)] |> Map.ofList
 //let concs0 = [("A", 0.02187098644); ("B", 0.8053757807); ("C", 1.194414534); ("H", 0.5613506033)] |> Map.ofList
+let concs0 = [("A", 4.0); ("B", 1.0); ("C", 2.013399836)] |> Map.ofList
 let concs1 = Map [("A", 168.98259384); ("B", 79.85844836); ("C", 0.0); ("H", 0.0);]
 let state0 = { status = Running; concentrations = concs0; }
 
-//runSim 0.35 crn1 state0 |> Seq.take 25 |> List.ofSeq |> printfn "%A"
+//runSim 0.25 crn1 state0 |> Seq.take 50 |> List.ofSeq |> printfn "%A"
 
-//runSim 0.01 crn state0 |> Seq.take 1000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
+runSim 0.001 crn1 state0 |> Seq.take 15000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
-Check.Quick propLdConverge
+(* Check.Quick propLdConverge
 Check.Quick propAddConverge
 Check.Quick propSubConverge
 Check.Quick propMulConverge
-Check.Quick propDivConverge
+Check.Quick propDivConverge *)
