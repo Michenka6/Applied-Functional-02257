@@ -79,9 +79,9 @@ let extractAndExtend (state: State) (rxns: Rxns list) =
 
 let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =   
     seq {
-            let state = simulateRxns rungeKutta slope delta rxns state 
+            //let state = simulateRxns rungeKutta slope delta rxns state 
             yield state 
-            yield! simulate delta rxns state
+            yield! simulate delta rxns (simulateRxns euler slope delta rxns state)
     }
 
 let runSim delta s state0 = 

@@ -1,0 +1,32 @@
+Hi, the following code uses version 2.0.0 of the Plotly F# library to generate a plot
+
+	module Plot
+
+	open Plotly.NET
+
+	let plot = 
+
+	    let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
+
+	    // Australia
+	    let y1 = [69.12; 70.30; 70.93; 71.1; 71.93; 73.49; 74.74; 76.32; 77.56; 78.3; 80.37; 81.235]
+	    // New Zealand
+	    let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 79.11; 80.204]
+
+	    [
+		    Chart.Line(x, y1)
+		    |> Chart.withTraceName(Name="Australia")
+		    |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
+
+		    Chart.Line(x, y2)
+		    |> Chart.withTraceName(Name="New Zealand")
+		    |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
+	    ] 
+	    |> Chart.combine
+	    |> Chart.withXAxisStyle("year")
+	    |> Chart.withYAxisStyle("lifeExp")
+
+	plot |> Chart.show
+
+
+Would you show how to do it using plotly verion 4.0.0?

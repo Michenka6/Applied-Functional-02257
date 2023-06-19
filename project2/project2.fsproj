@@ -12,11 +12,14 @@
     <Compile Include="Interpreter.fs" /> 
     <Compile Include="RxnsParser.fs" />
     <Compile Include="RxnSim.fs" />
+    <Compile Include="Plot.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.1.1" />
+    <PackageReference Include="Plotly.NET" Version="4.0.0" />
+
   </ItemGroup>
 
 </Project>
