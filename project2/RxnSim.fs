@@ -58,12 +58,12 @@ let simulateRxnS_ (delta: float) (rxns: Rxns list) (state: State): State =
     |> Map.map (fun s _  -> (rungeKutta slope delta state rxns s)) 
     |> addNewConcs state  
 
-let timeStep (delta: float) (state: State) (rxns: Rxns list) (species: Species) =  
-    state.concentrations[species] + delta * (slope state rxns species)
+let euler (f: State -> Rxns list -> Species -> float) (delta: float) (state: State) (rxns: Rxns list) (species: Species) =  
+    state.concentrations[species] + delta * (f state rxns species)
 
-let simulateRxns (delta: float) (rxns: Rxns list) (state: State): State = 
+let simulateRxns (simTimeStep) (f: State-> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (state: State): State = 
     state.concentrations
-    |> Map.map (fun s _  -> (simulateTimeStep delta state rxns s)) 
+    |> Map.map (fun s _  -> (simTimeStep f delta state rxns s)) 
     |> addNewConcs state  
 
 let extractSpecies (e: Expr) = 
@@ -79,7 +79,7 @@ let extractAndExtend (state: State) (rxns: Rxns list) =
 
 let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =   
     seq {
-            let state = simulateRxnS delta rxns state 
+            let state = simulateRxns rungeKutta slope delta rxns state 
             yield state 
             yield! simulate delta rxns state
     }
