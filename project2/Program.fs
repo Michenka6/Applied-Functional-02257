@@ -73,7 +73,7 @@ let fac =
 
 analysisIntprt gcd 15 |> List.ofSeq |> printfn "%A"
 
-analysisIntprt discreteCounter 20 |> (genPlot pieceWiseLinear) |> showPlot
+analysisIntprt discreteCounter 12 |> (genPlotSelect pieceWiseLinear ["c"]) |> showPlot
 
 let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"

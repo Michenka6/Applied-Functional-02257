@@ -63,12 +63,17 @@ let xsys (states: State seq) =
     let xs = [0 .. (List.head ys |> snd |> List.length)]
     (xs, ys)
 
+let xsysSelect (states: State seq) (selection: string list) = 
+    let ys = states |> combineStates |> concToYs |> List.filter (fun (k,v) -> selection |> List.contains k)
+    let xs = [0 .. (List.head ys |> snd |> List.length)]
+    (xs, ys)
+
 let line (xs: 'a list) (ys: 'b list) name = 
     Chart.Line(xs, ys, Name=name) 
     |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
 
 let pieceWiseLinear (xs :int list) (ys: float list) (name: string) = 
-    Chart.Scatter(xs, ys, mode=StyleParam.Mode.Lines_Markers, Name=name) 
+    Chart.Scatter(xs, ys, mode=StyleParam.Mode.Lines, Name=name) 
     |> Chart.withLineStyle(Shape=StyleParam.Shape.Hv)
 
 let lines f xs (ls : (string * float list) list) = 
@@ -82,9 +87,12 @@ let lines f xs (ls : (string * float list) list) =
 let genPlot f (states: State seq) =
     //let ys = states |> combineStates |> concToYs
     //let xs = [0 .. (List.head ys |> snd |> List.length)]
-    let xs, ys = xsys states
-    lines f xs ys 
+    //let xs, ys = xsys states
+    //lines f xs ys 
+    xsys states ||> lines f
 
+let genPlotSelect f (selection: string list) (states: State seq) =
+    xsysSelect states selection ||> lines f 
 
 
 let showPlot plot = 
