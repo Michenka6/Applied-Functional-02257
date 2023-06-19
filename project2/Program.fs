@@ -70,7 +70,7 @@ let fac =
 
 // analysisTpChkr gcd |> printfn "%A"
 
-analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
+//analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
 
 let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"
@@ -81,11 +81,10 @@ let crn1 = rxn1 + "," + rxn2
 tryParseRxn crn1
 
 
-(* 
+
 let flags0 = { Xgty = 0.0; Xlty = 0.0; Ygtx = 0.0; Yltx = 0.0 } // initial value of flags. should not matter if well formed program
-let concs0 = [("A", 6.0); ("B", 2.0); ("C", 20.0)] |> Map.ofList
+let concs0 = [("A", 6.0); ("B", 2.0); ("C", 0.0)] |> Map.ofList
 
 let state0 = { status = Running; concentrations = concs0; flags = flags0 }
 
-runSim 0.2 crn1 state0 |> Seq.take 50 |> List.ofSeq |> printfn "%A"
- *)
+runSim 0.25 crn1 state0 |> Seq.take 15 |> List.ofSeq |> printfn "%A"

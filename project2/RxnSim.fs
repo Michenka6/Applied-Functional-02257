@@ -28,6 +28,20 @@ let prodReactants (Rxn(e1, e2, k)) (state: State) =
 let concODETerm (s: Species) (state: State) (Rxn(_, _, k) as rxn) = 
     k * float (netChange s rxn) * (prodReactants rxn state)
 
+let slope (state: State) (rxns: Rxns list) (s: Species) =    
+    rxns 
+    |> List.map (concODETerm s state) 
+    |> List.sum
+
+let rungeKutta (f: State -> Rxns list -> Species -> float) h state rxns s = 
+    let yn = state.concentrations[s]
+    let k1 = f state rxns s
+    let k2 = f (addNewConcs state (state.concentrations |> Map.add s (yn + 0.5 * h * k1))) rxns s
+    let k3 = f (addNewConcs state (state.concentrations |> Map.add s (yn + 0.5 * h * k2))) rxns s 
+    let k4 = f (addNewConcs state (state.concentrations |> Map.add s (yn + h * k3))) rxns s 
+    
+    yn + h / 6.0 * (k1 + 2.0*k2 + 2.0*k3 + k4)
+
 let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: Species) =    
     rxns 
     |> List.map (concODETerm species state)
@@ -35,6 +49,19 @@ let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: S
     |> (fun dsdt -> state.concentrations[species] + delta * dsdt) 
     
 let simulateRxnS (delta: float) (rxns: Rxns list) (state: State): State = 
+    state.concentrations
+    |> Map.map (fun s _  -> (simulateTimeStep delta state rxns s)) 
+    |> addNewConcs state  
+
+let simulateRxnS_ (delta: float) (rxns: Rxns list) (state: State): State = 
+    state.concentrations
+    |> Map.map (fun s _  -> (rungeKutta slope delta state rxns s)) 
+    |> addNewConcs state  
+
+let timeStep (delta: float) (state: State) (rxns: Rxns list) (species: Species) =  
+    state.concentrations[species] + delta * (slope state rxns species)
+
+let simulateRxns (delta: float) (rxns: Rxns list) (state: State): State = 
     state.concentrations
     |> Map.map (fun s _  -> (simulateTimeStep delta state rxns s)) 
     |> addNewConcs state  
