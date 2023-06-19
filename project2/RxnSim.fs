@@ -42,7 +42,7 @@ let concODETerm (s: Species) (state: State) (Rxn(_, _, k) as rxn) =
     k * float (netChange s rxn) * (prodReactants rxn state)
 
 let slope (state: State) (rxns: Rxns list) (s: Species) =    
-    //rxns |> List.map (concODETerm s state) |> List.sum |> printfn "%A"
+    //rxns |> List.map (concODETerm s state) |> List.sum |> (printfn "in slope %s %A" s)
     rxns 
     |> List.map (concODETerm s state) 
     |> List.sum
@@ -76,9 +76,14 @@ let euler (f: State -> Rxns list -> Species -> float) (delta: float) (state: Sta
     state.concentrations[species] + delta * (f state rxns species)
 
 let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list) (species: Species) = 
+(*     (coeffs, states) ||> List.zip  
+    |> List.fold (fun sum (b, s) -> sum + delta*b*(f s rxns species)) 0.0 
+    |> (fun x -> (List.head states).concentrations[species] + x) 
+    |> (printfn "in multistep: %s %A" species)
+     *)
     (coeffs, states) ||> List.zip  
-    |> List.fold (fun sum (b, s) -> sum + s.concentrations[species] + delta*b*(f s rxns species)) 0.0 
-
+    |> List.fold (fun sum (b, s) -> sum + delta*b*(f s rxns species)) 0.0 
+    |> (fun x -> (List.head states).concentrations[species] + x) 
 let adamsBashforth2 (f: State -> Rxns list -> Species -> float) delta states rxns species = 
     multistep f delta [1.5; -0.5] states rxns species 
 
@@ -113,12 +118,13 @@ let setupAB f delta rxns state =
     simulateRxns euler f delta rxns state :: [state]  
 
 
+let sim delta rxns state0 = 
+    let state = rxns |> extractAndExtend state0 
+    simulateMulti delta rxns (setupAB slope delta rxns state)
+    //simulate delta rxns (rxns |> extractAndExtend state0)
 let runSim delta s state0 = 
     match parseRxn s with 
-    | Success (rxns, _, _) ->
-        //let state = rxns |> extractAndExtend state0 
-        //simulateMulti delta rxns (setupAB slope delta rxns state)
-        simulate delta rxns (rxns |> extractAndExtend state0)
+    | Success (rxns, _, _) -> sim delta rxns state0 
     | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
 
 

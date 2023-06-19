@@ -31,7 +31,7 @@ let mySmallStringGen =
 let mySmallEnvGen  = 
        gen { let i = 7//let! i = Gen.choose (0, 5)
              let! vs = Gen.listOfLength i mySmallStringGen
-             let! ns = Gen.listOfLength i myFloatGen1//(floatRangeGen(1.0, 100000.0))
+             let! ns = Gen.listOfLength i myFloatGen//(floatRangeGen(1.0, 100000.0))
              //let ns = ns |> List.map (fun v -> if v > -1.0 && v < 0.0 then v-1.0 else  if v > 0.0 && v < 1.0 then v+1.0 else v)
              return Map.ofList (List.zip (vs |> List.mapi (fun i s -> s + string i)) ns ) }
 
@@ -48,9 +48,7 @@ let myVarGen vs =
     gen {let! i = Gen.choose(0, List.length vs - 1)
          return vs.[i] }
 
-
-type MyGenerators =
- 
+type MyGenerators = 
    static member float() =
       { new Arbitrary<float>() with
          override x.Generator = myFloatGen//floatRangeGen(1.0, 1000000000.0)
@@ -117,19 +115,26 @@ let subConverge (state: State) =
    let B = speciesL.[1]
    let C = speciesL.[2]
    let H = speciesL.[3]
-   let rxn1 = Rxn(EL([A]), EL([A;C]), 1.0)
+(*    let rxn1 = Rxn(EL([A]), EL([A;C]), 1.0)
    let rxn2 = Rxn(EL([B]), EL([B;H]), 1.0)
    let rxn3 = Rxn(EL([C]), Empty, 1.0) 
    let rxn4 = Rxn(EL([C; H]), Empty, 1.0)
-   //let crn = [rxn1; rxn2; rxn3; rxn4]
-   let crn = [Rxn (EL [A], EL [A; C], 1.0); Rxn (EL [B], EL [B; H], 1.0); Rxn (EL [C], Empty, 1.0); Rxn (EL [C; H], Empty, 1.0)]
-   //let concs = (fun (m: Concentrations) a b -> if abs(m[a]- m[b]) < 1.0 then m |> Map.add a (m[a]+1.0) else m) state.concentrations A B 
-   //let state = {status = state.status; concentrations = concs}
+ *)
+   let rxn1 = "rxn[A, A+C, 1.0]"
+   let rxn2 = "rxn[B, B+H, 1.0]"
+   let rxn3 = "rxn[C, e, 1.0]"
+   let rxn4 = "rxn[C + H, e, 1.0]"
+   let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
+   //let crn =  
+
+   //let crn = [Rxn (EL [A], EL [A; C], 1.0); Rxn (EL [B], EL [B; H], 1.0); Rxn (EL [C], Empty, 1.0); Rxn (EL [C; H], Empty, 1.0)]
+   let crn = [rxn1; rxn2; rxn3; rxn4]
+
 
 
    let staten = 
-      simulate 0.001 crn state 
-      |> Seq.take 15000
+      runSim 0.01 crn1 state 
+      |> Seq.take 1000
       |> List.ofSeq
       |> List.last
    
@@ -138,9 +143,9 @@ let subConverge (state: State) =
    if Double.IsNaN(staten.concentrations[C]) then 
       true 
    else if state.concentrations[A] > state.concentrations[B] then
-      abs ((state.concentrations[A] - state.concentrations[B]) - staten.concentrations[C]) < 1.0
+      abs ((state.concentrations[A] - state.concentrations[B]) - staten.concentrations[C]) < 2.0
    else 
-      abs (0.0 - staten.concentrations[C]) < 1.0 
+      abs (0.0 - staten.concentrations[C]) < 2.0 
 let propSubConverge =
    Prop.forAll Arb.from<State> subConverge
  

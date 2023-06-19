@@ -92,16 +92,23 @@ let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
 // tryParseRxn rxn2
 //tryParseRxn crn1
 
-let flags0 = { Xgty = 0.0; Xlty = 0.0; Ygtx = 0.0; Yltx = 0.0 } // initial value of flags. should not matter if well formed program
+//let flags0 = { Xgty = 0.0; Xlty = 0.0; Ygtx = 0.0; Yltx = 0.0 } // initial value of flags. should not matter if well formed program
 //let concs0 = [("A", -5.889700915); ("B", 4.338130408); ("C", 2.013399836)] |> Map.ofList
 //let concs0 = [("A", 0.02187098644); ("B", 0.8053757807); ("C", 1.194414534); ("H", 0.5613506033)] |> Map.ofList
-let concs0 = [("A", 4.0); ("B", 1.0); ("C", 2.013399836)] |> Map.ofList
+let concs0 = [("A", 0.0); ("B", -1.0); ("C", 2.013399836)] |> Map.ofList
 let concs1 = Map [("A", 168.98259384); ("B", 79.85844836); ("C", 0.0); ("H", 0.0);]
-let state0 = { status = Running; concentrations = concs0; }
+
+let concs2 = Map [("A", 1.188387); ("B", 14.727885)]
+let concs3 = Map [("A", 9.667112); ("B", -2.343401)]
+
+let concs4 = Map [("A", 5.156314); ("B", 4.815980)]
+let state0 = { status = Running; concentrations = concs4; }
+
+
 
 //runSim 0.25 crn1 state0 |> Seq.take 50 |> List.ofSeq |> printfn "%A"
 
-runSim 0.001 crn1 state0 |> Seq.take 15000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
+runSim 0.01 crn1 state0 |> Seq.take 1000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
