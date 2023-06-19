@@ -115,16 +115,16 @@ let subConverge (state: State) =
    let B = speciesL.[1]
    let C = speciesL.[2]
    let H = speciesL.[3]
-(*    let rxn1 = Rxn(EL([A]), EL([A;C]), 1.0)
+   let rxn1 = Rxn(EL([A]), EL([A;C]), 1.0)
    let rxn2 = Rxn(EL([B]), EL([B;H]), 1.0)
    let rxn3 = Rxn(EL([C]), Empty, 1.0) 
    let rxn4 = Rxn(EL([C; H]), Empty, 1.0)
- *)
-   let rxn1 = "rxn[A, A+C, 1.0]"
+
+(*    let rxn1 = "rxn[A, A+C, 1.0]"
    let rxn2 = "rxn[B, B+H, 1.0]"
    let rxn3 = "rxn[C, e, 1.0]"
    let rxn4 = "rxn[C + H, e, 1.0]"
-   let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
+   let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4 *)
    //let crn =  
 
    //let crn = [Rxn (EL [A], EL [A; C], 1.0); Rxn (EL [B], EL [B; H], 1.0); Rxn (EL [C], Empty, 1.0); Rxn (EL [C; H], Empty, 1.0)]
@@ -132,12 +132,13 @@ let subConverge (state: State) =
 
 
 
-   let staten = 
-      runSim 0.01 crn1 state 
-      |> Seq.take 1000
+   let statens = 
+      sim 0.01 crn state 
+      |> Seq.take 500
       |> List.ofSeq
-      |> List.last
-   
+
+   //statens |> printfn "%A" 
+   let staten = List.last statens
    printfn "actual: %f result: %f A: %f B: %f" (state.concentrations[A] - state.concentrations[B]) (staten.concentrations[C]) state.concentrations[A] state.concentrations[B]
    
    if Double.IsNaN(staten.concentrations[C]) then 
@@ -146,6 +147,7 @@ let subConverge (state: State) =
       abs ((state.concentrations[A] - state.concentrations[B]) - staten.concentrations[C]) < 2.0
    else 
       abs (0.0 - staten.concentrations[C]) < 2.0 
+
 let propSubConverge =
    Prop.forAll Arb.from<State> subConverge
  

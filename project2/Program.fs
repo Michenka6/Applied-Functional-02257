@@ -108,12 +108,12 @@ let state0 = { status = Running; concentrations = concs4; }
 
 //runSim 0.25 crn1 state0 |> Seq.take 50 |> List.ofSeq |> printfn "%A"
 
-runSim 0.01 crn1 state0 |> Seq.take 1000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
+//runSim 0.01 crn1 state0 |> Seq.take 1000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
-(* Check.Quick propLdConverge
+Check.Quick propLdConverge
 Check.Quick propAddConverge
 Check.Quick propSubConverge
 Check.Quick propMulConverge
-Check.Quick propDivConverge *)
+Check.Quick propDivConverge
