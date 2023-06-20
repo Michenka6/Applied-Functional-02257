@@ -68,13 +68,23 @@ let pRxnLopt: Parser<Rxns list -> Rxns list -> Rxns list, unit> =
 let pRxnS: Parser<Rxns list, unit> = chainr1 pRxnL pRxnLopt
 
 let pRxnLL: Parser<Rxns list list, unit> =
-    between (symbol "[") (symbol "]") (pRxnS >>= fun rxnL -> preturn [ rxnL ])
+    between (symbol "[") (symbol "]") (pRxnS >>= fun rxnL -> preturn [ rxnL ]) .>> symbol ";"
 
-let pRxnLLopt: Parser<Rxns list list -> Rxns list list -> Rxns list list, unit> =
-    symbol "," >>. preturn (fun rxnL1 rxnL2 -> rxnL1 @ rxnL2)
+//let pRxnLLopt: Parser<Rxns list list -> Rxns list list -> Rxns list list, unit> =
+//    preturn (fun rxnL1 rxnL2 -> rxnL1 @ rxnL2)
+let rec pRxnLLopt rl =
+    parse {
+        let! rl' = pRxnLL
+        return! pRxnLLopt (rl @ rl')
+    }
+    <|> preturn rl
 
-let pRxnListList: Parser<Rxns list list, unit> = chainr1 pRxnLL pRxnLLopt
-
+//let pRxnListList: Parser<Rxns list list, unit> = chainr1 pRxnLL pRxnLLopt
+let pRxnLList =
+    parse {
+        let! rl = pRxnLL//pConcL
+        return! pRxnLLopt rl
+    }
 let parseRxn = run (pRxnS .>> eof)
 
-let parseRxns = run (pRxnListList .>> eof)
+let parseRxns = run (pRxnLList .>> eof)

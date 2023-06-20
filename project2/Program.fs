@@ -165,6 +165,16 @@ Check.Quick propMulConverge
 Check.Quick propDivConverge
 Check.Quick propSqrtConverge *)
 
-//compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s"
-//compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); ]) |> printfn "%A" //Comp (Cmp ("a", "b"))]) |> printfn "%s"
+//let facAst = 
 
+(* compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s\n\n"
+compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); ]) |> printfn "%s\n\n" //Comp (Cmp ("a", "b"))]) |> printfn "%s"
+compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s\n\n"
+
+ *)
+
+let state, src = compileCrnPP fac
+//state |> printfn "State0: %A"
+src |> printfn "Src:\n %s"
+
+src |> tryParseRxnLL
