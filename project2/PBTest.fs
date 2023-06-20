@@ -214,9 +214,12 @@ let divConverge (state: State) =
 
    let Ccn = staten.concentrations[C]   
 
-   let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0 ) * 50.0 )
-
-   //printfn "A: %f B: %f Actual: %f Result: %f Diff: %f epsilon: %f" Ac Bc (Ac / Bc) (Ccn) (abs (Ac/Bc - Ccn)) epsilon 
+(*    let epsilon = 
+      if Bc <= 1.0 then (1.0 / ((abs (Ac - Bc)) + 1.0 ) * (1.0 / Bc)  * 50.0 ) 
+      else (1.0 / ((abs (Ac - Bc)) + 1.0 ) * 50.0 )
+ *)
+   let epsilon = 1.0 / Bc * 10.0
+   printfn "A: %f B: %f Actual: %f Result: %f Diff: %f epsilon: %f" Ac Bc (Ac / Bc) (Ccn) (abs (Ac/Bc - Ccn)) epsilon 
     
    abs (Ac / Bc - Ccn) < epsilon 
 
