@@ -162,8 +162,8 @@ Check.Quick propLdConverge
 Check.Quick propAddConverge
 Check.Quick propSubConverge
 Check.Quick propMulConverge
-//Check.Quick propDivConverge
-//Check.Quick propSqrtConverge
+Check.Quick propDivConverge
+Check.Quick propSqrtConverge
 
 //compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s"
 
