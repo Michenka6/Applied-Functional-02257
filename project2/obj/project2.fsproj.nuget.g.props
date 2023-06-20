@@ -14,6 +14,8 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">/Users/amiralimov/.nuget/packages/fsharp.core/7.0.0</PkgFSharp_Core>
+    <PkgPlotly_NET Condition=" '$(PkgPlotly_NET)' == '' ">/Users/amiralimov/.nuget/packages/plotly.net/4.0.0</PkgPlotly_NET>
+    <PkgFsCheck Condition=" '$(PkgFsCheck)' == '' ">/Users/amiralimov/.nuget/packages/fscheck/2.16.5</PkgFsCheck>
     <PkgFParsec Condition=" '$(PkgFParsec)' == '' ">/Users/amiralimov/.nuget/packages/fparsec/1.1.1</PkgFParsec>
   </PropertyGroup>
 </Project>

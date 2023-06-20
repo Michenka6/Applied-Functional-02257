@@ -52,15 +52,14 @@ type Status =
     | Converged
 
 type Flags =
-    { Xgty: bool
-      Xlty: bool
-      Ygtx: bool
-      Yltx: bool }
+    { Xgty: float
+      Xlty: float
+      Ygtx: float
+      Yltx: float }
 
 type State =
     { status: Status
-      molecules: Molecules
-      flags: Flags }
+      concentrations: Molecules }
 
 (* Types used in type checker. Defines various types of errors *)
 // Possibly also check all sources defined here then do no such checks in intepreter.

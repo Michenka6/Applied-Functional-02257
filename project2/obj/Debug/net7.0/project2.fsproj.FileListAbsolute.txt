@@ -60,3 +60,8 @@
 /home/luc/Documents/GitHub/Applied-Functional-02257/project2/obj/Debug/net7.0/project2.fsproj.CopyComplete
 /home/luc/Documents/GitHub/Applied-Functional-02257/project2/obj/Debug/net7.0/project2.genruntimeconfig.cache
 /home/luc/Documents/GitHub/Applied-Functional-02257/project2/obj/Debug/net7.0/ref/project2.dll
+/Users/amiralimov/Programming/Applied-Functional-02257/project2/bin/Debug/net7.0/DynamicObj.dll
+/Users/amiralimov/Programming/Applied-Functional-02257/project2/bin/Debug/net7.0/FsCheck.dll
+/Users/amiralimov/Programming/Applied-Functional-02257/project2/bin/Debug/net7.0/Giraffe.ViewEngine.dll
+/Users/amiralimov/Programming/Applied-Functional-02257/project2/bin/Debug/net7.0/Newtonsoft.Json.dll
+/Users/amiralimov/Programming/Applied-Functional-02257/project2/bin/Debug/net7.0/Plotly.NET.dll

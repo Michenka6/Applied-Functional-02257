@@ -7,27 +7,36 @@ open System
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
-let setFlags a b c d =
-    { Xgty = a
-      Xlty = b
-      Ygtx = c
-      Yltx = d }
+// let setFlags a b c d =
+//     { Xgty = a
+//       Xlty = b
+//       Ygtx = c
+//       Yltx = d }
 
-let compare (a, b) (env: Molecules) : Flags option =
-    option {
-        let! a = Map.tryFind a env
-        let! b = Map.tryFind b env
+// let compare (a, b) (env: Molecules) : Flags option =
+//     option {
+//         let! a = Map.tryFind a env
+//         let! b = Map.tryFind b env
 
-        let flags =
-            if abs (a - b) < 0.000001 then
-                setFlags true false true false
-            else if a > b then
-                setFlags true false false true
-            else
-                setFlags false true true false
+//         let flags =
+//             if abs (a - b) < 0.000001 then
+//                 setFlags true false true false
+//             else if a > b then
+//                 setFlags true false false true
+//             else
+//                 setFlags false true true false
 
-        return flags
-    }
+//         return flags
+// }
+
+let compare (a, b) env =
+
+    match Map.tryFind a env, Map.tryFind b env with
+    | None, _ -> None
+    | _, None -> None
+    | Some a, Some b when abs (a - b) < 0.000001 -> Some [ "Xgty", 1.0; "Xlty", 0.0; "Ygtx", 1.0; "Yltx", 0.0 ]
+    | Some a, Some b when a > b -> Some [ "Xgty", 1.0; "Xlty", 0.0; "Ygtx", 0.0; "Yltx", 1.0 ]
+    | Some a, Some b -> Some [ "Xgty", 0.0; "Xlty", 1.0; "Ygtx", 1.0; "Yltx", 0.0 ]
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
@@ -84,23 +93,20 @@ let arithmetic (env: Molecules) (arithmetic: Arithmetic) : Molecules option =
             return Map.add b bValue env
         }
 
-let updateState (oldState: State) (env: Molecules) (flags: Flags) =
-    { oldState with
-        molecules = env
-        flags = flags }
+let updateState (oldState: State) (env: Molecules) = { oldState with concentrations = env }
 
 
 let rec interpretCommand (cmd: Command) (state: State) : State option =
     match cmd with
     | Ar (a) ->
         option {
-            let! env = arithmetic state.molecules a
-            return updateState state env state.flags
+            let! env = arithmetic state.concentrations a
+            return updateState state env
         }
     | Comp (s1, s2) ->
         option {
-            let! flags = compare (s1, s2) state.molecules
-            return updateState state state.molecules flags
+            let! flags = compare (s1, s2) state.concentrations
+            return updateState state state.concentrations
         }
     | Cond (con) -> Some(interpretConditional con state)
 
@@ -112,15 +118,16 @@ and interpretCmdList (commands: Command list) (state: State) : State =
         | Some s -> s)
 
 and interpretConditional con state =
-    let flags = state.flags
+    let concs = state.concentrations
 
     match con with
-    | IfGT (cmds) when flags.Xgty && flags.Yltx -> interpretCmdList cmds state
-    | IfGE (cmds) when flags.Xgty -> interpretCmdList cmds state
-    | IfEQ (cmds) when flags.Xgty && flags.Ygtx -> interpretCmdList cmds state
-    | IfLT (cmds) when flags.Xlty && flags.Ygtx -> interpretCmdList cmds state
-    | IfLE (cmds) when flags.Ygtx -> interpretCmdList cmds state
+    | IfGT (cmds) when concs["Xgty"] = 1.0 && concs["Yltx"] = 1.0 -> interpretCmdList cmds state
+    | IfGE (cmds) when concs["Xgty"] = 1.0 -> interpretCmdList cmds state
+    | IfEQ (cmds) when concs["Xgty"] = 1.0 && concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
+    | IfLT (cmds) when concs["Xlty"] = 1.0 && concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
+    | IfLE (cmds) when concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
     | _ -> state
+
 
 let interpretSteps (steps: Step list) (state: State) =
     (state, steps)
@@ -136,13 +143,7 @@ let rec stateSequence steps state =
 let interpret (crn: CRN) (nSteps: int) =
     let state0 =
         { status = Running
-          molecules = crn.molecules
-          flags =
-            { Xgty = false
-              Xlty = false
-              Ygtx = false
-              Yltx = false } // initial value of flags. should not matter if well formed program
-        }
+          concentrations = crn.molecules }
 
     (crn.steps, state0)
     ||> stateSequence

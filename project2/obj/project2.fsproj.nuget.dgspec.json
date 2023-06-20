@@ -44,6 +44,16 @@
               "target": "Package",
               "version": "[7.0.0, )",
               "generatePathProperty": true
+            },
+            "FsCheck": {
+              "target": "Package",
+              "version": "[2.16.5, )",
+              "generatePathProperty": true
+            },
+            "Plotly.NET": {
+              "target": "Package",
+              "version": "[4.0.0, )",
+              "generatePathProperty": true
             }
           },
           "imports": [

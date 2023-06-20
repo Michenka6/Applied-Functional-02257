@@ -8,11 +8,16 @@
     <Compile Include="Parser.fs" />
     <Compile Include="TypeChecker.fs" />
     <Compile Include="Interpreter.fs" />
+    <Compile Include="Compiler.fs" />
     <Compile Include="RxnsParser.fs" />
     <Compile Include="RxnSim.fs" />
+    <Compile Include="Plot.fs" />
+    <Compile Include="PBTest.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.1.1" />
+    <PackageReference Include="Plotly.NET" Version="4.0.0" />
+    <PackageReference Include="FsCheck" Version="2.16.5" />
   </ItemGroup>
 </Project>
