@@ -73,7 +73,9 @@ let simulateRxnS_ (delta: float) (rxns: Rxns list) (state: State): State =
     |> addNewConcs state  
 
 let euler (f: State -> Rxns list -> Species -> float) (delta: float) (state: State) (rxns: Rxns list) (species: Species) =  
-    state.concentrations[species] + delta * (f state rxns species)
+    let yn = state.concentrations[species] + delta * (f state rxns species)
+    let result = (state.concentrations[species] + yn) / 2.0
+    if yn <= 0.0 || yn > 0.05 *result then 0.0 else result
 
 let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list) (species: Species) = 
 (*     (coeffs, states) ||> List.zip  
@@ -83,7 +85,8 @@ let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list
      *)
     (coeffs, states) ||> List.zip  
     |> List.fold (fun sum (b, s) -> sum + delta*b*(f s rxns species)) 0.0 
-    |> (fun x -> (List.head states).concentrations[species] + x) 
+    |> (fun x -> (List.head states).concentrations[species] + x)
+    |> (fun x -> if x <= 0.0 then 0.0 else x) 
 let adamsBashforth2 (f: State -> Rxns list -> Species -> float) delta states rxns species = 
     multistep f delta [1.5; -0.5] states rxns species 
 
@@ -97,7 +100,7 @@ let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =
     seq {
             //let state = simulateRxns rungeKutta slope delta rxns state 
             yield state 
-            yield! simulate delta rxns (simulateRxns euler slope delta rxns state)
+            yield! simulate delta rxns (simulateRxns rungeKutta slope delta rxns state)
     }
 
 let simulateRxnsMulti simTimeStep (f: State -> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (states: State list) : State =
@@ -119,9 +122,10 @@ let setupAB f delta rxns state =
 
 
 let sim delta rxns state0 = 
-    let state = rxns |> extractAndExtend state0 
-    simulateMulti delta rxns (setupAB slope delta rxns state)
-    //simulate delta rxns (rxns |> extractAndExtend state0)
+    //let state = rxns |> extractAndExtend state0 
+    //simulateMulti delta rxns (setupAB slope delta rxns state)
+    simulate delta rxns (rxns |> extractAndExtend state0)
+
 let runSim delta s state0 = 
     match parseRxn s with 
     | Success (rxns, _, _) -> sim delta rxns state0 

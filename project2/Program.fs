@@ -80,13 +80,18 @@ let fac =
 (* let rxn1 = "rxn[A+B, A+B+C, 1.0]"
 let rxn2 = "rxn[C, e, 1.0]"
 let crn1 = rxn1 + "," + rxn2
-
  *)
+
 let rxn1 = "rxn[A, A+C, 1.0]"
 let rxn2 = "rxn[B, B+H, 1.0]"
 let rxn3 = "rxn[C, e, 1.0]"
 let rxn4 = "rxn[C + H, e, 1.0]"
 let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
+(* 
+let sqrtRxn1 = "rxn[A, A+B, 1.0]"
+let sqrtRxn2 = "rxn[B+B, e, 0.5]"
+
+let sqrtCrn = sqrtRxn1 + "," + sqrtRxn2 *)
 //tryParseRxn crn
 // tryParseRxn rxn1
 // tryParseRxn rxn2
@@ -102,18 +107,22 @@ let concs2 = Map [("A", 1.188387); ("B", 14.727885)]
 let concs3 = Map [("A", 9.667112); ("B", -2.343401)]
 
 let concs4 = Map [("A", 5.156314); ("B", 4.815980)]
-let state0 = { status = Running; concentrations = concs4; }
+let concs5 = Map [("A",14.77495397); ("B",15.68251313); ("C", 0.6320653985); ("H", 4.417154998)]
+
+let concs6 = Map [("A", 3.805313656); ("B", 9.111459915); ("C", 11.68691241); ("H", 0.8446240563);]
+let state0 = { status = Running; concentrations = concs5; }
 
 
 
-//runSim 0.25 crn1 state0 |> Seq.take 50 |> List.ofSeq |> printfn "%A"
+//runSim 0.001 crn1 state0 |> Seq.take 7000 |> List.ofSeq |> printfn "%A"
 
-//runSim 0.01 crn1 state0 |> Seq.take 1000 |> genPlotSelect line ["A"; "B"; "C"] |> showPlot
+runSim 0.15 crn1 state0 |> Seq.take 500 |> genPlotSelect line ["A"; "B"; "C"; "H"] |> showPlot
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
-Check.Quick propLdConverge
+(* Check.Quick propLdConverge
 Check.Quick propAddConverge
 Check.Quick propSubConverge
 Check.Quick propMulConverge
 Check.Quick propDivConverge
+Check.Quick propSqrtConverge *)
