@@ -6,8 +6,6 @@ type Species = string
 
 type Number = float
 
-type Comparison = Species * Species
-
 type Concentration = Species * Number
 
 type Molecules = Map<Species, Number>
@@ -22,7 +20,7 @@ type Arithmetic =
 
 type Command =
     | Ar of Arithmetic
-    | Comp of Comparison
+    | Comp of Species * Species
     | Cond of Conditional
 
 and Conditional =
@@ -35,10 +33,12 @@ and Conditional =
 type Step = Step of Command list
 
 type CRN =
-    { concentrations: Concentration list
+    { molecules: Molecules
       steps: Step list }
 
-type CRN_Error =
+type CRN_Error = Result<unit, ErrorType>
+
+and ErrorType =
     | CycleConflict
     | WriteTwice
     | SameSpeciesComparison
@@ -48,7 +48,7 @@ type CRN_Error =
 (* Types used in intepreter. State etc. *)
 type Status =
     | Running
-    | Error
+    | Faulty
     | Converged
 
 type Flags =
@@ -59,7 +59,7 @@ type Flags =
 
 type State =
     { status: Status
-      concentrations: Molecules
+      molecules: Molecules
       flags: Flags }
 
 (* Types used in type checker. Defines various types of errors *)
@@ -84,3 +84,11 @@ type OptionBuilder() =
 
 
 let option = new OptionBuilder()
+
+type ResultBuilder() =
+    member this.Bind(opt, func) = Result.bind func opt
+
+    member this.Return(x) = Ok x
+
+
+let result = new ResultBuilder()

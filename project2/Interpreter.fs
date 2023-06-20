@@ -13,7 +13,7 @@ let setFlags a b c d =
       Ygtx = c
       Yltx = d }
 
-let compare ((a, b): Comparison) (env: Molecules) : Flags option =
+let compare (a, b) (env: Molecules) : Flags option =
     option {
         let! a = Map.tryFind a env
         let! b = Map.tryFind b env
@@ -36,32 +36,6 @@ let updateEnv (key: Species) (env: Molecules) (value: Number) =
         let! _ = Map.tryFind key env
         return Map.add key value env
     }
-
-let applyIfDef op src1 src2 env =
-    if env |> Map.containsKey src1 && env |> Map.containsKey src2 then
-        try
-            Some(op env[src1] env[src2])
-        with
-        | :? OverflowException -> None
-        | :? DivideByZeroException -> None
-    else
-        None
-
-let applyUnaryIfDef op src env =
-    if env |> Map.containsKey src then
-        try
-            Some(op env[src])
-        with
-        | :? OverflowException -> None
-        | :? DivideByZeroException -> None
-    else
-        None
-
-let loadIfDef src dst env =
-    if env |> Map.containsKey src then
-        env |> Map.add dst env[src] |> Some
-    else
-        None
 
 // Either change to option type or do nothing and rely on type checker. Check the src dst thing only in type checker?
 let safeDiv a b =
@@ -112,7 +86,7 @@ let arithmetic (env: Molecules) (arithmetic: Arithmetic) : Molecules option =
 
 let updateState (oldState: State) (env: Molecules) (flags: Flags) =
     { oldState with
-        concentrations = env
+        molecules = env
         flags = flags }
 
 
@@ -120,13 +94,13 @@ let rec interpretCommand (cmd: Command) (state: State) : State option =
     match cmd with
     | Ar (a) ->
         option {
-            let! env = arithmetic state.concentrations a
+            let! env = arithmetic state.molecules a
             return updateState state env state.flags
         }
-    | Comp (c) ->
+    | Comp (s1, s2) ->
         option {
-            let! flags = compare c state.concentrations
-            return updateState state state.concentrations flags
+            let! flags = compare (s1, s2) state.molecules
+            return updateState state state.molecules flags
         }
     | Cond (con) -> Some(interpretConditional con state)
 
@@ -159,16 +133,10 @@ let rec stateSequence steps state =
         yield! stateSequence steps s
     }
 
-let initConcs (concs: Concentration list) =
-    concs |> List.fold (fun env (s, n) -> env |> Map.add s n) Map.empty
-
 let interpret (crn: CRN) (nSteps: int) =
-
-    let initCncs = initConcs crn.concentrations
-
     let state0 =
         { status = Running
-          concentrations = initCncs
+          molecules = crn.molecules
           flags =
             { Xgty = false
               Xlty = false
@@ -176,7 +144,8 @@ let interpret (crn: CRN) (nSteps: int) =
               Yltx = false } // initial value of flags. should not matter if well formed program
         }
 
-    (stateSequence crn.steps state0)
+    (crn.steps, state0)
+    ||> stateSequence
     |> Seq.take nSteps
     |> Seq.append (seq { state0 })
 

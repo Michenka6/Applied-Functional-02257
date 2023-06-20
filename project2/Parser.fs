@@ -77,7 +77,7 @@ let pLd: Parser<Arithmetic, unit> =
 let pArithmetic: Parser<Arithmetic, unit> =
     pLd <|> pAdd <|> pSub <|> pMul <|> pDiv <|> pSqrt
 
-let pCmp: Parser<Comparison, unit> =
+let pCmp: Parser<Species * Species, unit> =
     between (symbol "cmp[") (symbol "]") (pipe2 (pSpecies .>> symbol ",") pSpecies (fun sp1 sp2 -> sp1, sp2))
 
 (* Slide 11 Parsing.pdf *)
@@ -149,7 +149,7 @@ let pCrn: Parser<CRN, unit> =
     between
         (spaces >>. symbol "crn={")
         (symbol "};")
-        (pipe2 (pConcList) (pStepList) (fun c s -> { concentrations = c; steps = s })) //pRootList >>= fun rl -> preturn (Crn rl)
+        (pipe2 (pConcList) (pStepList) (fun c s -> { molecules = Map c; steps = s })) //pRootList >>= fun rl -> preturn (Crn rl)
 
 // eof consume till end of input
 let parseString = run (pCrn .>> eof)
