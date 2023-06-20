@@ -81,7 +81,7 @@ let ldConverge (state: State) =
     let Ac = state.concentrations[A]
     let Bc = state.concentrations[B]
 
-    let staten = simulate 0.15 crn state |> Seq.take 300 |> List.ofSeq |> List.last
+    let staten = sim 0.15  [crn] state |> Seq.take 300 |> List.ofSeq |> List.last
 
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0))
 
@@ -107,7 +107,7 @@ let addConverge (state: State) =
     let Bc = state.concentrations[B]
     let Cc = state.concentrations[C]
 
-    let staten = sim 0.15 crn state |> Seq.take 300 |> List.ofSeq |> List.last
+    let staten = sim 0.15 [crn] state |> Seq.take 300 |> List.ofSeq |> List.last
 
     let Ccn = staten.concentrations[C]
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0))
@@ -138,7 +138,7 @@ let subConverge (state: State) =
     let Cc = state.concentrations[C]
     let Hc = state.concentrations[H]
 
-    let staten = sim 0.01 crn state |> Seq.take 400 |> List.ofSeq |> List.last
+    let staten = sim 0.01 [crn] state |> Seq.take 400 |> List.ofSeq |> List.last
 
     let Ccn = staten.concentrations[C]
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0) * Ac * 10.0)
@@ -170,7 +170,7 @@ let mulConverge (state: State) =
     let Bc = state.concentrations[B]
     let Cc = state.concentrations[C]
 
-    let staten = simulate 0.05 crn state |> Seq.take 200 |> List.ofSeq |> List.last
+    let staten = simulate 0.05 [crn] state |> Seq.take 200 |> List.ofSeq |> List.last
 
     let Ccn = staten.concentrations[C]
 
@@ -198,7 +198,7 @@ let divConverge (state: State) =
     let Bc = state.concentrations[B]
     let Cc = state.concentrations[C]
 
-    let staten = simulate 0.01 crn state |> Seq.take 500 |> List.ofSeq |> List.last
+    let staten = simulate 0.01 [crn] state |> Seq.take 500 |> List.ofSeq |> List.last
 
     let Ccn = staten.concentrations[C]
 
@@ -224,7 +224,7 @@ let sqrtConverge (state: State) =
     let Ac = state.concentrations[A]
     let Bc = state.concentrations[B]
 
-    let staten = simulate 0.01 crn state |> Seq.take 500 |> List.ofSeq |> List.last
+    let staten = simulate 0.01 [crn] state |> Seq.take 500 |> List.ofSeq |> List.last
 
     let Bcn = staten.concentrations[B]
 

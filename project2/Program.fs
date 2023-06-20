@@ -153,7 +153,7 @@ let state0 = { status = Running; concentrations = concs14; }
 
 //runSim 0.001 crn1 state0 |> Seq.take 7000 |> List.ofSeq |> printfn "%A"
 
-//runSim 0.01 crn1 state0 |> Seq.take 400 |> genPlotSelect line ["A"; "B"; "C"; "H"] |> showPlot
+//runSim 0.05 crn1 state0 |> Seq.take 500 |> genPlotSelect line ["A"; "B"; "C"; "H"] |> showPlot
 //runSim 0.20 crn1 state0 |> Seq.take 40 |> genPlotSelect line ["A"; "B"; "C"; "H"] |> showPlot
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
@@ -163,8 +163,8 @@ Check.Quick propAddConverge
 Check.Quick propSubConverge
 Check.Quick propMulConverge
 Check.Quick propDivConverge
-Check.Quick propSqrtConverge
- *)
+Check.Quick propSqrtConverge *)
+
 //compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s"
-compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); ]) |> printfn "%A" //Comp (Cmp ("a", "b"))]) |> printfn "%s"
+//compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); ]) |> printfn "%A" //Comp (Cmp ("a", "b"))]) |> printfn "%s"
 

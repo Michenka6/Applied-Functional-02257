@@ -104,13 +104,13 @@ let simulateRxns (simTimeStep) (f: State-> Rxns list -> Species -> float) (delta
     |> addNewConcs state  
 
 
-let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =   
+let rec simulate (delta: float) (rxns: Rxns list list) (state: State) : seq<State> =   
     seq {
             //let state = simulateRxns rungeKutta slope delta rxns state 
             yield state 
-            yield! simulate delta rxns (simulateRxns trapezoidal slope delta rxns state)
+            yield! simulate delta rxns (rxns |> List.fold (fun state rxn -> simulateRxns trapezoidal slope delta rxn state) state) //(simulateRxns trapezoidal slope delta rxns state)
     }
-
+// (rxns |> List.fold (fun state rxn -> simulateRxns trapezoidal slope delta rxn state) state)
 let simulateRxnsMulti simTimeStep (f: State -> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (states: State list) : State =
     states |> List.head |> (fun s -> s.concentrations)
     |> Map.map (fun s _ -> (simTimeStep f delta states rxns s))
@@ -131,11 +131,11 @@ let setupAB f delta rxns state =
 let sim delta rxns state0 = 
     //let state = rxns |> extractAndExtend state0 
     //simulateMulti delta rxns (setupAB slope delta rxns state)
-    simulate delta rxns (rxns |> extractAndExtend state0)
+    simulate delta rxns (rxns |> List.fold (fun state rxn -> extractAndExtend state rxn) state0)
 
 let runSim delta s state0 = 
     match parseRxn s with 
-    | Success (rxns, _, _) -> sim delta rxns state0 
+    | Success (rxns, _, _) -> sim delta [rxns] state0 
     | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
 
 
