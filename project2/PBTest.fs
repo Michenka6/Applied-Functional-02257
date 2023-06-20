@@ -144,20 +144,14 @@ let subConverge (state: State) =
 
    let Ccn = staten.concentrations[C]
    let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0 ) * Ac*10.0)
-(* 
-   if Ac > Bc then 
-      printfn "A: %f B: %f Actual: %f Result: %f Diff: %f epsilon: %f" Ac Bc (Ac - Bc) (Ccn) (abs (Ac-Bc - Ccn)) epsilon 
-   else 
-      printfn "A <= B. Ccn: %f" Ccn  *)
+   
    if abs (Ac - Bc) <= 1.0 then 
-      //printfn "if1 Ac - Bc: %f. Ccn: %f thing: %f" (Ac - Bc) Ccn (1.0 / (abs (Ac - Bc)))
+      
       (abs Ccn) <= (1.0 / (abs (Ac - Bc))) * 100.0
-   else if Ac > Bc then
-      //printfn "if2 Ac - Bc: %f. Ccn: %f Thing: %f" (Ac - Bc) Ccn (1.0 / ( (abs (Ac - Bc)) + 1.0 ) * 2.0 * Ac  )
+   else if Ac > Bc then 
       ((Ac - Bc) - Ccn) < epsilon 
-   else if Ac <= Bc then
-      //printfn "if3 Ac - Bc: %f. Ccn: %f" (Ac - Bc) Ccn
-      Ccn < 10.0
+   else if Ac <= Bc then 
+      Ccn < epsilon
    else 
       true 
  
