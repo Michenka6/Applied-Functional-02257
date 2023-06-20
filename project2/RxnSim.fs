@@ -84,6 +84,20 @@ let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list
 let adamsBashforth2 (f: State -> Rxns list -> Species -> float) delta states rxns species = 
     multistep f delta [1.5; -0.5] states rxns species 
 
+let trapezoidal (f: State -> Rxns list -> Species -> float) (delta: float) (state: State) (rxns: Rxns list) (species: Species) : float = 
+    let y = state.concentrations[species]
+    
+    let yPredict = y + delta * f state rxns species 
+    
+    let concPredict = state.concentrations |> Map.add species yPredict
+    
+    let statePredict = {status = state.status; concentrations = concPredict}
+    
+    let yCorrected = y + 0.5 * delta * ( (f state rxns species) + (f statePredict rxns species) )
+    
+    yCorrected 
+
+
 let simulateRxns (simTimeStep) (f: State-> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (state: State): State = 
     state.concentrations
     |> Map.map (fun s _  -> (simTimeStep f delta state rxns s)) 
@@ -94,7 +108,7 @@ let rec simulate (delta: float) (rxns: Rxns list) (state: State) : seq<State> =
     seq {
             //let state = simulateRxns rungeKutta slope delta rxns state 
             yield state 
-            yield! simulate delta rxns (simulateRxns rungeKutta slope delta rxns state)
+            yield! simulate delta rxns (simulateRxns trapezoidal slope delta rxns state)
     }
 
 let simulateRxnsMulti simTimeStep (f: State -> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (states: State list) : State =
@@ -113,7 +127,6 @@ let rec simulateMulti delta (rxns: Rxns list) (states: State list) : seq<State> 
 
 let setupAB f delta rxns state = 
     simulateRxns euler f delta rxns state :: [state]  
-
 
 let sim delta rxns state0 = 
     //let state = rxns |> extractAndExtend state0 

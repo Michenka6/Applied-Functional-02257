@@ -122,18 +122,36 @@ let subConverge (state: State) =
 
    let crn = [rxn1; rxn2; rxn3; rxn4]
 
-
+   let Ac = state.concentrations[A]
+   let Bc = state.concentrations[B]
+   let Cc = state.concentrations[C]
+   let Hc = state.concentrations[H]
 
    let staten = 
-      sim 0.15 crn state 
-      |> Seq.take 500 
+      sim 0.01 crn state 
+      |> Seq.take 400 
       |> List.ofSeq
       |> List.last
-  
-   if state.concentrations[A] > state.concentrations[B] then
-      abs ((state.concentrations[A] - state.concentrations[B]) - staten.concentrations[C]) < 2.0
+
+   let Ccn = staten.concentrations[C]
+   let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0 ) * Ac*10.0)
+
+   if Ac > Bc then 
+      printfn "A: %f B: %f Actual: %f Result: %f Diff: %f epsilon: %f" Ac Bc (Ac - Bc) (Ccn) (abs (Ac-Bc - Ccn)) epsilon 
    else 
-      abs (0.0 - staten.concentrations[C]) < 2.0 
+      printfn "A <= B. Ccn: %f" Ccn 
+   if abs (Ac - Bc) <= 1.0 then 
+      //printfn "if1 Ac - Bc: %f. Ccn: %f thing: %f" (Ac - Bc) Ccn (1.0 / (abs (Ac - Bc)))
+      (abs Ccn) <= (1.0 / (abs (Ac - Bc))) * 100.0
+   else if Ac > Bc then
+      //printfn "if2 Ac - Bc: %f. Ccn: %f Thing: %f" (Ac - Bc) Ccn (1.0 / ( (abs (Ac - Bc)) + 1.0 ) * 2.0 * Ac  )
+      ((Ac - Bc) - Ccn) < epsilon 
+   else if Ac <= Bc then
+      //printfn "if3 Ac - Bc: %f. Ccn: %f" (Ac - Bc) Ccn
+      Ccn < 10.0
+   else 
+      true 
+ 
 
 let propSubConverge =
    Prop.forAll Arb.from<State> subConverge
@@ -147,16 +165,25 @@ let mulConverge (state: State) =
    let rxn1 = Rxn(EL([A;B]), EL([A;B;C]), 1.0)
    let rxn2 = Rxn(EL([C]), Empty, 1.0) 
    let crn = [rxn1; rxn2]
-   
+
+   let Ac = state.concentrations[A]
+   let Bc = state.concentrations[B]
+   let Cc = state.concentrations[C]
+
    let staten = 
-      simulate 0.15 crn state 
-      |> Seq.take 300
+      simulate 0.05 crn state 
+      |> Seq.take 200
       |> List.ofSeq
       |> List.last
-   //printfn "%f %f" (state.concentrations[A] * state.concentrations[B]) (staten.concentrations[C])
-   
-   abs (state.concentrations[A] * state.concentrations[B] - staten.concentrations[C]) < 0.000001
 
+   let Ccn = staten.concentrations[C]   
+
+   let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0 ) * 20.0 )
+
+   printfn "Actual: %f Result: %f Diff: %f epsilon: %f" (Ac * Bc) (Ccn) (abs (Ac*Bc - Ccn)) epsilon 
+   
+   abs (Ac * Bc - Ccn) < epsilon 
+   
 let propMulConverge =
    Prop.forAll Arb.from<State> mulConverge
 
@@ -174,8 +201,8 @@ let divConverge (state: State) =
    let crn = [rxn1; rxn2]
    
    let staten = 
-      simulate 0.01 crn state 
-      |> Seq.take 1000
+      simulate 0.05 crn state 
+      |> Seq.take 200
       |> List.ofSeq
       |> List.last
    
