@@ -59,4 +59,23 @@ let pRxnLopt: Parser<Rxns list -> Rxns list -> Rxns list,unit> = symbol "," >>. 
 // "one big bowl"
 let pRxnS: Parser<Rxns list, unit>  = chainr1 pRxnL pRxnLopt
 
+let pRxnLL: Parser<Rxns list list, unit> = between (symbol "[") (symbol "]") (pRxnS >>= fun rxnL -> preturn [rxnL])
+
+let pRxnLLopt: Parser<Rxns list list -> Rxns list list -> Rxns list list ,unit> = 
+    symbol "," >>. preturn  (fun rxnL1 rxnL2 -> rxnL1 @ rxnL2)
+
+let pRxnListList: Parser<Rxns list list, unit> = chainr1 pRxnLL pRxnLLopt
+
 let parseRxn = run (pRxnS  .>>  eof) 
+
+let parseRxns =  run (pRxnListList  .>>  eof) 
+
+(* { rxn[a, a + atmp, 1.0], rxn[atmp, e, 1.0],
+rxn[b, b + btmp, 1.0], rxn[btmp, e, 1.0],
+{rxn[Xgt + b, Xlt + b, 1.0], rxn[Xlt + a, Xgt + a, 0.5],
+rxn[Ygt + a, Ylt + a, 1.0], rxn[Ylt + b, Ygt + b, 1.0]},
+{rxn[Xgt + Xlt, Xlt + b, 1.0], rxn[b + Xlt, Xlt + Xlt, 1.0],
+rxn[Xlt + Xgt, Xgt + b, 1.0], rxn[b + Xgt, Xgt + Xgt, 1.0],
+rxn[Ygt + Ylt, Ylt + a, 1.0], rxn[a + Ylt, Ylt + Ylt, 1.0],
+rxn[Ylt + Ygt, Ygt + a, 1.0], rxn[a + Ygt, Ygt + Ygt, 1.0]},
+ } *)

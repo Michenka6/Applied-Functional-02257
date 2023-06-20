@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
@@ -10,6 +10,7 @@
     <Compile Include="Interpreter.fs" />
     <Compile Include="RxnsParser.fs" />
     <Compile Include="RxnSim.fs" />
+    <Compile Include="Compiler.fs" />
     <Compile Include="Plot.fs" />
     <Compile Include="PBTest.fs" />
     <Compile Include="Program.fs" />

@@ -10,6 +10,7 @@ open PBTest
 open RxnsParser
 open RxnSim
 open Plot 
+open Compiler
 
 let tryParse s =
     match parseString s with
@@ -20,6 +21,13 @@ let tryParseRxn s =
     match parseRxn s with
     | Success (result, _, _) -> result |> printfn "crn: %A" 
     | Failure (errorMsg, _, _) -> printfn $"Parsing failed: {errorMsg}"
+
+let tryParseRxnLL s =
+    match parseRxns s with
+    | Success (result, _, _) -> result |> printfn "maybe: %A" 
+    | Failure (errorMsg, _, _) -> printfn $"Parsing failed: {errorMsg}"
+
+
 
 
 let gcd =
@@ -87,6 +95,10 @@ let rxn2 = "rxn[B, B+H, 1.0]"
 let rxn3 = "rxn[C, e, 1.0]"
 let rxn4 = "rxn[C + H, e, 1.0]"
 let crn1 = rxn1 + "," + rxn2 + "," + rxn3 + "," + rxn4
+let crnList = "[" + crn1 + "], [" + crn1 + "]"
+
+//tryParseRxnLL crnList 
+
 (* 
 let sqrtRxn1 = "rxn[A, A+B, 1.0]"
 let sqrtRxn2 = "rxn[B+B, e, 0.5]"
@@ -100,7 +112,7 @@ let sqrtCrn = sqrtRxn1 + "," + sqrtRxn2 *)
 //let flags0 = { Xgty = 0.0; Xlty = 0.0; Ygtx = 0.0; Yltx = 0.0 } // initial value of flags. should not matter if well formed program
 //let concs0 = [("A", -5.889700915); ("B", 4.338130408); ("C", 2.013399836)] |> Map.ofList
 //let concs0 = [("A", 0.02187098644); ("B", 0.8053757807); ("C", 1.194414534); ("H", 0.5613506033)] |> Map.ofList
-let concs0 = [("A", 0.0); ("B", -1.0); ("C", 2.013399836)] |> Map.ofList
+(* let concs0 = [("A", 0.0); ("B", -1.0); ("C", 2.013399836)] |> Map.ofList
 let concs1 = Map [("A", 168.98259384); ("B", 79.85844836); ("C", 0.0); ("H", 0.0);]
 
 let concs2 = Map [("A", 1.188387); ("B", 14.727885)]
@@ -110,13 +122,13 @@ let concs4 = Map [("A", 5.156314); ("B", 4.815980)]
 let concs5 = Map [("A",14.77495397); ("B",15.68251313); ("C", 0.6320653985); ("H", 4.417154998)]
 
 let concs6 = Map [("A", 3.805313656); ("B", 9.111459915); ("C", 11.68691241); ("H", 0.8446240563);]
-let state0 = { status = Running; concentrations = concs5; }
-
+let state0 = { status = Running; concentrations = concs6; }
+ *)
 
 
 //runSim 0.001 crn1 state0 |> Seq.take 7000 |> List.ofSeq |> printfn "%A"
 
-runSim 0.15 crn1 state0 |> Seq.take 500 |> genPlotSelect line ["A"; "B"; "C"; "H"] |> showPlot
+//runSim 0.15 crn1 state0 |> Seq.take 500 |> genPlotSelect line ["A"; "B"; "C"; "H"] |> showPlot
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
@@ -126,3 +138,7 @@ Check.Quick propSubConverge
 Check.Quick propMulConverge
 Check.Quick propDivConverge
 Check.Quick propSqrtConverge *)
+
+//compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s"
+
+

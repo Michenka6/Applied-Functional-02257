@@ -41,8 +41,7 @@ let prodReactants (Rxn(e1, e2, k)) (state: State) =
 let concODETerm (s: Species) (state: State) (Rxn(_, _, k) as rxn) = 
     k * float (netChange s rxn) * (prodReactants rxn state)
 
-let slope (state: State) (rxns: Rxns list) (s: Species) =    
-    //rxns |> List.map (concODETerm s state) |> List.sum |> (printfn "in slope %s %A" s)
+let slope (state: State) (rxns: Rxns list) (s: Species) =     
     rxns 
     |> List.map (concODETerm s state) 
     |> List.sum
@@ -78,11 +77,6 @@ let euler (f: State -> Rxns list -> Species -> float) (delta: float) (state: Sta
     if yn <= 0.0 || yn > 0.05 *result then 0.0 else result
 
 let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list) (species: Species) = 
-(*     (coeffs, states) ||> List.zip  
-    |> List.fold (fun sum (b, s) -> sum + delta*b*(f s rxns species)) 0.0 
-    |> (fun x -> (List.head states).concentrations[species] + x) 
-    |> (printfn "in multistep: %s %A" species)
-     *)
     (coeffs, states) ||> List.zip  
     |> List.fold (fun sum (b, s) -> sum + delta*b*(f s rxns species)) 0.0 
     |> (fun x -> (List.head states).concentrations[species] + x)
