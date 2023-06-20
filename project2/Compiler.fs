@@ -41,6 +41,7 @@ let rec compileCond = function
 and compileCl cl = 
     match cl with
     | [] -> ""
+    | Ar a :: [] -> $"{compileAr a}"
     | Ar a :: Comp c :: [] -> $"{compileAr a} ], \n\n{compileCmp c}"
     | Ar a :: Comp c :: cl' -> $"{compileAr a} ], \n\n{compileCmp c},  \n\n{compileCl (cl')}"
     | Ar a :: cl' -> $"{compileAr a},\n\n{compileCl (cl')}"
@@ -49,7 +50,7 @@ and compileCl cl =
 
 
 let compileStep (Stp cl) = 
-    $"[ {compileCl cl} "
+    $"[ {compileCl cl} ]"
 
 
 let compileCrn (Crn(concs, stps)) = failwith ""

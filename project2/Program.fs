@@ -158,13 +158,13 @@ let state0 = { status = Running; concentrations = concs14; }
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
-Check.Quick propLdConverge
+(* Check.Quick propLdConverge
 Check.Quick propAddConverge
 Check.Quick propSubConverge
 Check.Quick propMulConverge
 Check.Quick propDivConverge
 Check.Quick propSqrtConverge
-
+ *)
 //compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s"
-
+compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); ]) |> printfn "%A" //Comp (Cmp ("a", "b"))]) |> printfn "%s"
 
