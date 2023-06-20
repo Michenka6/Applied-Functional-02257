@@ -23,29 +23,14 @@ module Option =
         | _ -> None
 
 // Lots of choices regarding the flags. Explain!. ugly.
-let comparison (Cmp ( a, b)) env =
+let comparison (Cmp (a, b)) env =
 
     match Map.tryFind a env, Map.tryFind b env with
     | None, _ -> None
     | _, None -> None
-    | Some a, Some b when abs (a - b) < 0.000001 ->
-        Some
-            [ "Xgty", 1.0;
-              "Xlty" , 0.0;
-              "Ygtx" , 1.0; 
-              "Yltx" , 0.0 ]
-    | Some a, Some b when a > b ->
-        Some
-            [ "Xgty" , 1.0;
-              "Xlty" , 0.0;
-              "Ygtx" , 0.0;
-              "Yltx" , 1.0]
-    | Some a, Some b ->
-        Some
-            [ "Xgty" , 0.0;
-              "Xlty" , 1.0;
-              "Ygtx" , 1.0; 
-              "Yltx" , 0.0]
+    | Some a, Some b when abs (a - b) < 0.000001 -> Some [ "Xgty", 1.0; "Xlty", 0.0; "Ygtx", 1.0; "Yltx", 0.0 ]
+    | Some a, Some b when a > b -> Some [ "Xgty", 1.0; "Xlty", 0.0; "Ygtx", 0.0; "Yltx", 1.0 ]
+    | Some a, Some b -> Some [ "Xgty", 0.0; "Xlty", 1.0; "Ygtx", 1.0; "Yltx", 0.0 ]
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
@@ -85,35 +70,33 @@ let arithmetic expr concs : Concentrations option =
     | Ld (a, b) -> concs |> applyUnaryIfDef (id) a |> updateConcs b concs
     | Add (a, b, c) -> concs |> applyIfDef (+) a b |> updateConcs c concs
     | Sub (a, b, c) -> concs |> applyIfDef (-) a b |> updateConcs c concs
-    | Mul (a, b, c) -> concs |> applyIfDef ( * ) a b |> updateConcs c concs
+    | Mul (a, b, c) -> concs |> applyIfDef (*) a b |> updateConcs c concs
     | Div (a, b, c) -> concs |> applyIfDef (/) a b |> updateConcs c concs
     | Sqrt (a, b) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
 
-let updateState (oldState: State) (env: Concentrations option)  =
+let updateState (oldState: State) (env: Concentrations option) =
     if env.IsSome then
         { status = oldState.status
-          concentrations = env.Value
-        }
+          concentrations = env.Value }
     else
         { status = Error
-          concentrations = env.Value
-        }
+          concentrations = env.Value }
 
-let updateFlags (env: Concentrations) (flags: (string * float) list option) = 
-    if flags.IsSome then 
+let updateFlags (env: Concentrations) (flags: (string * float) list option) =
+    if flags.IsSome then
         flags.Value |> List.fold (fun m (k, v) -> m |> Map.add k v) env |> Some
-    else 
-        None 
+    else
+        None
 
 let rec interpretCmd (cmd: Command) (state: State) =
     match cmd with
     | Ar (a) -> (arithmetic a state.concentrations) |> updateState state
     | Comp (c) ->
-        comparison c state.concentrations 
-        |> (updateFlags state.concentrations) 
+        comparison c state.concentrations
+        |> (updateFlags state.concentrations)
         |> (updateState state)
-        //(Some(state.concentrations), comparison c state.concentrations |> )
-        //||> updateState state
+    //(Some(state.concentrations), comparison c state.concentrations |> )
+    //||> updateState state
     | Cond (con) -> interpretConditional con state
 
 and interpretCmdList (cmds: CommandList) (state: State) =
@@ -144,7 +127,7 @@ let rec stateSequence steps state =
     }
 
 let initConcs (concs: ConcList) =
-    let m = Map [("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0);]
+    let m = Map [ ("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0) ]
     concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) m
 
 let interpret (Crn (concs, steps)) (nSteps: int) =
@@ -153,8 +136,7 @@ let interpret (Crn (concs, steps)) (nSteps: int) =
 
     let state0 =
         { status = Running
-          concentrations = initCncs
-        }  
+          concentrations = initCncs }
 
     (stateSequence steps state0) |> Seq.take nSteps |> Seq.append (seq { state0 })
 
