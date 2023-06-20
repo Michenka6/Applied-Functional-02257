@@ -27,6 +27,11 @@ let tryParseRxnLL s =
     | Success (result, _, _) -> result |> printfn "maybe: %A" 
     | Failure (errorMsg, _, _) -> printfn $"Parsing failed: {errorMsg}"
 
+let tryPRxnLL s =
+    match parseRxns s with
+    | Success (result, _, _) -> result 
+    | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}"
+
 
 
 
@@ -173,8 +178,15 @@ compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", 
 
  *)
 
-let state, src = compileCrnPP fac
+let prog =
+      "crn={
+      conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+      step[{ 
+      mul[f , i , fnext ],
+      sub[ i ,one, inext ]}] };"
+
+let state, src = compileCrnPP gcd
 //state |> printfn "State0: %A"
 src |> printfn "Src:\n %s"
 
-src |> tryParseRxnLL
+src |> (fun x -> runSim 0.01 x state) |> Seq.take 1000 |> genPlot line |> showPlot 

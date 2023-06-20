@@ -56,7 +56,9 @@ and compileCl cl =
     
 
 let compileStep (Stp cl) = 
-    $"{compileCl cl}"
+    match cl with 
+    | Ar a::cl' -> "[" + $"{compileCl cl}"
+    |_ -> $"{compileCl cl}" 
 
 let initConcs (concs: ConcList) =
     let m = Map [ ("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0) ]

@@ -134,8 +134,8 @@ let sim delta rxns state0 =
     simulate delta rxns (rxns |> List.fold (fun state rxn -> extractAndExtend state rxn) state0)
 
 let runSim delta s state0 = 
-    match parseRxn s with 
-    | Success (rxns, _, _) -> sim delta [rxns] state0 
+    match parseRxns s with 
+    | Success (rxns, _, _) -> sim delta rxns state0 
     | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
 
 
