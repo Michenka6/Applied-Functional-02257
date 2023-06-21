@@ -39,6 +39,4 @@ and compileCL =
 let compileStep (Step cl) = compileCL cl
 
 let compileCRN crn =
-    crn.steps
-    |> List.map compileStep
-    |> String.concat "\n,"
+    crn.steps |> List.map compileStep |> String.concat "\n," |> (fun x -> $"[{x}]")

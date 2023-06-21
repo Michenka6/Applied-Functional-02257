@@ -197,13 +197,12 @@ let state0 =
 
 
 
-match parseString gcd with
+match parseString fac with
 | Failure _ -> failwith ""
-| Success (ast,_,_) -> 
+| Success (ast, _, _) ->
     match compileCRN ast |> parseRxns with
     | Failure _ -> failwith ""
-    | Success (s,_,_) -> s |> printfn "%A"
-
+    | Success (s, _, _) -> s |> printfn "%A"
 
 
 
