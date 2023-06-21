@@ -82,11 +82,33 @@ let fac =
  }]
 };"
 
-//tryParse gcd
+let division = 
+      "crn={
+conc[a,1.0 ], conc[b,1.0 ], conc[one ,1.0],
+step[{
+cmp[a,b]
+}],
+step[{
+ifGE[{
+sub[a,b,anext ],
+add[q,one,qnext]
+}]
+}],
+step[{
+ifGE[{
+ld[anext,a ],
+ld[qnext,q]
+}],
+ifLT[{ld[a, r ]}]
+}]
+};"
+
+
+//tryParse discreteCounter
 
 // analysisTpChkr gcd |> printfn "%A"
 
-//analysisIntprt fac 15 |> List.ofSeq |> printfn "%A"
+//analysisIntprt discreteCounter 15 |> List.ofSeq |> printfn "%A"
 
 //analysisIntprt discreteCounter 12 |> (genPlotSelect pieceWiseLinear ["c"]) |> showPlot
 
@@ -163,12 +185,12 @@ let state0 = { status = Running; concentrations = concs14; }
 //step |> showPlot
 //     [("B4", -5.889700915); ("BJF0", 4.338130408); ("BqVk5", -2.013399836);
   
-(* Check.Quick propLdConverge
-Check.Quick propAddConverge
-Check.Quick propSubConverge
-Check.Quick propMulConverge
-Check.Quick propDivConverge
-Check.Quick propSqrtConverge *)
+//Check.Quick propLdConverge
+//Check.Quick propAddConverge
+//Check.Quick propSubConverge
+//Check.Quick propMulConverge
+//Check.Quick propDivConverge
+//Check.Quick propSqrtConverge
 
 //let facAst = 
 
@@ -180,13 +202,34 @@ compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", 
 
 let prog =
       "crn={
-      conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
       step[{ 
       mul[f , i , fnext ],
-      sub[ i ,one, inext ]}] };"
+      sub[ i ,one, inext ],
+      cmp[f,i]}] };"
 
-let state, src = compileCrnPP gcd
+let prog1 =
+      "crn={
+      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
+      step[{  
+      cmp[f,i]}] };"
+
+
+let state, src = compileCrnPP prog 
 //state |> printfn "State0: %A"
 src |> printfn "Src:\n %s"
 
-src |> (fun x -> runSim 0.01 x state) |> Seq.take 1000 |> genPlot line |> showPlot 
+src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
+//src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
+
+(*
+      Questions 
+            ok??
+            Conditionals and flags. Jump out of nothing. Compiling compare..
+            Compile into reactions. we made a LOT of choices...
+            
+
+      
+
+
+*)

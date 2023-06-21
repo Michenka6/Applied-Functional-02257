@@ -10,6 +10,8 @@ open Parser
 
 *)
 
+
+
 let compileAr = function 
     | Ld(s1, s2) -> 
         $"rxn[{s1}, {s1} + {s2}, 1.0], rxn[{s2}, e, 1.0]"
@@ -24,13 +26,21 @@ let compileAr = function
     | Sqrt(s1, s2) ->
         $"rxn[{s1}, {s1} + {s2}, 1.0], rxn[{s2} + {s2}, e, 0.5]"
 
-let compileCmp (Cmp(A, B)) =
-    $"[rxn[Xgt + {B}, Xlt + {B}, 1.0], rxn[Xlt + {A}, Xgt + {A}, 0.5],
-rxn[Ygt + {A}, Ylt + {A}, 1.0], rxn[Ylt + {B}, Ygt + {B}, 1.0]];\n\n
-[rxn[Xgt + Xlt, Xlt + {B}, 1.0], rxn[{B} + Xlt, Xlt + Xlt, 1.0],
-rxn[Xlt + Xgt, Xgt + {B}, 1.0], rxn[{B} + Xgt, Xgt + Xgt, 1.0],
-rxn[Ygt + Ylt, Ylt + {A}, 1.0], rxn[{A} + Ylt, Ylt + Ylt, 1.0],
-rxn[Ylt + Ygt, Ygt + {A}, 1.0], rxn[{A} + Ygt, Ygt + Ygt, 1.0]]"
+let compileCmp (Cmp(A, B:string)) =
+    let Xgty = "Xgty"
+    let Xlty = "Xlty"
+    let Xgty = "Xgty"
+    let Xlty = "Xlty"
+    let CmpOffset = "CmpOffset"
+
+    "[rxn[Xgty +" + B + ", Xlty +" + B + ", 1.0],"
+    + "rxn[Xlty + CmpOffset, Xgty + CmpOffset, 1.0],"
+    + "rxn[Xlty + " + A + ", Xgty + " + A + ", 1.0]," 
+    +
+    "rxn[Ygtx + " + A + ", Yltx +" + A + ", 1.0],"
+    + "rxn[Yltx + CmpOffset, Ygtx + CmpOffset, 1.0],"
+    + "rxn[Yltx +" + B + ", Ygtx +" + B + ", 1.0]]"
+  
 
 let rec compileCond = function  
     | IfGT(cl) -> $"[ {compileCl cl}" 
@@ -61,7 +71,7 @@ let compileStep (Stp cl) =
     |_ -> $"{compileCl cl}" 
 
 let initConcs (concs: ConcList) =
-    let m = Map [ ("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0) ]
+    let m = Map [ ("Xgty", 0.5); ("Xlty", 0.5); ("Ygtx", 0.5); ("Yltx", 0.5); ("CmpOffset", 0.5)]
     concs |> List.fold (fun env (Cnc (s, n)) -> env |> Map.add s n) m
 
 

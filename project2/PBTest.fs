@@ -230,7 +230,7 @@ let sqrtConverge (state: State) =
 
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0) * 20.0)
 
-    //printfn "A: %f B: %f Actual: %f Result: %f Diff: %f epsilon: %f" Ac Bc (sqrt Ac) (Bcn) (abs ((sqrt Ac) - Bcn)) epsilon
+    printfn "A: %f B: %f Actual: %f Result: %f Diff: %f epsilon: %f" Ac Bc (sqrt Ac) (Bcn) (abs ((sqrt Ac) - Bcn)) epsilon
 
     abs ((sqrt Ac) - Bcn) < epsilon
 
