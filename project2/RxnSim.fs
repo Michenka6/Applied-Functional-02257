@@ -132,7 +132,7 @@ let rec simulate (delta: float) (rxns: Rxns list list) (state: State) : seq<Stat
     seq {
             //let state = simulateRxns rungeKutta slope delta rxns state 
             yield state 
-            yield! simulate delta rxns (rxns |> List.fold (fun state rxn -> simulateRxns trapezoidal slope delta rxn state) state) //(simulateRxns trapezoidal slope delta rxns state)
+            yield! simulate delta rxns (rxns |> List.fold (fun state rxn -> simulateRxns (trapezoidal_ 20) slope delta rxn state) state) //(simulateRxns trapezoidal slope delta rxns state)
     }
 // (rxns |> List.fold (fun state rxn -> simulateRxns trapezoidal slope delta rxn state) state)
 let simulateRxnsMulti simTimeStep (f: State -> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (states: State list) : State =

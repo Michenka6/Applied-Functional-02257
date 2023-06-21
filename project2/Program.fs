@@ -225,11 +225,11 @@ let prog2 =
 
 
 
-let state, src = compileCrnPP prog 
+let state, src = compileCrnPP prog2 
 //state |> printfn "State0: %A"
 src |> printfn "Src:\n %s"
 
-src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
+src |> (fun x -> runSim 0.001 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
 //src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
 
 (*
