@@ -26,20 +26,36 @@ let compileAr = function
     | Sqrt(s1, s2) ->
         $"rxn[{s1}, {s1} + {s2}, 1.0], rxn[{s2} + {s2}, e, 0.5]"
 
+
+let AM gtFlag ltFlag = 
+    let B = "B"
+    $"[rxn[{gtFlag} + {ltFlag}, {ltFlag} + {B}, 1.0],\n"
+    + $"rxn[{B} + ltFlag, {ltFlag} + {ltFlag}, 1.0],\n"
+    + $"rxn[{ltFlag} + {gtFlag}, {gtFlag} + {B}, 1.0],\n"
+    + $"rxn[{B} + {gtFlag}, {gtFlag} + {gtFlag}, 1.0]]"
+
 let compileCmp (Cmp(A, B:string)) =
     let Xgty = "Xgty"
     let Xlty = "Xlty"
-    let Xgty = "Xgty"
-    let Xlty = "Xlty"
+    let Ygtx = "Ygtx"
+    let Yltx = "Yltx"
     let CmpOffset = "CmpOffset"
 
-    "[rxn[Xgty +" + B + ", Xlty +" + B + ", 1.0],"
-    + "rxn[Xlty + CmpOffset, Xgty + CmpOffset, 1.0],"
-    + "rxn[Xlty + " + A + ", Xgty + " + A + ", 1.0]," 
-    +
-    "rxn[Ygtx + " + A + ", Yltx +" + A + ", 1.0],"
-    + "rxn[Yltx + CmpOffset, Ygtx + CmpOffset, 1.0],"
-    + "rxn[Yltx +" + B + ", Ygtx +" + B + ", 1.0]]"
+
+    let normalize = 
+        "[rxn[Xgty +" + B + ", Xlty +" + B + ", 1.0],\n"
+        + "rxn[Xlty + CmpOffset, Xgty + CmpOffset, 1.0],\n"
+        + "rxn[Xlty + " + A + ", Xgty + " + A + ", 1.0],\n" 
+        +
+        "rxn[Ygtx + " + A + ", Yltx +" + A + ", 1.0],\n"
+        + "rxn[Yltx + CmpOffset, Ygtx + CmpOffset, 1.0],\n"
+        + "rxn[Yltx +" + B + ", Ygtx +" + B + ", 1.0]]"
+
+    let AMx =  AM Xgty Xlty
+    let AMy = AM Ygtx Yltx
+
+
+    normalize + ";" + AMx + ";" + AMy 
   
 
 let rec compileCond = function  

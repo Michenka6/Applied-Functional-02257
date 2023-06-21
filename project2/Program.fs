@@ -214,8 +214,18 @@ let prog1 =
       step[{  
       cmp[f,i]}] };"
 
+let prog2 =
+      "crn={
+      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
+      step[{ 
+      mul[f , i , fnext ],
+      sub[ i ,one, inext ],
+      cmp[f,i]}],
+      step[{add[inext,one,i]}] };"
 
-let state, src = compileCrnPP prog 
+
+
+let state, src = compileCrnPP prog2 
 //state |> printfn "State0: %A"
 src |> printfn "Src:\n %s"
 
