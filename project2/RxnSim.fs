@@ -97,6 +97,30 @@ let trapezoidal (f: State -> Rxns list -> Species -> float) (delta: float) (stat
     
     yCorrected 
 
+let rec trapezoidal_ n 
+    (f: State -> Rxns list -> Species -> float)
+    (delta: float)
+    (state: State)
+    (rxns: Rxns list)
+    (species: Species) 
+    : float =
+    match n with 
+    | 0 -> state.concentrations[species]
+    | n ->
+        let y = state.concentrations[species]
+
+        let yPredict = y + delta * f state rxns species
+
+        let concPredict = state.concentrations |> Map.add species yPredict
+
+        let statePredict = { status = state.status; concentrations = concPredict }
+
+        let yCorrected =
+            y + 0.5 * delta * ((f state rxns species) + (f statePredict rxns species))
+
+        let concCorrected = state.concentrations |> Map.add species yCorrected
+        let stateCorrected = { status = state.status; concentrations = concCorrected }
+        trapezoidal_ (n-1) f delta stateCorrected rxns species  
 
 let simulateRxns (simTimeStep) (f: State-> Rxns list -> Species -> float) (delta: float) (rxns: Rxns list) (state: State): State = 
     state.concentrations

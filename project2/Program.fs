@@ -225,7 +225,7 @@ let prog2 =
 
 
 
-let state, src = compileCrnPP prog2 
+let state, src = compileCrnPP prog 
 //state |> printfn "State0: %A"
 src |> printfn "Src:\n %s"
 
