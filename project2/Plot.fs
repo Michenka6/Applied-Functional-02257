@@ -15,8 +15,7 @@ let combineMaps m1 m2 =
 let combineConcs l =
     l |> List.fold (fun s m -> combineMaps m s) Map.empty
 
-let combineStates (states: State seq) =
-    states |> List.ofSeq |> List.map (fun s -> s.concentrations) |> combineConcs
+let combineStates (states: State seq) = states |> List.ofSeq |> combineConcs
 
 let concToYs m = m |> Map.toList
 

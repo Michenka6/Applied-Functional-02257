@@ -44,9 +44,7 @@ let myStateGen =
         let! status = statusGen
         let! concs = mySmallEnvGen
 
-        return
-            { status = status
-              concentrations = concs }
+        return concs
     }
 
 // Assumes vs<>[]
@@ -71,21 +69,21 @@ Arb.register<MyGenerators> () |> ignore
 
 // Validate that ld crn behaves as expected
 let ldConverge (state: State) =
-    let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+    let speciesL = state |> Map.toList |> List.map (fun (k, _) -> k)
     let A = speciesL.[0]
     let B = speciesL.[1]
     let rxn1 = Rxn(EL([ A ]), EL([ A; B ]), 1.0)
     let rxn2 = Rxn(EL([ B ]), Empty, 1.0)
     let crn = [ rxn1; rxn2 ]
 
-    let Ac = state.concentrations[A]
-    let Bc = state.concentrations[B]
+    let Ac = state[A]
+    let Bc = state[B]
 
     let staten = sim 0.15 [ crn ] state |> Seq.take 300 |> List.ofSeq |> List.last
 
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0))
 
-    let Bcn = staten.concentrations[B]
+    let Bcn = staten[B]
     //printfn "Actual: %f Result: %f Diff: %f epsilon: %f" (Ac) (Bcn) (abs (Ac- Bcn)) epsilon
 
     abs (Ac - Bcn) < epsilon
@@ -94,7 +92,7 @@ let propLdConverge = Prop.forAll Arb.from<State> ldConverge
 
 // Validate that add crn behaves as expected
 let addConverge (state: State) =
-    let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+    let speciesL = state |> Map.toList |> List.map (fun (k, _) -> k)
     let A = speciesL.[0]
     let B = speciesL.[1]
     let C = speciesL.[2]
@@ -103,13 +101,13 @@ let addConverge (state: State) =
     let rxn3 = Rxn(EL([ C ]), Empty, 1.0)
     let crn = [ rxn1; rxn2; rxn3 ]
 
-    let Ac = state.concentrations[A]
-    let Bc = state.concentrations[B]
-    let Cc = state.concentrations[C]
+    let Ac = state[A]
+    let Bc = state[B]
+    let Cc = state[C]
 
     let staten = sim 0.15 [ crn ] state |> Seq.take 300 |> List.ofSeq |> List.last
 
-    let Ccn = staten.concentrations[C]
+    let Ccn = staten[C]
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0))
 
     //printfn "Actual: %f Result: %f Diff: %f epsilon: %f" (Ac * Bc) (Ccn) (abs (Ac*Bc - Ccn)) epsilon
@@ -120,8 +118,8 @@ let propAddConverge = Prop.forAll Arb.from<State> addConverge
 
 // Validate that add crn behaves as expected
 let subConverge (state: State) =
-    //state.concentrations |> printfn "%A"
-    let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+    //state |> printfn "%A"
+    let speciesL = state |> Map.toList |> List.map (fun (k, _) -> k)
     let A = speciesL.[0]
     let B = speciesL.[1]
     let C = speciesL.[2]
@@ -133,14 +131,14 @@ let subConverge (state: State) =
 
     let crn = [ rxn1; rxn2; rxn3; rxn4 ]
 
-    let Ac = state.concentrations[A]
-    let Bc = state.concentrations[B]
-    let Cc = state.concentrations[C]
-    let Hc = state.concentrations[H]
+    let Ac = state[A]
+    let Bc = state[B]
+    let Cc = state[C]
+    let Hc = state[H]
 
     let staten = sim 0.01 [ crn ] state |> Seq.take 400 |> List.ofSeq |> List.last
 
-    let Ccn = staten.concentrations[C]
+    let Ccn = staten[C]
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0) * Ac * 10.0)
     //printfn "Actual: %f Result: %f Diff: %f epsilon: %f" (Ac - Bc) (Ccn) (abs (Ac-Bc - Ccn)) epsilon
     if abs (Ac - Bc) <= 1.0 then
@@ -158,7 +156,7 @@ let propSubConverge = Prop.forAll Arb.from<State> subConverge
 
 // Validate that mul crn behaves as expected
 let mulConverge (state: State) =
-    let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+    let speciesL = state |> Map.toList |> List.map (fun (k, _) -> k)
     let A = speciesL.[0]
     let B = speciesL.[1]
     let C = speciesL.[2]
@@ -166,13 +164,13 @@ let mulConverge (state: State) =
     let rxn2 = Rxn(EL([ C ]), Empty, 1.0)
     let crn = [ rxn1; rxn2 ]
 
-    let Ac = state.concentrations[A]
-    let Bc = state.concentrations[B]
-    let Cc = state.concentrations[C]
+    let Ac = state[A]
+    let Bc = state[B]
+    let Cc = state[C]
 
     let staten = simulate 0.05 [ crn ] state |> Seq.take 200 |> List.ofSeq |> List.last
 
-    let Ccn = staten.concentrations[C]
+    let Ccn = staten[C]
 
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0) * 20.0)
 
@@ -185,7 +183,7 @@ let propMulConverge = Prop.forAll Arb.from<State> mulConverge
 
 // Validate that mul crn behaves as expected
 let divConverge (state: State) =
-    let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+    let speciesL = state |> Map.toList |> List.map (fun (k, _) -> k)
     let A = speciesL.[0]
     let B = speciesL.[1]
     let C = speciesL.[2]
@@ -194,13 +192,13 @@ let divConverge (state: State) =
     let rxn2 = Rxn(EL([ B; C ]), EL([ B ]), 1.0)
     let crn = [ rxn1; rxn2 ]
 
-    let Ac = state.concentrations[A]
-    let Bc = state.concentrations[B]
-    let Cc = state.concentrations[C]
+    let Ac = state[A]
+    let Bc = state[B]
+    let Cc = state[C]
 
     let staten = simulate 0.01 [ crn ] state |> Seq.take 500 |> List.ofSeq |> List.last
 
-    let Ccn = staten.concentrations[C]
+    let Ccn = staten[C]
 
     (*    let epsilon = 
       if Bc <= 1.0 then (1.0 / ((abs (Ac - Bc)) + 1.0 ) * (1.0 / Bc)  * 50.0 ) 
@@ -214,19 +212,19 @@ let divConverge (state: State) =
 let propDivConverge = Prop.forAll Arb.from<State> divConverge
 
 let sqrtConverge (state: State) =
-    let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+    let speciesL = state |> Map.toList |> List.map (fun (k, _) -> k)
     let A = speciesL.[0]
     let B = speciesL.[1]
     let rxn1 = Rxn(EL([ A ]), EL([ A; B ]), 1.0)
     let rxn2 = Rxn(EL([ B; B ]), Empty, 0.5)
     let crn = [ rxn1; rxn2 ]
 
-    let Ac = state.concentrations[A]
-    let Bc = state.concentrations[B]
+    let Ac = state[A]
+    let Bc = state[B]
 
     let staten = simulate 0.01 [ crn ] state |> Seq.take 500 |> List.ofSeq |> List.last
 
-    let Bcn = staten.concentrations[B]
+    let Bcn = staten[B]
 
     let epsilon = (1.0 / ((abs (Ac - Bc)) + 1.0) * 20.0)
 

@@ -8,7 +8,7 @@ type Number = float
 
 type Concentration = Species * Number
 
-type Molecules = Map<Species, Number>
+type State = Map<Species, Number>
 
 type Arithmetic =
     | Ld of Species * Species
@@ -32,9 +32,7 @@ and Conditional =
 
 type Step = Step of Command list
 
-type CRN =
-    { molecules: Molecules
-      steps: Step list }
+type CRN = { molecules: State; steps: Step list }
 
 type CRN_Error = Result<unit, ErrorType>
 
@@ -56,10 +54,6 @@ type Flags =
       Xlty: float
       Ygtx: float
       Yltx: float }
-
-type State =
-    { status: Status
-      concentrations: Molecules }
 
 (* Types used in type checker. Defines various types of errors *)
 // Possibly also check all sources defined here then do no such checks in intepreter.

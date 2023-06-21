@@ -13,7 +13,7 @@ open System
 //       Ygtx = c
 //       Yltx = d }
 
-// let compare (a, b) (env: Molecules) : Flags option =
+// let compare (a, b) (env: State) : Flags option =
 //     option {
 //         let! a = Map.tryFind a env
 //         let! b = Map.tryFind b env
@@ -40,7 +40,7 @@ let compare (a, b) env =
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
-let updateEnv (key: Species) (env: Molecules) (value: Number) =
+let updateEnv (key: Species) (env: State) (value: Number) =
     option {
         let! _ = Map.tryFind key env
         return Map.add key value env
@@ -54,7 +54,7 @@ let safeDiv a b =
 
 let safeSqrt a = if a < 0.0 then None else Some(sqrt a)
 
-let arithmetic (env: Molecules) (arithmetic: Arithmetic) : Molecules option =
+let arithmetic (env: State) (arithmetic: Arithmetic) : State option =
     match arithmetic with
     | Ld (a, b) ->
         option {
@@ -93,20 +93,18 @@ let arithmetic (env: Molecules) (arithmetic: Arithmetic) : Molecules option =
             return Map.add b bValue env
         }
 
-let updateState (oldState: State) (env: Molecules) = { oldState with concentrations = env }
-
 
 let rec interpretCommand (cmd: Command) (state: State) : State option =
     match cmd with
     | Ar (a) ->
         option {
-            let! env = arithmetic state.concentrations a
-            return updateState state env
+            let! env = arithmetic state a
+            return env
         }
     | Comp (s1, s2) ->
         option {
-            let! flags = compare (s1, s2) state.concentrations
-            return updateState state state.concentrations
+            let! flags = compare (s1, s2) state
+            return state
         }
     | Cond (con) -> Some(interpretConditional con state)
 
@@ -118,7 +116,7 @@ and interpretCmdList (commands: Command list) (state: State) : State =
         | Some s -> s)
 
 and interpretConditional con state =
-    let concs = state.concentrations
+    let concs = state
 
     match con with
     | IfGT (cmds) when concs["Xgty"] = 1.0 && concs["Yltx"] = 1.0 -> interpretCmdList cmds state
@@ -141,9 +139,7 @@ let rec stateSequence steps state =
     }
 
 let interpret (crn: CRN) (nSteps: int) =
-    let state0 =
-        { status = Running
-          concentrations = crn.molecules }
+    let state0 = crn.molecules
 
     (crn.steps, state0)
     ||> stateSequence

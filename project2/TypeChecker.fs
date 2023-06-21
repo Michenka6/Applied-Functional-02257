@@ -112,7 +112,7 @@ let checkReadWrite crn =
     | _ -> Error CycleConflict
 
 let checkSrcOpNotDef crn =
-    let rec aux (env: Molecules) cl =
+    let rec aux (env: State) cl =
         match cl with
         | [] -> true
         | Cond c :: tail ->

@@ -6,10 +6,6 @@ open RxnsParser
 open System
 open Microsoft.FSharp.Core.Operators.Checked
 
-let addNewConcs oldState concs =
-    { status = oldState.status
-      concentrations = concs }
-
 let extractSpecies (e: Expr) =
     match e with
     | Empty -> []
@@ -19,13 +15,12 @@ let extractAndExtend (state: State) (rxns: Rxns list) =
     rxns
     |> List.collect (fun (Rxn (e1, e2, k)) -> (extractSpecies e1) @ (extractSpecies e2))
     |> List.fold
-        (fun (concs: Molecules) s ->
+        (fun (concs: State) s ->
             if (concs |> Map.containsKey s) then
                 concs
             else
                 concs |> Map.add s 0)
-        state.concentrations
-    |> addNewConcs state
+        state
 
 let countOccurences (s: Species) (sl: Species list) =
     sl
@@ -44,10 +39,7 @@ let netChange (s: Species) (Rxn (e1, e2, k)) =
 let prodReactants (Rxn (e1, e2, k)) (state: State) =
     match e1 with
     | Empty -> 1.0
-    | EL (l) ->
-        l
-        |> List.countBy id
-        |> List.fold (fun prod (s, m) -> prod * state.concentrations[s] ** m) 1.0
+    | EL (l) -> l |> List.countBy id |> List.fold (fun prod (s, m) -> prod * state[s] ** m) 1.0
 
 let concODETerm (s: Species) (state: State) (Rxn (_, _, k) as rxn) =
     k * float (netChange s rxn) * (prodReactants rxn state)
@@ -55,18 +47,15 @@ let concODETerm (s: Species) (state: State) (Rxn (_, _, k) as rxn) =
 let slope (state: State) (rxns: Rxns list) (s: Species) =
     rxns |> List.map (concODETerm s state) |> List.sum
 
-let rungeKutta (f: State -> Rxns list -> Species -> float) h state rxns s =
-    let yn = state.concentrations[s]
+let rungeKutta (f: State -> Rxns list -> Species -> float) h (state: State) rxns s =
+    let yn = state[s]
     let k1 = f state rxns s
 
-    let k2 =
-        f (addNewConcs state (state.concentrations |> Map.add s (yn + 0.5 * h * k1))) rxns s
+    let k2 = f (state |> Map.add s (yn + 0.5 * h * k1)) rxns s
 
-    let k3 =
-        f (addNewConcs state (state.concentrations |> Map.add s (yn + 0.5 * h * k2))) rxns s
+    let k3 = f (state |> Map.add s (yn + 0.5 * h * k2)) rxns s
 
-    let k4 =
-        f (addNewConcs state (state.concentrations |> Map.add s (yn + h * k3))) rxns s
+    let k4 = f (state |> Map.add s (yn + h * k3)) rxns s
 
     yn + h / 6.0 * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
 
@@ -74,17 +63,13 @@ let simulateTimeStep (delta: float) (state: State) (rxns: Rxns list) (species: S
     rxns
     |> List.map (concODETerm species state)
     |> List.sum
-    |> (fun dsdt -> state.concentrations[species] + delta * dsdt)
+    |> (fun dsdt -> state[species] + delta * dsdt)
 
 let simulateRxnS (delta: float) (rxns: Rxns list) (state: State) : State =
-    state.concentrations
-    |> Map.map (fun s _ -> (simulateTimeStep delta state rxns s))
-    |> addNewConcs state
+    state |> Map.map (fun s _ -> (simulateTimeStep delta state rxns s))
 
 let simulateRxnS_ (delta: float) (rxns: Rxns list) (state: State) : State =
-    state.concentrations
-    |> Map.map (fun s _ -> (rungeKutta slope delta state rxns s))
-    |> addNewConcs state
+    state |> Map.map (fun s _ -> (rungeKutta slope delta state rxns s))
 
 let euler
     (f: State -> Rxns list -> Species -> float)
@@ -93,15 +78,15 @@ let euler
     (rxns: Rxns list)
     (species: Species)
     =
-    let yn = state.concentrations[species] + delta * (f state rxns species)
-    let result = (state.concentrations[species] + yn) / 2.0
+    let yn = state[species] + delta * (f state rxns species)
+    let result = (state[species] + yn) / 2.0
     if yn <= 0.0 || yn > 0.05 * result then 0.0 else result
 
 let multistep f delta (coeffs: float list) (states: State list) (rxns: Rxns list) (species: Species) =
     (coeffs, states)
     ||> List.zip
     |> List.fold (fun sum (b, s) -> sum + delta * b * (f s rxns species)) 0.0
-    |> (fun x -> (List.head states).concentrations[species] + x)
+    |> (fun x -> (List.head states)[species] + x)
     |> (fun x -> if x <= 0.0 then 0.0 else x)
 
 let adamsBashforth2 (f: State -> Rxns list -> Species -> float) delta states rxns species =
@@ -114,15 +99,13 @@ let trapezoidal
     (rxns: Rxns list)
     (species: Species)
     : float =
-    let y = state.concentrations[species]
+    let y = state[species]
 
     let yPredict = y + delta * f state rxns species
 
-    let concPredict = state.concentrations |> Map.add species yPredict
+    let concPredict = state |> Map.add species yPredict
 
-    let statePredict =
-        { status = state.status
-          concentrations = concPredict }
+    let statePredict = concPredict
 
     let yCorrected =
         y + 0.5 * delta * ((f state rxns species) + (f statePredict rxns species))
@@ -137,9 +120,7 @@ let simulateRxns
     (rxns: Rxns list)
     (state: State)
     : State =
-    state.concentrations
-    |> Map.map (fun s _ -> (simTimeStep f delta state rxns s))
-    |> addNewConcs state
+    state |> Map.map (fun s _ -> (simTimeStep f delta state rxns s))
 
 
 let rec simulate (delta: float) (rxns: Rxns list list) (state: State) : seq<State> =
@@ -162,11 +143,7 @@ let simulateRxnsMulti
     (rxns: Rxns list)
     (states: State list)
     : State =
-    states
-    |> List.head
-    |> (fun s -> s.concentrations)
-    |> Map.map (fun s _ -> (simTimeStep f delta states rxns s))
-    |> addNewConcs (List.head states)
+    states |> List.head |> Map.map (fun s _ -> (simTimeStep f delta states rxns s))
 
 let rec simulateMulti delta (rxns: Rxns list) (states: State list) : seq<State> =
     seq {

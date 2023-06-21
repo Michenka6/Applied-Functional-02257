@@ -190,9 +190,7 @@ let concs14 =
           ("C", 3.693756209)
           ("H", 23.24591797) ]
 
-let state0 =
-    { status = Running
-      concentrations = concs14 }
+let state0 = concs14
 
 
 
