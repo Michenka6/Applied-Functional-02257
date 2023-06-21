@@ -26,6 +26,31 @@ let compileAr = function
     | Sqrt(s1, s2) ->
         $"rxn[{s1}, {s1} + {s2}, 1.0], rxn[{s2} + {s2}, e, 0.5]"
 
+let compileAr' a flag1 string flag2 = 
+    
+    let getFlags (flag1: string option) (flag2: string option) : string * string = 
+        match flag1.IsSome, flag2.IsSome with 
+            | true, true -> flag1.Value, flag2.Value
+            | true, false -> flag1.Value, ""
+            | false, true -> "", flag2.Value
+            | _, _ -> "", ""
+    let f1, f2 = getFlags flag1 flag2 
+    match a with 
+    | Ld(s1, s2) -> 
+        $"rxn[{f1}+{f2}+{s1}, {f1}+{f2}+{s1}+{s2}, 1.0], rxn[{f1}+{f2}+{s2}, {f1}+{f2}+e, 1.0]"
+    | Add(s1, s2, dst) -> 
+        $"rxn[{f1}+{f2}+{s1}, {f1}+{f2}+{s1} + {dst}, 1.0], rxn[{f1}+{f2}+{s2}, {f1}+{f2}+{s2} + {dst}, 1.0], rxn[{f1}+{f2}+{dst}, {f1}+{f2}+e, 1.0]"
+    | Sub(s1, s2, dst) ->
+        $"rxn[{f1}+{f2}+{s1}, {f1}+{f2}+{s1} + {dst}, 1.0], rxn[{f1}+{f2}+{s2}, {f1}+{f2}+{s2} + H, 1.0], rxn[{f1}+{f2}+{dst}, {f1}+{f2}+e, 1.0], rxn[{f1}+{f2}+{dst} + H, {f1}+{f2}+e, 1.0]"
+    | Mul(s1, s2, dst) -> 
+        $"rxn[{f1}+{f2}+{s1} + {s2}, {f1}+{f2}+{s1} + {s2} + {dst}, 1.0], rxn[{f1}+{f2}+{dst}, {f1}+{f2}+e, 1.0]"
+    | Div(s1, s2, dst) -> 
+        $"rxn[{f1}+{f2}+{s1}, {f1}+{f2}+{s1} + {dst}, 1.0], rxn[{f1}+{f2}+{s2} + {dst}, {f1}+{f2}+{s2}, 1.0]"
+    | Sqrt(s1, s2) ->
+        $"rxn[{f1}+{f2}+{s1}, {f1}+{f2}+{s1} + {s2}, 1.0], rxn[{f1}+{f2}+{s2} + {s2}, {f1}+{f2}+e, 0.5]"
+
+
+
 
 let AM gtFlag ltFlag = 
     let B = "B"
@@ -58,12 +83,17 @@ let compileCmp (Cmp(A, B:string)) =
     normalize + ";" + AMx + ";" + AMy 
   
 
-let rec compileCond = function  
-    | IfGT(cl) -> $"[ {compileCl cl}" 
-    | IfGE(cl) -> $"[ {compileCl cl}" 
-    | IfEQ(cl) -> $"[ {compileCl cl}" 
-    | IfLT(cl) -> $"[ {compileCl cl}"  
-    | IfLE(cl)-> $"[ {compileCl cl}" 
+let rec compileCond c = 
+    let Xgty = Some "Xgty"
+    let Xlty = Some "Xlty"
+    let Ygtx = Some "Ygtx"
+    let Yltx = Some "Yltx"
+    match c with
+    | IfGT(cl) -> $"[ {compileClCond cl Xgty Yltx}" 
+    | IfGE(cl) -> $"[ {compileClCond cl Xgty None}" 
+    | IfEQ(cl) -> $"[ {compileClCond cl Xgty Ygtx}" 
+    | IfLT(cl) -> $"[ {compileClCond cl Ygtx Xlty}"  
+    | IfLE(cl)-> $"[ {compileClCond cl Ygtx None}" 
 
 
 and compileCl cl = 
@@ -80,7 +110,20 @@ and compileCl cl =
     //| Cond c :: Ar a :: [] -> $"{compileCond c},\n\n{compileAr (a)}"  
     | Cond c :: cl' -> $"{compileCond c};\n\n{compileCl (cl')}"  
     
-
+and compileClCond cl gtFlag ltFlag = 
+    match cl with
+    | [] -> ""
+    | Ar a :: [] -> $"{compileAr' a} ]"
+    | Comp c :: [] -> $"{compileCmp c}"
+    | Cond c :: [] -> $"{compileCond c}"
+    | Ar a :: Comp c :: [] -> $"{compileAr' a}]; \n\n{compileCmp c}"
+    | Ar a :: Comp c :: cl' -> $"{compileAr' a} ]; \n\n{compileCmp c}  \n\n{compileCl (cl')}"
+    | Ar a :: cl' -> $"{compileAr a},\n\n{compileCl (cl')}"
+    | Comp c :: Comp c' :: cl -> $"{compileCmp c};\n\n{compileCmp (c')};\n\n {compileCl cl}"
+    | Comp c :: cl  -> $"{compileCmp c};\n\n[{compileCl cl}"
+    //| Cond c :: Ar a :: [] -> $"{compileCond c},\n\n{compileAr (a)}"  
+    | Cond c :: cl' -> $"{compileCond c};\n\n{compileCl (cl')}"  
+ 
 let compileStep (Stp cl) = 
     match cl with 
     | Ar a::cl' -> "[" + $"{compileCl cl}"
