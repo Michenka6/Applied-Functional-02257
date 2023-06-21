@@ -10,14 +10,31 @@ open Parser
 
 *)
 
-let oscillatorCrn X1 X2 X3 = 
-    $"[rxn[{X1} + {X2}, {X2}+{X2}, 1.0], rxn[{X2} + {X3}, {X3}+{X3}, 1.0], rxn[{X3} + {X1}, {X1}+{X1}, 1.0]];"
+let oscillatorCrn X1 X2 X3 k = 
+    $"rxn[{X1} + {X2}, {X2}+{X2}, {k}], rxn[{X2} + {X3}, {X3}+{X3}, {k}], rxn[{X3} + {X1}, {X1}+{X1}, {k}]"
 
 let getOptionVs (os: string option list) =
     os |> List.map (fun o -> if o.IsSome then o.Value else "") 
 
+let addPlus (os: string list) =
+    os |> List.map (fun s -> if s = "" then "" else "+ " + s)
+(* 
+let expandExpr extras e =
+    let extras' = extras |> List.filter (fun s -> s <> "") 
+    match e with 
+    | Empty -> extras' |> List.fold (fun e s -> e @ [s]) ["e"] |> EL
+    | EL(sl) -> extras |> List.fold (fun e s -> e @ [s]) sl |> EL
+
 let expandRxn (Rxn(e1, e2, k)) (flag1: string option) (flag2: string option) (X3: string option) =
-    failwith "not implemented"
+    let os = [flag1; flag2; X3] |> getOptionVs 
+    let f1 = os.[0]
+    let f2 = os.[1]
+    let x3 = os.[3] // :D
+    
+    let e1' = e1 |> expandExpr [f1; x3]
+    let e2' = e2 |> expandExpr [f2; x3]
+     
+    (Rxn(e1', e2', k))
 
 
 let compileAr a X3= 
@@ -159,5 +176,37 @@ let compileCrn (Crn(concs, stps)) =
 let compileCrnPP (s: string) = 
     match parseString s with 
     | Success (result, _, _) -> compileCrn result
+    | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}" *)
+
+let compileCl cl i = 
+    failwith "Not implemented"
+
+let compileStep (Stp(cl)) (i: int) = 
+    let oscCrn = oscillatorCrn ("X" + string i) ("X" + string (i+1)) ("X" + string (i+2)) "1.0"
+    let rxns, inext = compileCl cl i 
+    oscCrn + rxns, (inext + 3)
+
+let compileSteps stps : string = 
+    let rec aux stps i =
+        match stps with 
+        | [] -> ""
+        | stp::[] ->
+            let rxns, inext = compileStep stp i
+            rxns
+        | stp::stps' -> 
+            let rxns, inext = compileStep stp i
+            rxns + "," + (aux stps' (inext))
+            //aux stps' (i+1) (compileStep stp i :: acc) 
+    aux stps 1 
+
+(*     let state0 = initConcs concs 
+    let rxns =  *)
+let initConcs (concs: ConcList) = failwith "not implemented" 
+
+let compileCrn (s: string) : State * string = 
+    match parseString s with 
+    | Success (Crn(concs, stps), _, _ ) -> 
+        let state0 = initConcs concs
+        let rxns = compileSteps stps 
+        (state0, rxns)
     | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}"
- 
