@@ -11,7 +11,7 @@ open Parser
 *)
 
 let oscillatorCrn X1 X2 X3 k = 
-    $"rxn[{X1} + {X2}, {X2}+{X2}, {k}], rxn[{X2} + {X3}, {X3}+{X3}, {k}], rxn[{X3} + {X1}, {X1}+{X1}, {k}]"
+    [$"rxn[{X1} + {X2}, {X2}+{X2}, {k}], rxn[{X2} + {X3}, {X3}+{X3}, {k}], rxn[{X3} + {X1}, {X1}+{X1}, {k}]"]
 
 let getOptionVs (os: string option list) =
     os |> List.map (fun o -> if o.IsSome then o.Value else "") 
@@ -47,7 +47,7 @@ let sub s1 s2 s3 X3 flags =
     $"rxn[{s1} + {X3}, {s1} + {s3} + {X3}, 1.0]"
     ::$"rxn[{f1} {f2} {s2} + {X3}, {f1} {f2} {s2} + H + {X3}, 1.0]"
     ::$"rxn[{f1} {f2} {s3} + {X3}, {f1} {f2} e + {X3}, 1.0]"
-    ::[$"[rxn[{f1} {f2} {s3} + H + {X3}, {f1} {f2} e + {X3}, 1.0]"]
+    ::[$"rxn[{f1} {f2} {s3} + H + {X3}, {f1} {f2} e + {X3}, 1.0]"]
 
 let mul s1 s2 s3 X3 flags =  
     let f1, f2 = getOptionFlags flags
@@ -236,18 +236,12 @@ let compileCmp c X3 i = failwith ""
 let compileAr a X3 i =
     let aux a = 
         match a with
-        | Ld(s1, s2) -> 
-            $"rxn[{s1} + {X3}, {s1} + {s2} + {X3}, 1.0], rxn[{s2} + {X3}, e, 1.0]"
-        | Add(s1, s2, dst) -> 
-            $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {X3}, {s2} + {dst} + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0]"
-        | Sub(s1, s2, dst) ->
-            $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {X3}, {s2} + H + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0], rxn[{dst} + H + {X3}, e + {X3}, 1.0]"
-        | Mul(s1, s2, dst) -> 
-            $"rxn[{s1} + {s2} + {X3}, {s1} + {s2} + {dst} + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0]"
-        | Div(s1, s2, dst) -> 
-            $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {dst} + {X3}, {s2} + {X3}, 1.0]"
-        | Sqrt(s1, s2) ->
-            $"rxn[{s1} + {X3}, {s1} + {s2} + {X3}, 1.0], rxn[{s2} + {s2} + {X3}, e + {X3}, 0.5]"
+        | Ld(s1, s2) -> ld s1 s2 X3 (None,None)
+        | Add(s1, s2, dst) -> add s1 s2 dst X3 (None, None) 
+        | Sub(s1, s2, dst) -> sub s1 s2 dst X3 (None, None)
+        | Mul(s1, s2, dst) -> mul s1 s2 dst X3 (None, None)
+        | Div(s1, s2, dst) -> div s1 s2 dst X3 (None, None) 
+        | Sqrt(s1, s2) -> sqrt s1 s2 X3 (None, None) 
     aux a, i
 
 let compileCmd cmd X3 i =
@@ -258,12 +252,12 @@ let compileCmd cmd X3 i =
 
 let rec compileCl cl X3 i = 
     match cl with 
-    | [] -> "", i
+    | [] -> [], i
     | cmd::[] -> compileCmd cmd X3 i 
     | cmd::cl' -> 
         let rxns, inext = compileCmd cmd X3 i 
         let rest, j = compileCl cl' X3 inext 
-        rxns + "," + rest, j 
+        rxns @ rest, j 
 
 let compileStep (Stp(cl)) (i: int) = 
     let X1 = ("X" + string i) 
@@ -272,29 +266,41 @@ let compileStep (Stp(cl)) (i: int) =
     let k = "1.0"
     let oscCrn = oscillatorCrn X1 X2 X3 k  
     let rxns, inext = compileCl cl X3 i 
-    oscCrn + rxns, (inext + 3)
+    oscCrn @ rxns, (inext + 3)
 
-let compileSteps stps : string = 
+let compileSteps stps : string list = 
     let rec aux stps i =
         match stps with 
-        | [] -> ""
+        | [] -> []
         | stp::[] ->
             let rxns, inext = compileStep stp i
             rxns
         | stp::stps' -> 
             let rxns, inext = compileStep stp i
-            rxns + "," + (aux stps' (inext))
+            rxns @ (aux stps' (inext))
             //aux stps' (i+1) (compileStep stp i :: acc) 
     aux stps 1 
 
 (*     let state0 = initConcs concs 
     let rxns =  *)
-let initConcs (concs: ConcList) = failwith "not implemented" 
+
+let initConcs (concs: ConcList) =
+    let m = Map [ ("Xgty", 0.5); ("Xlty", 0.5); ("Ygtx", 0.5); ("Yltx", 0.5); ("CmpOffset", 0.5)]
+    concs |> List.fold (fun env (Cnc (s, n)) -> env |> Map.add s n) m
+
+let addSeparators (rxns: string list) =
+    let rec aux rxns acc = 
+        match rxns with 
+        | [] -> acc
+        | rxn::[] -> acc + rxn + "\n"
+        | rxn::rxns' -> aux rxns' (acc + rxn + ",\n" )
+    aux rxns ""
 
 let compileCrn (s: string) : State * string = 
     match parseString s with 
     | Success (Crn(concs, stps), _, _ ) -> 
-        let state0 = initConcs concs
-        let rxns = compileSteps stps 
+        let conc0 = initConcs concs
+        let state0 = {status = Running; concentrations = conc0}
+        let rxns = compileSteps stps |> addSeparators 
         (state0, rxns)
     | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}"

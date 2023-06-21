@@ -25,7 +25,7 @@ let reserved =
           "ifEQ"
           "ifLT"
           "ifLE"
-          "e" ]
+           ]
 
 let isLetter c = c |> Char.IsLetter
 let isDigit d = d |> Char.IsDigit
@@ -51,7 +51,7 @@ let pSLopt: Parser<Species list -> Species list -> Species list, unit> =
     symbol "+" >>. preturn (fun e e' -> e @ e')
 
 let pE: Parser<Expr, unit> =
-    pEmpty <|> ((chainr1 pSL pSLopt) >>= fun l -> preturn (EL l))
+    ((chainr1 pSL pSLopt) >>= fun l -> preturn (EL l))
 
 let pRxn: Parser<Rxns, unit> =
     between
