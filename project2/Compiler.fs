@@ -18,6 +18,56 @@ let getOptionVs (os: string option list) =
 
 let addPlus (os: string list) =
     os |> List.map (fun s -> if s = "" then "" else "+ " + s)
+
+
+
+let getOptionFlags (f1,f2: string option) = 
+    match f1, f1 with  
+    | Some f1', Some f2' -> f1' + "+", f2' + "+" 
+    | Some f1', None  -> f1' + "+", "" 
+    | None, Some f2' -> "", f2' + "+" 
+    | _, _ -> "", "" 
+
+let ld s1 s2 X3 flags = 
+    let f1, f2 = getOptionFlags flags 
+    
+    $"rxn[{f1} {f2} {s1} + {X3}, {f1} {f2} {s1} + {s2} + {X3}, 1.0]"
+    ::[$"rxn[{f1} {f2} {s2} + {X3}, {f2} {f2} e {X3}, 1.0]"]
+
+let add s1 s2 s3 X3 flags =
+    let f1, f2 = getOptionFlags flags 
+    
+    $"rxn[{f1} {f2} {s1} + {X3}, {f1} {f2} {s1} + {s3} + {X3}, 1.0]"
+    ::$"rxn[{f1} {f2} {s2} + {X3}, {f1} {f2} {s2} + {s3} + {X3}, 1.0]"
+    ::[$"rxn[{f1} {f2} {s3} + {X3}, e + {X3}, 1.0]"]
+
+let sub s1 s2 s3 X3 flags = 
+    let f1, f2 = getOptionFlags flags
+ 
+    $"rxn[{s1} + {X3}, {s1} + {s3} + {X3}, 1.0]"
+    ::$"rxn[{f1} {f2} {s2} + {X3}, {f1} {f2} {s2} + H + {X3}, 1.0]"
+    ::$"rxn[{f1} {f2} {s3} + {X3}, {f1} {f2} e + {X3}, 1.0]"
+    ::[$"[rxn[{f1} {f2} {s3} + H + {X3}, {f1} {f2} e + {X3}, 1.0]"]
+
+let mul s1 s2 s3 X3 flags =  
+    let f1, f2 = getOptionFlags flags
+    
+    $"rxn[{f1} {f2} {s1} + {s2} + {X3}, {f1} {f2} {s1} + {s2} + {s3} + {X3}, 1.0]"
+    ::[$"rxn[{f1} {f2} {s3} + {X3}, {f1} {f2} e + {X3}, 1.0]"]
+
+let div s1 s2 s3 X3 flags = 
+    let f1, f2 = getOptionFlags flags
+    
+    $"rxn[{f1} {f2} {s1} + {X3}, {f1} {f2} {s1} + {s3} + {X3}, 1.0]"
+    ::[$"rxn[{f1} {f2} {s2} + {s3} + {X3}, {f1} {f2} {s2} + {X3}, 1.0]"]
+
+let sqrt s1 s2 X3 flags = 
+    let f1, f2 = getOptionFlags flags
+
+    $"rxn[{f1} {f2} {s1} + {X3}, {f1} {f2} {s1} + {s2} + {X3}, 1.0]"
+    ::[$"rxn[{f1} {f2} {s2} + {s2} + {X3}, {f1} {f2} e + {X3}, 0.5]"]
+
+
 (* 
 let expandExpr extras e =
     let extras' = extras |> List.filter (fun s -> s <> "") 
@@ -178,12 +228,50 @@ let compileCrnPP (s: string) =
     | Success (result, _, _) -> compileCrn result
     | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}" *)
 
-let compileCl cl i = 
-    failwith "Not implemented"
+
+let compileCond c X3 i = failwith ""
+
+let compileCmp c X3 i = failwith ""
+
+let compileAr a X3 i =
+    let aux a = 
+        match a with
+        | Ld(s1, s2) -> 
+            $"rxn[{s1} + {X3}, {s1} + {s2} + {X3}, 1.0], rxn[{s2} + {X3}, e, 1.0]"
+        | Add(s1, s2, dst) -> 
+            $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {X3}, {s2} + {dst} + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0]"
+        | Sub(s1, s2, dst) ->
+            $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {X3}, {s2} + H + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0], rxn[{dst} + H + {X3}, e + {X3}, 1.0]"
+        | Mul(s1, s2, dst) -> 
+            $"rxn[{s1} + {s2} + {X3}, {s1} + {s2} + {dst} + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0]"
+        | Div(s1, s2, dst) -> 
+            $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {dst} + {X3}, {s2} + {X3}, 1.0]"
+        | Sqrt(s1, s2) ->
+            $"rxn[{s1} + {X3}, {s1} + {s2} + {X3}, 1.0], rxn[{s2} + {s2} + {X3}, e + {X3}, 0.5]"
+    aux a, i
+
+let compileCmd cmd X3 i =
+    match cmd with 
+    | Ar a -> compileAr a X3 i  
+    | Comp c -> compileCmp c X3 i
+    | Cond c -> compileCond c X3 i
+
+let rec compileCl cl X3 i = 
+    match cl with 
+    | [] -> "", i
+    | cmd::[] -> compileCmd cmd X3 i 
+    | cmd::cl' -> 
+        let rxns, inext = compileCmd cmd X3 i 
+        let rest, j = compileCl cl' X3 inext 
+        rxns + "," + rest, j 
 
 let compileStep (Stp(cl)) (i: int) = 
-    let oscCrn = oscillatorCrn ("X" + string i) ("X" + string (i+1)) ("X" + string (i+2)) "1.0"
-    let rxns, inext = compileCl cl i 
+    let X1 = ("X" + string i) 
+    let X2 = ("X" + string (i+1)) 
+    let X3 = ("X" + string (i+2)) 
+    let k = "1.0"
+    let oscCrn = oscillatorCrn X1 X2 X3 k  
+    let rxns, inext = compileCl cl X3 i 
     oscCrn + rxns, (inext + 3)
 
 let compileSteps stps : string = 
