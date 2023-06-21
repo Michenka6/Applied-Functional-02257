@@ -223,15 +223,21 @@ let prog2 =
       cmp[f,i]}],
       step[{add[inext,one,i]}] };"
 
+let oscState = Map [("X1", 0.1); ("X2", 1.1); ("X3", 2.1)]
+let oscCrn = "[rxn[X1 + X2, X2+X2, 1], rxn[X2 + X3, X3+X3, 1], rxn[X3 + X1, X1+X1, 1]];"
+
+let oscState1 = Map [("X1", 0.1); ("X2", 0.2); ("X3", 0.3); ("X4", 0.4); ("X5", 0.5); ("X6", 0.6)]
+let oscCrn1 = "[rxn[X1 + X2, X2+X2, 2.0], rxn[X2 + X3, X3+X3, 2.0], rxn[X3 + X1, X1+X1, 2.0], rxn[X4 + X5, X5+X5, 1.0], rxn[X5 + X6, X6+X6, 1.0], rxn[X6 + X4, X4+X4, 1.0]];"
 
 
-let state, src = compileCrnPP prog 
+
+//let state, src = compileCrnPP prog 
 //state |> printfn "State0: %A"
-src |> printfn "Src:\n %s"
+//src |> printfn "Src:\n %s"
 
-src |> (fun x -> runSim 0.20 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
+//src |> (fun x -> runSim 0.20 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
 //src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
-
+oscCrn1 |> (fun x -> runSim 0.01 x {status = Running; concentrations = oscState1}) |> Seq.take 5500 |> genPlotSelect line ["X1"; "X2"; "X3"; "X4"; "X5"; "X6"] |> showPlot 
 (*
       Questions 
             ok??

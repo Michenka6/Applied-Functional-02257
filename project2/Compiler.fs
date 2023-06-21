@@ -10,21 +10,30 @@ open Parser
 
 *)
 
+let oscillatorCrn X1 X2 X3 = 
+    $"[rxn[{X1} + {X2}, {X2}+{X2}, 1.0], rxn[{X2} + {X3}, {X3}+{X3}, 1.0], rxn[{X3} + {X1}, {X1}+{X1}, 1.0]];"
+
+let getOptionVs (os: string option list) =
+    os |> List.map (fun o -> if o.IsSome then o.Value else "") 
+
+let expandRxn (Rxn(e1, e2, k)) (flag1: string option) (flag2: string option) (X3: string option) =
+    failwith "not implemented"
 
 
-let compileAr = function 
+let compileAr a X3= 
+    match a with
     | Ld(s1, s2) -> 
-        $"rxn[{s1}, {s1} + {s2}, 1.0], rxn[{s2}, e, 1.0]"
+        $"rxn[{s1} + {X3}, {s1} + {s2} + {X3}, 1.0], rxn[{s2} + {X3}, e, 1.0]"
     | Add(s1, s2, dst) -> 
-        $"rxn[{s1}, {s1} + {dst}, 1.0], rxn[{s2}, {s2} + {dst}, 1.0], rxn[{dst}, e, 1.0]"
+        $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {X3}, {s2} + {dst} + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0]"
     | Sub(s1, s2, dst) ->
-        $"rxn[{s1}, {s1} + {dst}, 1.0], rxn[{s2}, {s2} + H, 1.0], rxn[{dst}, e, 1.0], rxn[{dst} + H, e, 1.0]"
+        $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {X3}, {s2} + H + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0], rxn[{dst} + H + {X3}, e + {X3}, 1.0]"
     | Mul(s1, s2, dst) -> 
-        $"rxn[{s1} + {s2}, {s1} + {s2} + {dst}, 1.0], rxn[{dst}, e, 1.0]"
+        $"rxn[{s1} + {s2} + {X3}, {s1} + {s2} + {dst} + {X3}, 1.0], rxn[{dst} + {X3}, e + {X3}, 1.0]"
     | Div(s1, s2, dst) -> 
-        $"rxn[{s1}, {s1} + {dst}, 1.0], rxn[{s2} + {dst}, {s2}, 1.0]"
+        $"rxn[{s1} + {X3}, {s1} + {dst} + {X3}, 1.0], rxn[{s2} + {dst} + {X3}, {s2} + {X3}, 1.0]"
     | Sqrt(s1, s2) ->
-        $"rxn[{s1}, {s1} + {s2}, 1.0], rxn[{s2} + {s2}, e, 0.5]"
+        $"rxn[{s1} + {X3}, {s1} + {s2} + {X3}, 1.0], rxn[{s2} + {s2} + {X3}, e + {X3}, 0.5]"
 
 let compileAr' a flag1 string flag2 = 
     
@@ -96,7 +105,7 @@ let rec compileCond c =
     | IfLE(cl)-> $"[ {compileClCond cl Ygtx None}" 
 
 
-and compileCl cl = 
+and compileCl cl X1 X2 X3 = 
     match cl with
     | [] -> ""
     | Ar a :: [] -> $"{compileAr a} ]"
@@ -118,7 +127,7 @@ and compileClCond cl gtFlag ltFlag =
     | Cond c :: [] -> $"{compileCond c}"
     | Ar a :: Comp c :: [] -> $"{compileAr' a}]; \n\n{compileCmp c}"
     | Ar a :: Comp c :: cl' -> $"{compileAr' a} ]; \n\n{compileCmp c}  \n\n{compileCl (cl')}"
-    | Ar a :: cl' -> $"{compileAr a},\n\n{compileCl (cl')}"
+    | Ar a :: cl' -> $"{compileAr' a},\n\n{compileCl (cl')}"
     | Comp c :: Comp c' :: cl -> $"{compileCmp c};\n\n{compileCmp (c')};\n\n {compileCl cl}"
     | Comp c :: cl  -> $"{compileCmp c};\n\n[{compileCl cl}"
     //| Cond c :: Ar a :: [] -> $"{compileCond c},\n\n{compileAr (a)}"  
@@ -133,6 +142,10 @@ let initConcs (concs: ConcList) =
     let m = Map [ ("Xgty", 0.5); ("Xlty", 0.5); ("Ygtx", 0.5); ("Yltx", 0.5); ("CmpOffset", 0.5)]
     concs |> List.fold (fun env (Cnc (s, n)) -> env |> Map.add s n) m
 
+(* let getNCmps stps =  
+    match stps with 
+    | 
+ *)
 
 let compileCrn (Crn(concs, stps)) =
     let state0 = {status = Running; concentrations = initConcs concs} 
