@@ -18,6 +18,7 @@ let extractAndExtend (state: State) (rxns: Rxns list) =
     rxns 
     |> List.collect (fun (Rxn(e1, e2, k)) -> (extractSpecies e1) @ (extractSpecies e2))
     |> List.fold (fun (concs: Concentrations) s -> if (concs |> Map.containsKey s) then concs else concs |> Map.add s 0) state.concentrations 
+    |> Map.remove "e"
     |> addNewConcs state
 
 let countOccurences (s: Species) (sl : Species list) = 
