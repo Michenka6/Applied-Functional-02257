@@ -3,6 +3,7 @@ module Compiler
 open Types
 open FParsec
 open Parser
+open System.Text.RegularExpressions
 
 (*
     Compile step takes a list of commands and generates a list of rxns AS A STRing
@@ -10,8 +11,17 @@ open Parser
 
 *)
 
+let matchClkSpecies input =
+    let regex = new Regex("X[0-9]+")
+    let matches = regex.Matches(input)
+    [ for matchObj in matches -> matchObj.Value ]
+    |> Set.ofList
+    |> List.ofSeq
+
 let oscillatorCrn X1 X2 X3 k = 
-    [$"rxn[{X1} + {X2}, {X2}+{X2}, {k}], rxn[{X2} + {X3}, {X3}+{X3}, {k}], rxn[{X3} + {X1}, {X1}+{X1}, {k}]"]
+    $"rxn[{X1} + {X2}, {X2}+{X2}, {k}]"
+    ::$"rxn[{X2} + {X3}, {X3}+{X3}, {k}]"
+    ::[$"rxn[{X3} + {X1}, {X1}+{X1}, {k}]"]
 
 let genClkSpecies i k = 
     let X1 = ("X" + string i) 
@@ -38,7 +48,7 @@ let ld s1 s2 X3 flags =
     let f1, f2 = getOptionFlags flags 
     
     $"rxn[{f1} {f2} {s1} + {X3}, {f1} {f2} {s1} + {s2} + {X3}, 1.0]"
-    ::[$"rxn[{f1} {f2} {s2} + {X3}, {f2} {f2} e {X3}, 1.0]"]
+    ::[$"rxn[{f1} {f2} {s2} + {X3}, {f2} {f2} e + {X3}, 1.0]"]
 
 let add s1 s2 s3 X3 flags =
     let f1, f2 = getOptionFlags flags 
@@ -238,17 +248,17 @@ let compileCrnPP (s: string) =
 let AM X3 (f1, f2) = 
     let f1', f2' = getOptionFlags (f1, f2)
     let B = "B"
-    $"rxn[{f1'} + {f2'} + {X3}, {f2'} + {B} + {X3}, 1.0]"
-    ::$"rxn[{B} + ltFlag + {X3}, {f2'} + {f2'} + {X3}, 1.0]"
-    ::$"rxn[{f2'} + {f1'} + {X3}, {f1'} + {B} + {X3}, 1.0]"
-    ::[$"rxn[{B} + {f1'} + {X3}, {f1'} + {f1'} + {X3}, 1.0]"]
+    $"rxn[{f1'} {f2'} {X3}, {f2'} {B} + {X3}, 1.0]"
+    ::$"rxn[{B} + {f2'} {X3}, {f2'} {f2'} {X3}, 1.0]"
+    ::$"rxn[{f2'} {f1'} {X3}, {f1'} {B} + {X3}, 1.0]"
+    ::[$"rxn[{B} + {f1'} {X3}, {f1'} {f1'} {X3}, 1.0]"]
 
 let normalize A B X3 (f1, f2) =
     let f1', f2' = getOptionFlags (f1, f2) // should NOT be none here but do this anyway
     
-    $"rxn[{f1'} + {B} + {X3}, {f2'} + {B} + {X3}, 1.0]" 
-    ::$"rxn[{f2'} + CmpOffset + {X3}, {f1'} + CmpOffset + {X3}, 1.0]"
-    ::[$"rxn[{f2'} + {A} + {X3}, {f1'} + {A} + {X3}, 1.0]"] 
+    $"rxn[{f1'} {B} + {X3}, {f2'} {B} + {X3}, 1.0]" 
+    ::$"rxn[{f2'} CmpOffset + {X3}, {f1'} CmpOffset + {X3}, 1.0]"
+    ::[$"rxn[{f2'} {A} + {X3}, {f1'} {A} + {X3}, 1.0]"] 
 
 let compileCmp (Cmp(A, B)) X3 i =
     let Xgty = "Xgty"
@@ -342,9 +352,20 @@ let compileSteps stps : string list =
 (*     let state0 = initConcs concs 
     let rxns =  *)
 
-let initConcs (concs: ConcList) =
+
+
+let clkConcs (src: string) =
+    src 
+    |> matchClkSpecies 
+    |> List.sort
+    |> List.mapi (fun i X -> (X, float i + 0.5)) 
+
+let initConcs (concs: ConcList) (src: string) =
     let m = Map [ ("Xgty", 0.5); ("Xlty", 0.5); ("Ygtx", 0.5); ("Yltx", 0.5); ("CmpOffset", 0.5)]
-    concs |> List.fold (fun env (Cnc (s, n)) -> env |> Map.add s n) m
+    let concs' = concs |> List.map (fun (Cnc(s, n)) -> (s, n)) 
+    let concsClk = clkConcs src
+    let allConcs = concs' @ concsClk
+    allConcs |> List.fold (fun env (k, v) -> env |> Map.add k v) m
 
 let addSeparators (rxns: string list) =
     let rec aux rxns acc = 
@@ -357,8 +378,8 @@ let addSeparators (rxns: string list) =
 let compileCrn (s: string) : State * string = 
     match parseString s with 
     | Success (Crn(concs, stps), _, _ ) -> 
-        let conc0 = initConcs concs
-        let state0 = {status = Running; concentrations = conc0}
-        let rxns = compileSteps stps |> addSeparators 
+        let rxns = compileSteps stps |> addSeparators  
+        let conc0 = initConcs concs rxns  
+        let state0 = {status = Running; concentrations = conc0} 
         (state0, rxns)
     | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}"

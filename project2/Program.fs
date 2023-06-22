@@ -278,7 +278,10 @@ src |> (fun x -> runSim 0.01 x state_) |> Seq.take 3500 |> genPlot line |> showP
 
 
 let state, src = compileCrn fac
+state.concentrations |> Map.toList |> printfn "state?\n %A\n"
 src |> printfn "fac?:\n %s"
+
+src |> (fun x -> runSim 0.01 x state) |> Seq.take 3500 |> genPlot line |> showPlot 
 
 
 (*
