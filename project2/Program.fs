@@ -242,7 +242,7 @@ let prog4 =
 let oscState = Map [("X1", 0.1); ("X2", 1.1); ("X3", 2.1)]
 let oscCrn = "[rxn[X1 + X2, X2+X2, 1], rxn[X2 + X3, X3+X3, 1], rxn[X3 + X1, X1+X1, 1]];"
 
-let oscState1 = Map [("X1", 1.1); ("X2", 2.2); ("X3", 3.3); ("X4", 1.4); ("X5", 2.5); ("X6", 3.6)]
+let oscState1 = Map [("X1", 1.0); ("X2", 2.0); ("X3", 3.0); ("X4", 1.0); ("X5", 2.0); ("X6", 3.0)]
 let oscCrn1 = "[rxn[X1 + X2, X2+X2, 2.0], rxn[X2 + X3, X3+X3, 2.0], rxn[X3 + X1, X1+X1, 2.0], rxn[X4 + X5, X5+X5, 1.0], rxn[X5 + X6, X6+X6, 1.0], rxn[X6 + X4, X4+X4, 1.0]];"
 
 
@@ -255,24 +255,31 @@ let oscCrn1 = "[rxn[X1 + X2, X2+X2, 2.0], rxn[X2 + X3, X3+X3, 2.0], rxn[X3 + X1,
 //src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot 
 //oscCrn1 |> (fun x -> runSim 0.01 x {status = Running; concentrations = oscState1}) |> Seq.take 5500 |> genPlotSelect line ["X1"; "X2"; "X3"; "X4"; "X5"; "X6"] |> showPlot 
 
-let state, src = compileCrn prog4
+(* let state, src = compileCrn prog4
 
 let conc0 = state.concentrations 
             |> Map.add "X1" 0.5 
-            |> Map.add "X2" 1.5 
-            |> Map.add "X3" 2.5
-            |> Map.add "X4" 3.5 
-            |> Map.add "X5" 4.5 
-            |> Map.add "X6" 5.5
+            |> Map.add "X2" 0.6 
+            |> Map.add "X3" 0.7
+            |> Map.add "X4" 0.8 
+            |> Map.add "X5" 0.9 
+            |> Map.add "X6" 1.0
             
 
 let state_ = {status = state.status; concentrations = conc0}
 
 src |> printfn "Src:\n %s"
+conc0 |> printfn "conc0 %A"
 
-src |> (fun x -> runSim 0.001 x state_) |> Seq.take 3500 |> genPlot line |> showPlot
+src |> (fun x -> runSim 0.01 x state_) |> Seq.take 3500 |> genPlot line |> showPlot *)
       
       //|> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"; "X1"; "X2"; "X3"; "fnext"; "inext"] |> showPlot 
+
+
+
+let state, src = compileCrn fac
+src |> printfn "fac?:\n %s"
+
 
 (*
       Questions 

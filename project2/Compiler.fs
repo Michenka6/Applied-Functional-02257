@@ -13,6 +13,12 @@ open Parser
 let oscillatorCrn X1 X2 X3 k = 
     [$"rxn[{X1} + {X2}, {X2}+{X2}, {k}], rxn[{X2} + {X3}, {X3}+{X3}, {k}], rxn[{X3} + {X1}, {X1}+{X1}, {k}]"]
 
+let genClkSpecies i k = 
+    let X1 = ("X" + string i) 
+    let X2 = ("X" + string (i+1)) 
+    let X3 = ("X" + string (i+2))  
+    oscillatorCrn X1 X2 X3 k, X3, i+3
+
 let getOptionVs (os: string option list) =
     os |> List.map (fun o -> if o.IsSome then o.Value else "") 
 
@@ -66,7 +72,6 @@ let sqrt s1 s2 X3 flags =
 
     $"rxn[{f1} {f2} {s1} + {X3}, {f1} {f2} {s1} + {s2} + {X3}, 1.0]"
     ::[$"rxn[{f1} {f2} {s2} + {s2} + {X3}, {f1} {f2} e + {X3}, 0.5]"]
-
 
 (* 
 let expandExpr extras e =
@@ -229,44 +234,97 @@ let compileCrnPP (s: string) =
     | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}" *)
 
 
-let compileCond c X3 i = failwith ""
 
-let compileCmp c X3 i = failwith ""
+let AM X3 (f1, f2) = 
+    let f1', f2' = getOptionFlags (f1, f2)
+    let B = "B"
+    $"rxn[{f1'} + {f2'} + {X3}, {f2'} + {B} + {X3}, 1.0]"
+    ::$"rxn[{B} + ltFlag + {X3}, {f2'} + {f2'} + {X3}, 1.0]"
+    ::$"rxn[{f2'} + {f1'} + {X3}, {f1'} + {B} + {X3}, 1.0]"
+    ::[$"rxn[{B} + {f1'} + {X3}, {f1'} + {f1'} + {X3}, 1.0]"]
 
-let compileAr a X3 i =
+let normalize A B X3 (f1, f2) =
+    let f1', f2' = getOptionFlags (f1, f2) // should NOT be none here but do this anyway
+    
+    $"rxn[{f1'} + {B} + {X3}, {f2'} + {B} + {X3}, 1.0]" 
+    ::$"rxn[{f2'} + CmpOffset + {X3}, {f1'} + CmpOffset + {X3}, 1.0]"
+    ::[$"rxn[{f2'} + {A} + {X3}, {f1'} + {A} + {X3}, 1.0]"] 
+
+let compileCmp (Cmp(A, B)) X3 i =
+    let Xgty = "Xgty"
+    let Xlty = "Xlty"
+    let Ygtx = "Ygtx"
+    let Yltx = "Yltx"
+    let CmpOffset = "CmpOffset"
+    
+    let normalxClkRxn, Xnormalx, inext = genClkSpecies i "1.0" 
+    let normalyclkRxn, Xnormaly, inext = genClkSpecies inext "1.0"
+    let AMxclkRxn, XAMx, inext = genClkSpecies inext "1.0"
+    let AMyclkRxn, XAMy, inext = genClkSpecies inext "1.0"
+    //let X6 = "X" + string (i + 3)
+    //let X9 = "X" + string (i + 3*2)
+    //let X12 = "X" + string (i + 3*3)
+
+    let normalx = normalize A B Xnormalx (Some Xgty, Some Xlty)
+    let normaly = normalize A B Xnormaly (Some Ygtx, Some Yltx)
+
+    let AMx = AM XAMx (Some Xgty, Some Xlty)
+    let AMy = AM XAMy (Some Ygtx, Some Yltx)
+
+    normalxClkRxn @ normalx @ normalyclkRxn @ normaly @ AMxclkRxn @ AMx @ AMyclkRxn @ AMy, inext
+    
+let compileAr a X3 i flags =
     let aux a = 
         match a with
-        | Ld(s1, s2) -> ld s1 s2 X3 (None,None)
-        | Add(s1, s2, dst) -> add s1 s2 dst X3 (None, None) 
-        | Sub(s1, s2, dst) -> sub s1 s2 dst X3 (None, None)
-        | Mul(s1, s2, dst) -> mul s1 s2 dst X3 (None, None)
-        | Div(s1, s2, dst) -> div s1 s2 dst X3 (None, None) 
-        | Sqrt(s1, s2) -> sqrt s1 s2 X3 (None, None) 
+        | Ld(s1, s2) -> ld s1 s2 X3 flags
+        | Add(s1, s2, dst) -> add s1 s2 dst X3 flags 
+        | Sub(s1, s2, dst) -> sub s1 s2 dst X3 flags
+        | Mul(s1, s2, dst) -> mul s1 s2 dst X3 flags
+        | Div(s1, s2, dst) -> div s1 s2 dst X3 flags 
+        | Sqrt(s1, s2) -> sqrt s1 s2 X3 flags 
     aux a, i
 
-let compileCmd cmd X3 i =
+let rec compileCmd cmd X3 i flags =
     match cmd with 
-    | Ar a -> compileAr a X3 i  
-    | Comp c -> compileCmp c X3 i
+    | Ar a -> compileAr a X3 i flags
+    | Comp c -> compileCmp c X3 i // flags reset here, so we do not "old" pass flags
     | Cond c -> compileCond c X3 i
 
-let rec compileCl cl X3 i = 
+
+and compileCond c X3 i =
+    let Xgty = Some "Xgty"
+    let Xlty = Some "Xlty"
+    let Ygtx = Some "Ygtx"
+    let Yltx = Some "Yltx" 
+    
+    match c with
+    | IfGT(cl) -> compileCl cl X3 i (Xgty, Yltx) //$"[ {compileClCond cl Xgty Yltx}" 
+    | IfGE(cl) -> compileCl cl X3 i (Xgty, None)//$"[ {compileClCond cl Xgty None}" 
+    | IfEQ(cl) -> compileCl cl X3 i (Xgty, Ygtx)//$"[ {compileClCond cl Xgty Ygtx}" 
+    | IfLT(cl) -> compileCl cl X3 i (Ygtx, Xlty)//$"[ {compileClCond cl Ygtx Xlty}"  
+    | IfLE(cl) -> compileCl cl X3 i (Ygtx, None)//$"[ {compileClCond cl Ygtx None}" 
+
+// assume only a single cmp per step and assume that a step does not contain both cmps and conds 
+and compileCl (cl: CommandList) (X3: string) (i: int) (flags: string option * string option) = 
     match cl with 
     | [] -> [], i
-    | cmd::[] -> compileCmd cmd X3 i 
-    | cmd::cl' -> 
-        let rxns, inext = compileCmd cmd X3 i 
-        let rest, j = compileCl cl' X3 inext 
-        rxns @ rest, j 
+    | Comp c::rest -> 
+        //let oscCrn, X3', inext = genClkSpecies (i+3) "1.0" 
+        let cmpRxns, inext = compileCmp c X3 (i+3) 
+        let rxns, _ = compileCl rest X3 i flags
+        cmpRxns @ rxns, inext
+    | cmd::[] -> compileCmd cmd X3 i flags
+    | cmd::cl' -> let rxns, inext = compileCmd cmd X3 i flags // inext should be equal to i in this case 
+                  let rxnsRest, j = compileCl cl' X3 i flags // j should be equal to i in this case 
+                  rxns @ rxnsRest, j
+        //let rxns, inext = compileCmd cmd X3 i 
+        //let rest, j = compileCl cl' X3 inext 
+        //rxns @ rest, j 
 
-let compileStep (Stp(cl)) (i: int) = 
-    let X1 = ("X" + string i) 
-    let X2 = ("X" + string (i+1)) 
-    let X3 = ("X" + string (i+2)) 
-    let k = "1.0"
-    let oscCrn = oscillatorCrn X1 X2 X3 k  
-    let rxns, inext = compileCl cl X3 i 
-    oscCrn @ rxns, (inext + 3)
+let compileStep (Stp(cl)) (i: int) =  
+    let oscCrn, X3, _ = genClkSpecies i "1.0" 
+    let rxns, inext = compileCl cl X3 i (None, None) 
+    oscCrn @ rxns, inext 
 
 let compileSteps stps : string list = 
     let rec aux stps i =
