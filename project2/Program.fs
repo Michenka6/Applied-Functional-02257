@@ -68,7 +68,7 @@ let discreteCounter =
 
 let fac =
     "crn={
- conc[ f ,1], conc[one ,1], conc[ i , 5 ],
+ conc[ f ,1], conc[one ,1], conc[ i , 3 ],
  step[{
  cmp[i,one ],
  mul[f , i , fnext ],
@@ -281,7 +281,7 @@ let state, src = compileCrn fac
 state.concentrations |> Map.toList |> printfn "state?\n %A\n"
 src |> printfn "fac?:\n %s"
 
-src |> (fun x -> runSim 0.01 x state) |> Seq.take 3500 |> genPlot line |> showPlot 
+src |> (fun x -> runSim 0.001 x state) |> Seq.take 10000 |> genPlotSelect line ["f"; "i"] |> showPlot 
 
 
 (*
