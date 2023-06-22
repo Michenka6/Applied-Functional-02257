@@ -5,25 +5,35 @@ open Types
 open Parser
 open System
 
-module List =
-    let rec foldMap f acc =
-        function
-        | [] -> [ acc ]
-        | head :: tail -> acc :: foldMap f (f acc head) tail
-
-module Option =
-    let apply f a b =
-        match a, b with
-        | Some a, Some b ->
-            try
-                Some(f a b)
-            with
-            | :? OverflowException -> None
-            | :? DivideByZeroException -> None
-        | _ -> None
-
 // Lots of choices regarding the flags. Explain!. ugly.
-let comparison (Cmp (a, b)) env =
+
+// let setFlags a b c d =
+//     { Xgty = a
+//       Xlty = b
+//       Ygtx = c
+//       Yltx = d }
+
+// let compare (a, b) (env: State) : Flags option =
+//     option {
+//         let! a = Map.tryFind a env
+//         let! b = Map.tryFind b env
+
+//         let flags =
+//             if abs (a - b) < 0.000001 then
+//                 setFlags true false true false
+//             else if a > b then
+//                 setFlags true false false true
+//             else
+//                 setFlags false true true false
+
+//         return flags
+// }
+
+let initConcs (concs: ConcList) =
+    let m = Map [ ("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0) ]
+    concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) m
+
+let compare (a, b) env =
 
     match Map.tryFind a env, Map.tryFind b env with
     | None, _ -> None
@@ -34,73 +44,80 @@ let comparison (Cmp (a, b)) env =
 
 // Lots of choices regarding the flags. Explain!. ugly.
 
-let updateConcs dst env (newVal: float option) =
-
-    newVal |> Option.map (fun v -> Map.add dst v env)
-
-let applyIfDef op src1 src2 env =
-    if env |> Map.containsKey src1 && env |> Map.containsKey src2 then
-        try
-            Some(op env[src1] env[src2])
-        with
-        | :? OverflowException -> None
-        | :? DivideByZeroException -> None
-    else
-        None
-
-let applyUnaryIfDef op src env =
-    if env |> Map.containsKey src then
-        try
-            Some(op env[src])
-        with
-        | :? OverflowException -> None
-        | :? DivideByZeroException -> None
-    else
-        None
-
-let loadIfDef src dst env =
-    if env |> Map.containsKey src then
-        env |> Map.add dst env[src] |> Some
-    else
-        None
+let updateEnv (key: Species) (env: State) (value: Number) =
+    option {
+        let! _ = Map.tryFind key env.concentrations
+        return Map.add key value env.concentrations
+    }
 
 // Either change to option type or do nothing and rely on type checker. Check the src dst thing only in type checker?
-let arithmetic expr concs : Concentrations option =
-    match expr with
-    | Ld (a, b) -> concs |> applyUnaryIfDef (id) a |> updateConcs b concs
-    | Add (a, b, c) -> concs |> applyIfDef (+) a b |> updateConcs c concs
-    | Sub (a, b, c) -> concs |> applyIfDef (-) a b |> updateConcs c concs
-    | Mul (a, b, c) -> concs |> applyIfDef (*) a b |> updateConcs c concs
-    | Div (a, b, c) -> concs |> applyIfDef (/) a b |> updateConcs c concs
-    | Sqrt (a, b) -> concs |> applyUnaryIfDef (sqrt) a |> updateConcs b concs
+let safeDiv a b =
+    match b with
+    | 0.0 -> None
+    | _ -> Some(a / b)
 
-let updateState (oldState: State) (env: Concentrations option) =
-    if env.IsSome then
-        { status = oldState.status
-          concentrations = env.Value }
-    else
-        { status = Error
-          concentrations = env.Value }
+let safeSqrt a = if a < 0.0 then None else Some(sqrt a)
 
-let updateFlags (env: Concentrations) (flags: (string * float) list option) =
-    if flags.IsSome then
-        flags.Value |> List.fold (fun m (k, v) -> m |> Map.add k v) env |> Some
-    else
-        None
+let arithmetic (env: State) (arithmetic: Arithmetic) : State option =
+    match arithmetic with
+    | Ld (a, b) ->
+        option {
+            let! value = Map.tryFind a env.concentrations
+            return { env with concentrations = Map.add b value env.concentrations }
+        }
+    | Add (a, b, c) ->
+        option {
+            let! aValue = Map.tryFind a env.concentrations
+            let! bValue = Map.tryFind b env.concentrations
+            return { env with concentrations = Map.add c (aValue + bValue) env.concentrations }
+        }
+    | Sub (a, b, c) ->
+        option {
+            let! aValue = Map.tryFind a env.concentrations
+            let! bValue = Map.tryFind b env.concentrations
+            return { env with concentrations = Map.add c (aValue - bValue) env.concentrations }
 
-let rec interpretCmd (cmd: Command) (state: State) =
+        }
+    | Mul (a, b, c) ->
+        option {
+            let! aValue = Map.tryFind a env.concentrations
+            let! bValue = Map.tryFind b env.concentrations
+            return { env with concentrations = Map.add c (aValue * bValue) env.concentrations }
+        }
+    | Div (a, b, c) ->
+        option {
+            let! aValue = Map.tryFind a env.concentrations
+            let! bValue = Map.tryFind b env.concentrations
+            let! cValue = safeDiv aValue bValue
+            return { env with concentrations = Map.add c cValue env.concentrations }
+        }
+    | Sqrt (a, b) ->
+        option {
+            let! aValue = Map.tryFind a env.concentrations
+            let! bValue = safeSqrt aValue
+            return { env with concentrations = Map.add b bValue env.concentrations }
+        }
+
+let rec interpretCommand (cmd: Command) (state: State) : State option =
     match cmd with
-    | Ar (a) -> (arithmetic a state.concentrations) |> updateState state
-    | Comp (c) ->
-        comparison c state.concentrations
-        |> (updateFlags state.concentrations)
-        |> (updateState state)
-    //(Some(state.concentrations), comparison c state.concentrations |> )
-    //||> updateState state
-    | Cond (con) -> interpretConditional con state
+    | Ar (a) ->
+        option {
+            let! env = arithmetic state a
+            return env
+        }
+    | Comp (Cmp (s1, s2)) ->
+        option {
+            let! flags = compare (s1, s2) state.concentrations
+            return state
+        }
+    | Cond (con) -> Some(interpretConditional con state)
 
-and interpretCmdList (cmds: CommandList) (state: State) =
-    cmds |> List.fold (fun s cmd -> interpretCmd cmd s) state
+and interpretCmdList (commands: Command list) (state: State) : State =
+    (state, commands)
+    ||> List.fold (fun state command ->
+        match interpretCommand command state with
+        | None -> state
+        | Some s -> s)
 
 and interpretConditional con state =
     let concs = state.concentrations
@@ -113,11 +130,10 @@ and interpretConditional con state =
     | IfLE (cmds) when concs["Ygtx"] = 1.0 -> interpretCmdList cmds state
     | _ -> state
 
-let interpretSteps (steps: StepList) (state: State) =
-    steps |> List.fold (fun s (Stp (cl)) -> interpretCmdList cl s) state
-(*  match steps with 
-    | [] -> state 
-    | (Stp(c))::steps -> interpretSteps steps (interpretCmdList c state)  *)
+
+let interpretSteps (steps: Step list) (state: State) =
+    (state, steps)
+    ||> List.fold (fun state (Stp commands) -> interpretCmdList commands state)
 
 let rec stateSequence steps state =
     seq {
@@ -126,19 +142,15 @@ let rec stateSequence steps state =
         yield! stateSequence steps s
     }
 
-let initConcs (concs: ConcList) =
-    let m = Map [ ("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0) ]
-    concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) m
+let interpret ((Crn (c, s)): CRN) (nSteps: int) =
 
-let interpret (Crn (concs, steps)) (nSteps: int) =
-
-    let initCncs = initConcs concs
+    let concs0 = initConcs c
 
     let state0 =
         { status = Running
-          concentrations = initCncs }
+          concentrations = concs0 }
 
-    (stateSequence steps state0) |> Seq.take nSteps |> Seq.append (seq { state0 })
+    (s, state0) ||> stateSequence |> Seq.take nSteps |> Seq.append (seq { state0 })
 
 let analysisIntprt (src: string) (nSteps: int) =
     match parseString src with
