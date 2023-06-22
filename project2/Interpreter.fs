@@ -130,7 +130,7 @@ let initConcs (concs: ConcList) =
     let m = Map [ ("Xgty", 0.0); ("Xlty", 0.0); ("Ygtx", 0.0); ("Yltx", 0.0) ]
     concs |> List.fold (fun env (Cnc ((s), n)) -> env |> Map.add s n) m
 
-let interpret (Crn (concs, steps)) (nSteps: int) =
+let interpret (Crn (concs, steps)) =
 
     let initCncs = initConcs concs
 
@@ -138,9 +138,9 @@ let interpret (Crn (concs, steps)) (nSteps: int) =
         { status = Running
           concentrations = initCncs }
 
-    (stateSequence steps state0) |> Seq.take nSteps |> Seq.append (seq { state0 })
+    (stateSequence steps state0) |> Seq.append (seq { state0 })
 
-let analysisIntprt (src: string) (nSteps: int) =
+let analysisIntprt (src: string) =
     match parseString src with
-    | Success (ast, _, _) -> interpret ast nSteps
+    | Success (ast, _, _) -> interpret ast
     | Failure (errorMsg, _, _) -> failwith ("Parsing failed: " + errorMsg)
