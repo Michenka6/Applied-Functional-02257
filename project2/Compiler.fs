@@ -169,7 +169,7 @@ let clkConcs (src: string) =
     src 
     |> matchClkSpecies 
     |> List.sort
-    |> List.mapi (fun i X -> (X, float i+0.5 )) //(fun i X -> (X, float (i+1) * 0.1))  
+    |> List.mapi (fun i X -> (X, float (i+1) * 0.4))//(fun i X -> (X, float i+0.5 )) //(fun i X -> (X, float (i+1) * 0.1))  
 
 let initConcs (concs: ConcList) (src: string) =
     let m = Map [ ("Xgty", 0.5); ("Xlty", 0.5); ("Ygtx", 0.5); ("Yltx", 0.5); ("CmpOffset", 0.5)]

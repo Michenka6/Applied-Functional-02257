@@ -239,6 +239,16 @@ let prog4 =
       step[{mul[i, c, inext]}]
       };" 
 
+let prog5 =
+      "crn={
+      conc[ f ,3], conc[one ,1], conc[ i , 5 ], conc[c, 4], conc[d, 2],
+      step[{ 
+      mul[f , i , fnext ],
+      sub[ i ,one, inext ]}],
+      step[{mul[c, inext, i]}]
+      };" 
+
+
 let oscState = Map [("X1", 0.1); ("X2", 1.1); ("X3", 2.1)]
 let oscCrn = "[rxn[X1 + X2, X2+X2, 1], rxn[X2 + X3, X3+X3, 1], rxn[X3 + X1, X1+X1, 1]];"
 
@@ -277,11 +287,11 @@ src |> (fun x -> runSim 0.01 x state_) |> Seq.take 3500 |> genPlot line |> showP
 
 
 
-let state, src = compileCrn prog4
+let state, src = compileCrn prog5
 state.concentrations |> Map.toList |> printfn "state?\n %A\n"
 src |> printfn "fac?:\n %s"
 
-src |> (fun x -> runSim 0.001 x state) |> Seq.take 30000 |> genPlot line |> showPlot 
+src |> (fun x -> runSim 0.001 x state) |> Seq.take 10000 |> genPlot line |> showPlot 
 
 
 (*
