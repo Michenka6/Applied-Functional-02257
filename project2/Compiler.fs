@@ -143,7 +143,7 @@ and compileCl (cl: CommandList) (X3: string) (i: int) (flags: string option * st
         let cmpRxns, inext = compileCmp c X3 (i+3) 
         let rxns, _ = compileCl rest X3 i flags
         cmpRxns @ rxns, inext
-    | cmd::[] -> compileCmd cmd X3 i flags
+    | cmd::[] -> compileCmd cmd X3 (i+3) flags
     | cmd::cl' -> let rxns, inext = compileCmd cmd X3 i flags // inext should be equal to i in this case 
                   let rxnsRest, j = compileCl cl' X3 i flags // j should be equal to i in this case 
                   rxns @ rxnsRest, j
@@ -169,7 +169,7 @@ let clkConcs (src: string) =
     src 
     |> matchClkSpecies 
     |> List.sort
-    |> List.mapi (fun i X -> (X, float (i+1) * 0.1)) 
+    |> List.mapi (fun i X -> (X, float i+0.5 )) //(fun i X -> (X, float (i+1) * 0.1))  
 
 let initConcs (concs: ConcList) (src: string) =
     let m = Map [ ("Xgty", 0.5); ("Xlty", 0.5); ("Ygtx", 0.5); ("Yltx", 0.5); ("CmpOffset", 0.5)]
