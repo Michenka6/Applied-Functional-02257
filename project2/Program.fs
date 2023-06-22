@@ -281,7 +281,7 @@ let state, src = compileCrn fac
 state.concentrations |> Map.toList |> printfn "state?\n %A\n"
 src |> printfn "fac?:\n %s"
 
-src |> (fun x -> runSim 0.001 x state) |> Seq.take 10000 |> genPlotSelect line ["f"; "i"] |> showPlot 
+src |> (fun x -> runSim 0.001 x state) |> Seq.take 15000 |> genPlot line |> showPlot 
 
 
 (*
