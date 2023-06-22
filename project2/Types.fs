@@ -44,7 +44,7 @@ and Number = float
 (* Types used in intepreter. State etc. *)
 type Status =
     | Running
-    // | Error
+    | ErrorE
     | Converged
 
 type Concentrations = Map<string, float>
