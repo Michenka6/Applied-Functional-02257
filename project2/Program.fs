@@ -19,7 +19,7 @@ let tryParse s =
 
 let tryParseRxn s =
     match parseRxn s with
-    | Success (result, _, _) -> result 
+    | Success (result, _, _) -> result
     | Failure (errorMsg, _, _) -> failwith $"Parsing failed: {errorMsg}"
 
 let tryParseRxnLL s =
@@ -102,6 +102,36 @@ ld[qnext,q]
 ifLT[{ld[a, r ]}]
 }]
 };"
+
+printfn "%A" gcd
+
+match parseString gcd with
+| Failure (msg, _, _) -> failwith $"Failed to parse {msg}"
+| Success (ast, _, _) ->
+    match checkCRN ast with
+    | CRN_Error.Error err -> failwith $"ERROR: {err}"
+    | CRN_Error.Ok () ->
+        printfn "CRN++ program GCD is valid and typecheked"
+
+        let states = interpret ast
+        printfn $"CRN++ program GCD is interpreted {Seq.item 50 states}"
+
+        let (state0, rxns) = compileCrn gcd
+        printfn "%A" "CRN++ program GCD successfully compiled"
+
+        runSim 0.01 rxns state0 |> genPlot line |> showPlot
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //tryParse discreteCounter
@@ -242,196 +272,199 @@ Check.Quick propSqrtConverge *)
 compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); ]) |> printfn "%s\n\n" //Comp (Cmp ("a", "b"))]) |> printfn "%s"
 compileStep (Stp [Ar (Ld ("a", "atmp")); Ar (Ld ("b", "btmp")); Comp (Cmp ("a", "b"))]) |> printfn "%s\n\n"
 
- *)
+//  *)
 
-let prog =
-    "crn={
-      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
-      step[{ 
-      mul[f , i , fnext ],
-      sub[ i ,one, inext ],
-      cmp[f,i]}] };"
+// let prog =
+//     "crn={
+//       conc[ f ,3], conc[one ,1], conc[ i , 5 ],
+//       step[{
+//       mul[f , i , fnext ],
+//       sub[ i ,one, inext ],
+//       cmp[f,i]}] };"
 
-let prog1 =
-    "crn={
-      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
-      step[{  
-      cmp[f,i]}] };"
+// let prog1 =
+//     "crn={
+//       conc[ f ,3], conc[one ,1], conc[ i , 5 ],
+//       step[{
+//       cmp[f,i]}] };"
 
-let prog2 =
-    "crn={
-      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
-      step[{ 
-      mul[f , i , fnext ],
-      sub[ i ,one, inext ],
-      cmp[f,i]}],
-      step[{add[inext,one,i]}] };"
+// let prog2 =
+//     "crn={
+//       conc[ f ,3], conc[one ,1], conc[ i , 5 ],
+//       step[{
+//       mul[f , i , fnext ],
+//       sub[ i ,one, inext ],
+//       cmp[f,i]}],
+//       step[{add[inext,one,i]}] };"
 
-let prog3 =
-    "crn={
-      conc[ f ,3], conc[one ,1], conc[ i , 5 ],
-      step[{ 
-      mul[f , i , fnext ],
-      sub[ i ,one, inext ]}]};"
+// let prog3 =
+//     "crn={
+//       conc[ f ,3], conc[one ,1], conc[ i , 5 ],
+//       step[{
+//       mul[f , i , fnext ],
+//       sub[ i ,one, inext ]}]};"
 
-let prog4 =
-    "crn={
-      conc[ f ,3], conc[one ,1], conc[ i , 5 ], conc[c, 4], conc[d, 2],
-      step[{ 
-      mul[f , i , fnext ],
-      sub[ i ,one, inext ]}],
-      step[{mul[i, c, inext]}]
-      };"
+// let prog4 =
+//     "crn={
+//       conc[ f ,3], conc[one ,1], conc[ i , 5 ], conc[c, 4], conc[d, 2],
+//       step[{
+//       mul[f , i , fnext ],
+//       sub[ i ,one, inext ]}],
+//       step[{mul[i, c, inext]}]
+//       };"
 
-let prog5 =
-    "crn={
-      conc[ f ,3], conc[one ,1], conc[ i , 5 ], conc[c, 4], conc[d, 2],
-      step[{ 
-      mul[f , i , fnext ],
-      sub[ i ,one, inext ]}],
-      step[{mul[c, inext, i]}]
-      };"
-
-
-let oscState = Map [ ("X1", 0.1); ("X2", 1.1); ("X3", 2.1) ]
-
-let oscCrn =
-    "[rxn[X1 + X2, X2+X2, 1], rxn[X2 + X3, X3+X3, 1], rxn[X3 + X1, X1+X1, 1]];"
-
-let oscState1 =
-    Map [ ("X1", 1.0); ("X2", 2.0); ("X3", 3.0)]//; ("X4", 1.0); ("X5", 2.0); ("X6", 3.0) ]
-
-let oscCrn1 =
-    "rxn[X1 + X2, X2+X2, 2.0], rxn[X2 + X3, X3+X3, 2.0], rxn[X3 + X1, X1+X1, 2.0]"//, rxn[X4 + X5, X5+X5, 1.0], rxn[X5 + X6, X6+X6, 1.0], rxn[X6 + X4, X4+X4, 1.0]];"
+// let prog5 =
+//     "crn={
+//       conc[ f ,3], conc[one ,1], conc[ i , 5 ], conc[c, 4], conc[d, 2],
+//       step[{
+//       mul[f , i , fnext ],
+//       sub[ i ,one, inext ]}],
+//       step[{mul[c, inext, i]}]
+//       };"
 
 
+// let oscState = Map [ ("X1", 0.1); ("X2", 1.1); ("X3", 2.1) ]
 
-//let src = tryParseRxn oscCrn1
-//state |> printfn "State0: %A"
-//src |> printfn "Src:\n %s"
+// let oscCrn =
+//     "[rxn[X1 + X2, X2+X2, 1], rxn[X2 + X3, X3+X3, 1], rxn[X3 + X1, X1+X1, 1]];"
 
-//src |> (fun x -> runSim 0.20 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot
-//src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot
-//oscCrn1 |> (fun x -> runSim 0.001 x {status = Running; concentrations = oscState1}) |> Seq.take 2000 |> genPlotSelect line ["X1"; "X2"; "X3"; "X4"; "X5"; "X6"] |> showPlot
+// let oscState1 = Map [ ("X1", 1.0); ("X2", 2.0); ("X3", 3.0) ] //; ("X4", 1.0); ("X5", 2.0); ("X6", 3.0) ]
 
-(* let state, src = compileCrn prog4
-
-let conc0 = state.concentrations 
-            |> Map.add "X1" 0.5 
-            |> Map.add "X2" 0.6 
-            |> Map.add "X3" 0.7
-            |> Map.add "X4" 0.8 
-            |> Map.add "X5" 0.9 
-            |> Map.add "X6" 1.0
-            
-
-let state_ = {status = state.status; concentrations = conc0}
-
-src |> printfn "Src:\n %s"
-conc0 |> printfn "conc0 %A"
-
-src |> (fun x -> runSim 0.01 x state_) |> Seq.take 3500 |> genPlot line |> showPlot *)
-
-//|> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"; "X1"; "X2"; "X3"; "fnext"; "inext"] |> showPlot
+// let oscCrn1 =
+//     "rxn[X1 + X2, X2+X2, 2.0], rxn[X2 + X3, X3+X3, 2.0], rxn[X3 + X1, X1+X1, 2.0]" //, rxn[X4 + X5, X5+X5, 1.0], rxn[X5 + X6, X6+X6, 1.0], rxn[X6 + X4, X4+X4, 1.0]];"
 
 
 
-// let state, src = compileCrn prog5
-// state.concentrations |> Map.toList |> printfn "state?\n %A\n"
-// src |> printfn "fac?:\n %s"
+// //let src = tryParseRxn oscCrn1
+// //state |> printfn "State0: %A"
+// //src |> printfn "Src:\n %s"
 
-// src |> (fun x -> runSim 0.001 x state) |> Seq.take 10000 |> genPlot line |> showPlot
+// //src |> (fun x -> runSim 0.20 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "fnext"; "inext"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot
+// //src |> (fun x -> runSim 0.15 x state) |> Seq.take 500 |> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"] |> showPlot
+// //oscCrn1 |> (fun x -> runSim 0.001 x {status = Running; concentrations = oscState1}) |> Seq.take 2000 |> genPlotSelect line ["X1"; "X2"; "X3"; "X4"; "X5"; "X6"] |> showPlot
+
+// (* let state, src = compileCrn prog4
+
+// let conc0 = state.concentrations
+//             |> Map.add "X1" 0.5
+//             |> Map.add "X2" 0.6
+//             |> Map.add "X3" 0.7
+//             |> Map.add "X4" 0.8
+//             |> Map.add "X5" 0.9
+//             |> Map.add "X6" 1.0
 
 
-(*
-      Questions 
-            ok??
-            Conditionals and flags. Jump out of nothing. Compiling compare..
-            Compile into reactions. we made a LOT of choices...
-            
+// let state_ = {status = state.status; concentrations = conc0}
 
-      
+// src |> printfn "Src:\n %s"
+// conc0 |> printfn "conc0 %A"
 
+// src |> (fun x -> runSim 0.01 x state_) |> Seq.take 3500 |> genPlot line |> showPlot *)
 
-*)
-
-//let concs = Map [("A", 10.0); ("B", 0.0)]
-
-(* let speciesL = concs |> Map.toList |> List.map (fun (k, _) -> k)
-let A = speciesL.[0]
-let B = speciesL.[1]
-let rxn1 = Rxn(EL([ A ]), EL([ A; B ]), 1.0)
-let rxn2 = Rxn(EL([ B ]), Empty, 1.0)
-let crn = [ rxn1; rxn2 ]
-
-let state = {status = Running; concentrations = concs}
-
-let staten = sim 0.15  crn state |> Seq.take 60 |> genPlot line |> showPlot *)
+// //|> genPlotSelect line ["f"; "i"; "Xgty"; "Xlty"; "Ygtx"; "Yltx"; "X1"; "X2"; "X3"; "fnext"; "inext"] |> showPlot
 
 
 
-(* let rxn1 = Rxn(EL([ A ]), EL([ A; C ]), 1.0)
-let rxn2 = Rxn(EL([ B ]), EL([ B; C ]), 1.0)
-let rxn3 = Rxn(EL([ C ]), Empty, 1.0)
-let crn = [ rxn1; rxn2; rxn3 ]
-let state = {status = Running; concentrations = concs}
+// // let state, src = compileCrn prog5
+// // state.concentrations |> Map.toList |> printfn "state?\n %A\n"
+// // src |> printfn "fac?:\n %s"
 
-let staten = sim 0.15 crn state |> Seq.take 50 |> genPlot line |> showPlot
- *)
-//let concs = Map [("A", 12.0); ("B", 2.0); ("C", 0.0); ("H", 0.0)]
-(* let speciesL = concs |> Map.toList |> List.map (fun (k, _) -> k)
-let A = speciesL.[0]
-let B = speciesL.[1]
-let C = speciesL.[2]
-let H = speciesL.[3]
-
- *)
-(* let rxn1 = Rxn(EL([ A ]), EL([ A; C ]), 1.0)
-let rxn2 = Rxn(EL([ B ]), EL([ B; H ]), 1.0)
-let rxn3 = Rxn(EL([ C ]), Empty, 1.0)
-let rxn4 = Rxn(EL([ C; H ]), Empty, 1.0)
-
-let crn = [ rxn1; rxn2; rxn3; rxn4 ] *)
-//let state = {status = Running; concentrations = concs}
-//let staten = sim 0.15 crn state |> Seq.take 200 |> genPlot line |> showPlot
+// // src |> (fun x -> runSim 0.001 x state) |> Seq.take 10000 |> genPlot line |> showPlot
 
 
-
-(* let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
-let A = speciesL.[0]
-let B = speciesL.[1]
-let C = speciesL.[2]
-let rxn1 = Rxn(EL([ A; B ]), EL([ A; B; C ]), 1.0)
-let rxn2 = Rxn(EL([ C ]), Empty, 1.0)
-let crn = [ rxn1; rxn2 ] *)
+// (*
+//       Questions
+//             ok??
+//             Conditionals and flags. Jump out of nothing. Compiling compare..
+//             Compile into reactions. we made a LOT of choices...
 
 
 
 
-(* let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
-let A = speciesL.[0]
-let B = speciesL.[1]
-let C = speciesL.[2]
 
-let rxn1 = Rxn(EL([ A ]), EL([ A; C ]), 1.0)
-let rxn2 = Rxn(EL([ B; C ]), EL([ B ]), 1.0)
-let crn = [ rxn1; rxn2 ]
- *)
-(* let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
-let A = speciesL.[0]
-let B = speciesL.[1]
-let rxn1 = Rxn(EL([ A ]), EL([ A; B ]), 1.0)
-let rxn2 = Rxn(EL([ B; B ]), Empty, 0.5)
-let crn = [ rxn1; rxn2 ]
+// *)
 
+// //let concs = Map [("A", 10.0); ("B", 0.0)]
 
-sim 0.01 crn state |> Seq.take 300 |> genPlotSelect line ["A"; "B"] |> showPlot *)
+// (* let speciesL = concs |> Map.toList |> List.map (fun (k, _) -> k)
+// let A = speciesL.[0]
+// let B = speciesL.[1]
+// let rxn1 = Rxn(EL([ A ]), EL([ A; B ]), 1.0)
+// let rxn2 = Rxn(EL([ B ]), Empty, 1.0)
+// let crn = [ rxn1; rxn2 ]
+
+// let state = {status = Running; concentrations = concs}
+
+// let staten = sim 0.15  crn state |> Seq.take 60 |> genPlot line |> showPlot *)
 
 
 
-let state, src = compileCrn gcd
+// (* let rxn1 = Rxn(EL([ A ]), EL([ A; C ]), 1.0)
+// let rxn2 = Rxn(EL([ B ]), EL([ B; C ]), 1.0)
+// let rxn3 = Rxn(EL([ C ]), Empty, 1.0)
+// let crn = [ rxn1; rxn2; rxn3 ]
+// let state = {status = Running; concentrations = concs}
 
-src |> printfn "Src:\n %s"
-state |> printfn "state0 %A"
+// let staten = sim 0.15 crn state |> Seq.take 50 |> genPlot line |> showPlot
+//  *)
+// //let concs = Map [("A", 12.0); ("B", 2.0); ("C", 0.0); ("H", 0.0)]
+// (* let speciesL = concs |> Map.toList |> List.map (fun (k, _) -> k)
+// let A = speciesL.[0]
+// let B = speciesL.[1]
+// let C = speciesL.[2]
+// let H = speciesL.[3]
 
-src |> (fun x -> runSim 0.0001 x state) |> Seq.take 3500 |> genPlot line |> showPlot
+//  *)
+// (* let rxn1 = Rxn(EL([ A ]), EL([ A; C ]), 1.0)
+// let rxn2 = Rxn(EL([ B ]), EL([ B; H ]), 1.0)
+// let rxn3 = Rxn(EL([ C ]), Empty, 1.0)
+// let rxn4 = Rxn(EL([ C; H ]), Empty, 1.0)
+
+// let crn = [ rxn1; rxn2; rxn3; rxn4 ] *)
+// //let state = {status = Running; concentrations = concs}
+// //let staten = sim 0.15 crn state |> Seq.take 200 |> genPlot line |> showPlot
+
+
+
+// (* let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+// let A = speciesL.[0]
+// let B = speciesL.[1]
+// let C = speciesL.[2]
+// let rxn1 = Rxn(EL([ A; B ]), EL([ A; B; C ]), 1.0)
+// let rxn2 = Rxn(EL([ C ]), Empty, 1.0)
+// let crn = [ rxn1; rxn2 ] *)
+
+
+
+
+// (* let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+// let A = speciesL.[0]
+// let B = speciesL.[1]
+// let C = speciesL.[2]
+
+// let rxn1 = Rxn(EL([ A ]), EL([ A; C ]), 1.0)
+// let rxn2 = Rxn(EL([ B; C ]), EL([ B ]), 1.0)
+// let crn = [ rxn1; rxn2 ]
+//  *)
+// (* let speciesL = state.concentrations |> Map.toList |> List.map (fun (k, _) -> k)
+// let A = speciesL.[0]
+// let B = speciesL.[1]
+// let rxn1 = Rxn(EL([ A ]), EL([ A; B ]), 1.0)
+// let rxn2 = Rxn(EL([ B; B ]), Empty, 0.5)
+// let crn = [ rxn1; rxn2 ]
+
+
+// sim 0.01 crn state |> Seq.take 300 |> genPlotSelect line ["A"; "B"] |> showPlot *)
+
+
+
+// let state, src = compileCrn gcd
+
+// src |> printfn "Src:\n %s"
+// state |> printfn "state0 %A"
+
+// src
+// |> (fun x -> runSim 0.0001 x state)
+// |> Seq.take 3500
+// |> genPlot line
+// |> showPlot
